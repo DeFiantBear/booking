@@ -103,7 +103,7 @@ export function downloadICalFile(booking: any) {
 }
 
 // Google Calendar integration (requires Google Calendar API setup)
-export async function addToGoogleCalendar(booking: any) {
+export function addToGoogleCalendar(booking: any): string {
   // This would require Google Calendar API setup
   // For now, we'll create a Google Calendar URL
   const startTime = new Date(`${booking.date}T${booking.startTime}`)
@@ -116,5 +116,5 @@ export async function addToGoogleCalendar(booking: any) {
   
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&details=${details}&dates=${start}/${end}`
   
-  window.open(googleCalendarUrl, '_blank')
+  return googleCalendarUrl
 } 

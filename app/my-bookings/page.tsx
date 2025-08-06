@@ -179,7 +179,7 @@ export default function MyBookingsPage() {
                     <Clock className="h-4 w-4 text-gray-500" />
                     <div>
                       <p className="text-sm font-medium">
-                        {booking.type === 'party' ? '2.5 hours' : `${booking.duration} hour${booking.duration > 1 ? 's' : ''}`}
+                        {booking.type === 'party' ? '2.5 hours' : `${booking.duration || 1} hour${(booking.duration || 1) > 1 ? 's' : ''}`}
                       </p>
                       <p className="text-xs text-gray-500">
                         {booking.type === 'party' ? `${booking.guestCount} guests` : `${booking.adults} adults, ${booking.children} children`}

@@ -6,6 +6,27 @@ export interface User {
   phone?: string;
 }
 
+export interface Booking {
+  id: string;
+  date: string;
+  startTime: string;
+  duration: number; // in hours
+  adults: number;
+  children: number;
+  totalPrice: number;
+  contactName: string;
+  contactEmail: string;
+  contactPhone: string;
+  specialRequests?: string;
+  status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
+  paymentMethod: 'stripe' | 'usdc';
+  paymentStatus: 'pending' | 'paid' | 'failed';
+  bookingType: 'vr' | 'party';
+  partyPackage?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface TimeSlot {
   id: string;
   startTime: string;

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Calendar, Download, ExternalLink, Clock } from 'lucide-react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, parseISO, addDays } from 'date-fns'
-import { generateICalFile, addToGoogleCalendar } from '@/lib/calendar'
+import { generateICalEvent, addToGoogleCalendar } from '@/lib/calendar'
 
 interface Booking {
   id: string
@@ -76,7 +76,7 @@ export default function CalendarView({ bookings }: CalendarViewProps) {
   }
 
   const downloadICal = () => {
-    const icalContent = generateICalFile(bookings)
+    const icalContent = generateICalEvent(bookings)
     const blob = new Blob([icalContent], { type: 'text/calendar' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')

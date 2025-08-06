@@ -70,7 +70,8 @@ export async function POST(request: NextRequest) {
       contactEmail,
       contactPhone,
       specialRequests,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       bookingType,
       partyPackage
     }
