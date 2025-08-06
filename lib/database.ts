@@ -4,16 +4,48 @@ import { Booking } from './types'
 
 const BOOKINGS_FILE = path.join(process.cwd(), 'data', 'bookings.json')
 
+// In-memory storage for Vercel serverless environment
+let inMemoryBookings: Booking[] = [
+  // Sample data for Vercel deployment
+  {
+    id: 'sample-001',
+    date: '2024-01-15',
+    startTime: '14:00',
+    duration: 2,
+    adults: 2,
+    children: 1,
+    totalPrice: 80,
+    status: 'confirmed',
+    paymentMethod: 'stripe',
+    paymentStatus: 'paid',
+    contactName: 'Sample Customer',
+    contactEmail: 'sample@example.com',
+    contactPhone: '07123456789',
+    bookingType: 'vr',
+    createdAt: '2024-01-10T10:00:00.000Z',
+    updatedAt: '2024-01-10T10:00:00.000Z'
+  }
+]
+
+// Check if we're in a serverless environment (Vercel)
+const isServerless = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production'
+
 // Ensure data directory exists
 const ensureDataDir = () => {
+  if (isServerless) return // Skip file system operations in serverless
+  
   const dataDir = path.dirname(BOOKINGS_FILE)
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir, { recursive: true })
   }
 }
 
-// Load all bookings from file
+// Load all bookings from file or memory
 export const loadBookings = (): Booking[] => {
+  if (isServerless) {
+    return inMemoryBookings
+  }
+  
   try {
     ensureDataDir()
     if (!fs.existsSync(BOOKINGS_FILE)) {
@@ -28,8 +60,13 @@ export const loadBookings = (): Booking[] => {
   }
 }
 
-// Save all bookings to file
+// Save all bookings to file or memory
 export const saveBookings = (bookings: Booking[]): void => {
+  if (isServerless) {
+    inMemoryBookings = bookings
+    return
+  }
+  
   try {
     ensureDataDir()
     fs.writeFileSync(BOOKINGS_FILE, JSON.stringify(bookings, null, 2))
