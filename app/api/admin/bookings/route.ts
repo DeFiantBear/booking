@@ -11,9 +11,9 @@ export async function GET(request: NextRequest) {
     let bookings
 
     if (startDate && endDate) {
-      bookings = getBookingsByDateRange(startDate, endDate)
+      bookings = await getBookingsByDateRange(startDate, endDate)
     } else {
-      bookings = getAllBookings()
+      bookings = await getAllBookings()
     }
 
     // Sort by date and time (newest first)
@@ -51,7 +51,7 @@ export async function PATCH(request: NextRequest) {
       )
     }
 
-    const updatedBooking = updateBookingStatus(bookingId, status)
+    const updatedBooking = await updateBookingStatus(bookingId, status)
 
     if (!updatedBooking) {
       return NextResponse.json(
@@ -87,7 +87,7 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    const deleted = deleteBooking(bookingId)
+    const deleted = await deleteBooking(bookingId)
 
     if (!deleted) {
       return NextResponse.json(

@@ -192,24 +192,7 @@ export default function CalendarView({ bookings }: CalendarViewProps) {
           </Button>
         </div>
 
-        {/* Quick Stats */}
-        <div className="mt-4 p-3 bg-slate-700 rounded-md">
-          <h4 className="text-sm font-medium text-white mb-2">This Month</h4>
-          <div className="grid grid-cols-2 gap-2 text-xs">
-            <div className="text-slate-300">
-              Total Bookings: {bookings.filter(b => 
-                parseISO(b.date) >= monthStart && 
-                parseISO(b.date) <= monthEnd
-              ).length}
-            </div>
-            <div className="text-slate-300">
-              Revenue: £{bookings
-                .filter(b => parseISO(b.date) >= monthStart && parseISO(b.date) <= monthEnd)
-                .reduce((sum, b) => sum + b.totalPrice, 0)
-                .toFixed(0)}
-            </div>
-          </div>
-        </div>
+
       </CardContent>
     </Card>
   )

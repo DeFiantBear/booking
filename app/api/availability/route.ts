@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const availableSlots = getAvailableTimeSlots(date, Number(duration))
+    const availableSlots = await getAvailableTimeSlots(date, Number(duration))
 
     return NextResponse.json({
       success: true,
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const isAvailable = isTimeSlotAvailable(date, startTime, Number(duration))
+    const isAvailable = await isTimeSlotAvailable(date, startTime, Number(duration))
 
     return NextResponse.json({
       success: true,

@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if time slot is available
-    if (!isTimeSlotAvailable(date, startTime, duration)) {
+    if (!(await isTimeSlotAvailable(date, startTime, duration))) {
       return NextResponse.json(
         { error: 'This time slot is no longer available. Please select a different time.' },
         { status: 409 }
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Save booking
-    const savedBooking = addBooking(booking)
+    const savedBooking = await addBooking(booking)
 
     return NextResponse.json({
       success: true,
@@ -108,7 +108,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    const bookings = getBookingsByContact(email, phone, date || undefined)
+    const bookings = await getBookingsByContact(email, phone, date || undefined)
 
     return NextResponse.json({
       success: true,

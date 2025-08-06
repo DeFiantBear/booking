@@ -79,3 +79,10 @@ export const TIME_SLOTS = [
 ];
 
 export const AVAILABLE_DURATIONS = [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6]; // hours 
+
+// Payment methods
+export const PAYMENT_METHODS = [
+  { id: 'stripe', name: 'Card Payment', icon: '💳' },
+  { id: 'usdc', name: 'USDC (Crypto)', icon: '₿' },
+  { id: 'cash', name: 'Pay at Venue', icon: '💵' }
+] as const 

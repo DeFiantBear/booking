@@ -19,7 +19,7 @@ export interface Booking {
   contactPhone: string;
   specialRequests?: string;
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed';
-  paymentMethod: 'stripe' | 'usdc';
+  paymentMethod: 'stripe' | 'usdc' | 'cash';
   paymentStatus: 'pending' | 'paid' | 'failed';
   bookingType: 'vr' | 'party';
   partyPackage?: string;

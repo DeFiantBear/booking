@@ -30,6 +30,9 @@ let inMemoryBookings: Booking[] = [
 // Check if we're in a serverless environment (Vercel)
 const isServerless = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production'
 
+// Check if Supabase is configured
+const hasSupabase = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
 // Ensure data directory exists
 const ensureDataDir = () => {
   if (isServerless) return // Skip file system operations in serverless
@@ -40,8 +43,17 @@ const ensureDataDir = () => {
   }
 }
 
-// Load all bookings from file or memory
-export const loadBookings = (): Booking[] => {
+// Load all bookings from file, memory, or Supabase
+export const loadBookings = async (): Promise<Booking[]> => {
+  if (hasSupabase) {
+    try {
+      const { supabaseDb } = await import('./supabase')
+      return await supabaseDb.getAllBookings()
+    } catch (error) {
+      console.error('Supabase error, falling back to local storage:', error)
+    }
+  }
+  
   if (isServerless) {
     return inMemoryBookings
   }
@@ -61,7 +73,7 @@ export const loadBookings = (): Booking[] => {
 }
 
 // Save all bookings to file or memory
-export const saveBookings = (bookings: Booking[]): void => {
+export const saveBookings = async (bookings: Booking[]): Promise<void> => {
   if (isServerless) {
     inMemoryBookings = bookings
     return
@@ -77,16 +89,34 @@ export const saveBookings = (bookings: Booking[]): void => {
 }
 
 // Add a new booking
-export const addBooking = (booking: Booking): Booking => {
-  const bookings = loadBookings()
+export const addBooking = async (booking: Booking): Promise<Booking> => {
+  if (hasSupabase) {
+    try {
+      const { supabaseDb } = await import('./supabase')
+      return await supabaseDb.addBooking(booking)
+    } catch (error) {
+      console.error('Supabase error, falling back to local storage:', error)
+    }
+  }
+  
+  const bookings = await loadBookings()
   bookings.push(booking)
-  saveBookings(bookings)
+  await saveBookings(bookings)
   return booking
 }
 
 // Get bookings by email and phone
-export const getBookingsByContact = (email: string, phone: string, date?: string): Booking[] => {
-  const bookings = loadBookings()
+export const getBookingsByContact = async (email: string, phone: string, date?: string): Promise<Booking[]> => {
+  if (hasSupabase) {
+    try {
+      const { supabaseDb } = await import('./supabase')
+      return await supabaseDb.getBookingsByContact(email, phone, date)
+    } catch (error) {
+      console.error('Supabase error, falling back to local storage:', error)
+    }
+  }
+  
+  const bookings = await loadBookings()
   return bookings.filter(booking => {
     const emailMatch = booking.contactEmail.toLowerCase() === email.toLowerCase()
     const phoneMatch = booking.contactPhone === phone
@@ -96,8 +126,17 @@ export const getBookingsByContact = (email: string, phone: string, date?: string
 }
 
 // Check for double booking
-export const isTimeSlotAvailable = (date: string, startTime: string, duration: number, excludeBookingId?: string): boolean => {
-  const bookings = loadBookings()
+export const isTimeSlotAvailable = async (date: string, startTime: string, duration: number, excludeBookingId?: string): Promise<boolean> => {
+  if (hasSupabase) {
+    try {
+      const { supabaseDb } = await import('./supabase')
+      return await supabaseDb.isTimeSlotAvailable(date, startTime, duration, excludeBookingId)
+    } catch (error) {
+      console.error('Supabase error, falling back to local storage:', error)
+    }
+  }
+  
+  const bookings = await loadBookings()
   
   // Convert start time to minutes for easier comparison
   const startMinutes = timeToMinutes(startTime)
@@ -136,12 +175,12 @@ export const isTimeSlotAvailable = (date: string, startTime: string, duration: n
 }
 
 // Get available time slots for a date
-export const getAvailableTimeSlots = (date: string, duration: number): string[] => {
+export const getAvailableTimeSlots = async (date: string, duration: number): Promise<string[]> => {
   const { TIME_SLOTS, BUSINESS_HOURS } = require('./constants')
   const availableSlots: string[] = []
   
   for (const time of TIME_SLOTS) {
-    if (isTimeSlotAvailable(date, time, duration)) {
+    if (await isTimeSlotAvailable(date, time, duration)) {
       availableSlots.push(time)
     }
   }
@@ -156,21 +195,30 @@ const timeToMinutes = (time: string): number => {
 }
 
 // Get all bookings (for admin purposes)
-export const getAllBookings = (): Booking[] => {
-  return loadBookings()
+export const getAllBookings = async (): Promise<Booking[]> => {
+  return await loadBookings()
 }
 
 // Get bookings for a specific date range
-export const getBookingsByDateRange = (startDate: string, endDate: string): Booking[] => {
-  const bookings = loadBookings()
-  return bookings.filter(booking => 
+export const getBookingsByDateRange = async (startDate: string, endDate: string): Promise<Booking[]> => {
+  const bookings = await loadBookings()
+  return bookings.filter(booking =>
     booking.date >= startDate && booking.date <= endDate
   )
 }
 
 // Update booking status
-export const updateBookingStatus = (bookingId: string, status: Booking['status']): Booking | null => {
-  const bookings = loadBookings()
+export const updateBookingStatus = async (bookingId: string, status: Booking['status']): Promise<Booking | null> => {
+  if (hasSupabase) {
+    try {
+      const { supabaseDb } = await import('./supabase')
+      return await supabaseDb.updateBookingStatus(bookingId, status)
+    } catch (error) {
+      console.error('Supabase error, falling back to local storage:', error)
+    }
+  }
+  
+  const bookings = await loadBookings()
   const bookingIndex = bookings.findIndex(b => b.id === bookingId)
   
   if (bookingIndex === -1) {
@@ -178,19 +226,28 @@ export const updateBookingStatus = (bookingId: string, status: Booking['status']
   }
   
   bookings[bookingIndex].status = status
-  saveBookings(bookings)
+  await saveBookings(bookings)
   return bookings[bookingIndex]
 }
 
 // Delete booking (for admin purposes)
-export const deleteBooking = (bookingId: string): boolean => {
-  const bookings = loadBookings()
+export const deleteBooking = async (bookingId: string): Promise<boolean> => {
+  if (hasSupabase) {
+    try {
+      const { supabaseDb } = await import('./supabase')
+      return await supabaseDb.deleteBooking(bookingId)
+    } catch (error) {
+      console.error('Supabase error, falling back to local storage:', error)
+    }
+  }
+  
+  const bookings = await loadBookings()
   const filteredBookings = bookings.filter(b => b.id !== bookingId)
   
   if (filteredBookings.length === bookings.length) {
     return false // Booking not found
   }
   
-  saveBookings(filteredBookings)
+  await saveBookings(filteredBookings)
   return true
 } 

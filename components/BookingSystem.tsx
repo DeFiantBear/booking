@@ -49,7 +49,8 @@ export default function BookingSystem() {
   const [children, setChildren] = useState<number>(0)
   const [availableTimes, setAvailableTimes] = useState<string[]>([])
   const [totalPrice, setTotalPrice] = useState<number>(0)
-  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'usdc'>('stripe')
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'usdc' | 'cash'>('stripe')
+  const [players, setPlayers] = useState<number>(5) // For party bookings
   const [isProcessing, setIsProcessing] = useState(false)
   const [bookings, setBookings] = useState<Booking[]>([])
   const [selectedPartyPackage, setSelectedPartyPackage] = useState<string>('')
@@ -66,8 +67,7 @@ export default function BookingSystem() {
       // For party packages, use per-person pricing
       const selectedPackage = PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)
       if (selectedPackage) {
-        const totalGuests = adults + children
-        const price = totalGuests * selectedPackage.price
+        const price = players * selectedPackage.price
         setTotalPrice(price)
       }
     } else if (currentFlow === 'vr-booking') {
@@ -75,7 +75,7 @@ export default function BookingSystem() {
       const price = calculateSessionPrice(adults, children, duration)
       setTotalPrice(price)
     }
-  }, [adults, children, duration, selectedPartyPackage, currentFlow])
+  }, [adults, children, players, duration, selectedPartyPackage, currentFlow])
 
   // Update available times when date or duration changes
   React.useEffect(() => {
@@ -153,8 +153,8 @@ export default function BookingSystem() {
         date: selectedDate,
         startTime: selectedTime,
         duration,
-        adults,
-        children,
+        adults: currentFlow === 'party-booking' ? players : adults,
+        children: currentFlow === 'party-booking' ? 0 : children,
         totalPrice,
         contactName,
         contactEmail,
@@ -197,6 +197,9 @@ export default function BookingSystem() {
         }
       } else if (paymentMethod === 'usdc') {
         console.log('USDC payment would be processed here')
+      } else if (paymentMethod === 'cash') {
+        console.log('Cash payment - customer will pay at venue')
+        // For cash payments, we might want to mark as pending until paid
       }
 
       // Create calendar event for the booking
@@ -229,6 +232,7 @@ export default function BookingSystem() {
     setDuration(1)
     setAdults(1)
     setChildren(0)
+    setPlayers(5)
     setContactName('')
     setContactEmail('')
     setContactPhone('')
@@ -262,8 +266,7 @@ export default function BookingSystem() {
     const selectedPackage = PARTY_PACKAGES.find(pkg => pkg.id === packageId)
     if (selectedPackage) {
       setDuration(selectedPackage.duration)
-      setAdults(5)
-      setChildren(0)
+      setPlayers(5)
     }
     setCurrentFlow('party-booking')
   }
@@ -565,6 +568,18 @@ export default function BookingSystem() {
                     <Wallet className="h-4 w-4" />
                     <span>USDC (Crypto)</span>
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('cash')}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
+                      paymentMethod === 'cash'
+                        ? 'border-blue-500 bg-blue-600 text-white'
+                        : 'border-slate-600 text-slate-300 hover:border-slate-500'
+                    }`}
+                  >
+                    <span>💵</span>
+                    <span>Pay at Venue</span>
+                  </button>
                 </div>
               </CardContent>
             </Card>
@@ -748,32 +763,22 @@ export default function BookingSystem() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2 text-slate-300">Adults</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        value={adults}
-                        onChange={(e) => handleGuestChange('adults', Number(e.target.value))}
-                        className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                      />
+                  <div>
+                    <label className="block text-sm font-medium mb-2 text-slate-300">Number of Players</label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={players}
+                      onChange={(e) => {
+                        const value = Math.max(1, Math.min(10, Number(e.target.value)))
+                        setPlayers(value)
+                      }}
+                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
+                    />
+                    <div className="text-sm text-slate-400 text-center mt-2">
+                      Total players: {players}/10
                     </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2 text-slate-300">Children</label>
-                      <input
-                        type="number"
-                        min="0"
-                        max="10"
-                        value={children}
-                        onChange={(e) => handleGuestChange('children', Number(e.target.value))}
-                        className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                      />
-                    </div>
-                  </div>
-                  <div className="text-sm text-slate-400 text-center">
-                    Total guests: {adults + children}/10
                   </div>
 
                   <div className="bg-slate-700 p-4 rounded-md">
@@ -784,8 +789,8 @@ export default function BookingSystem() {
                         <span>£{PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.price} per person</span>
                       </div>
                       <div className="flex justify-between">
-                        <span>Total Guests ({adults + children} people):</span>
-                        <span>{adults + children} × £{PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.price}</span>
+                        <span>Total Players ({players} people):</span>
+                        <span>{players} × £{PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.price}</span>
                       </div>
                       <div className="flex justify-between">
                         <span>Duration:</span>
@@ -883,6 +888,18 @@ export default function BookingSystem() {
                   >
                     <Wallet className="h-4 w-4" />
                     <span>USDC (Crypto)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setPaymentMethod('cash')}
+                    className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
+                      paymentMethod === 'cash'
+                        ? 'border-cyan-500 bg-cyan-600 text-white'
+                        : 'border-slate-600 text-slate-300 hover:border-slate-500'
+                    }`}
+                  >
+                    <span>💵</span>
+                    <span>Pay at Venue</span>
                   </button>
                 </div>
               </CardContent>
