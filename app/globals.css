@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 84% 4.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 84% 4.9%;
+  --primary: 222.2 84% 4.9%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96%;
+  --secondary-foreground: 222.2 84% 4.9%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --accent: 217.2 91.2% 59.8%;
+  --accent-foreground: 222.2 84% 4.9%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --ring: 222.2 84% 4.9%;
+  --radius: 0.5rem;
+  --vr-50: 210 40% 98%;
+  --vr-100: 210 40% 96%;
+  --vr-200: 214.3 31.8% 91.4%;
+  --vr-300: 213.1 27.3% 84.3%;
+  --vr-400: 215.4 16.3% 46.9%;
+  --vr-500: 215.3 25.3% 27.1%;
+  --vr-600: 215.3 25.3% 27.1%;
+  --vr-700: 215.3 25.3% 27.1%;
+  --vr-800: 215.3 25.3% 27.1%;
+  --vr-900: 215.3 25.3% 27.1%;
+  --vr-950: 215.3 25.3% 27.1%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+body {
+  color: hsl(var(--foreground));
+  background: #0f172a;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Global text color override - only for text elements */
+body, p, h1, h2, h3, h4, h5, h6, span, div, label, input, textarea, select {
+  color: black !important;
+}
+
+/* Specific overrides for better contrast */
+.text-gray-600 {
+  color: black !important;
+}
+
+.text-gray-500 {
+  color: black !important;
+}
+
+.text-gray-400 {
+  color: black !important;
+}
+
+.text-gray-300 {
+  color: black !important;
+}
+
+.text-gray-200 {
+  color: black !important;
+}
+
+.text-gray-100 {
+  color: black !important;
+}
+
+.text-gray-900 {
+  color: black !important;
+}
+
+.text-gray-800 {
+  color: black !important;
+}
+
+.text-gray-700 {
+  color: black !important;
+}
+
+/* Keep accent colors for buttons and interactive elements */
+.text-vr-600 {
+  color: hsl(var(--vr-600)) !important;
+}
+
+.text-vr-500 {
+  color: hsl(var(--vr-500)) !important;
+}
+
+.text-white {
+  color: white !important;
+}
+
+.text-green-600 {
+  color: #059669 !important;
+}
+
+.text-yellow-600 {
+  color: #d97706 !important;
+}
+
+.text-red-600 {
+  color: #dc2626 !important;
+} 
