@@ -39,6 +39,8 @@ console.log('- Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'N
 console.log('- Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
 console.log('- Has Supabase:', hasSupabase)
 console.log('- Is Serverless:', isServerless)
+console.log('- NODE_ENV:', process.env.NODE_ENV)
+console.log('- VERCEL:', process.env.VERCEL)
 
 // Ensure data directory exists
 const ensureDataDir = () => {
