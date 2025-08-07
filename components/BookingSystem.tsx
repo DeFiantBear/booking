@@ -1062,7 +1062,12 @@ export default function BookingSystem() {
                           </div>
                           
                           <div className="text-right">
-                            <p className="text-lg font-bold text-blue-400">{formatPrice(booking.totalPrice)}</p>
+                            <p className="text-lg font-bold text-blue-400">
+                              {(() => {
+                                const price = typeof booking.totalPrice === 'string' ? parseFloat(booking.totalPrice) : booking.totalPrice
+                                return isNaN(price) ? 'Price not set' : formatPrice(price)
+                              })()}
+                            </p>
                             <p className="text-xs text-slate-400">
                               {booking.paymentMethod === 'usdc' ? 'USDC' : 'Card'} - {booking.paymentStatus}
                             </p>

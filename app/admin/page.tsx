@@ -284,7 +284,7 @@ export default function AdminPage() {
                       <div className="text-right">
                         <p className="text-lg font-bold text-blue-400">
                           {(() => {
-                            const price = parseFloat(booking.totalPrice)
+                            const price = typeof booking.totalPrice === 'string' ? parseFloat(booking.totalPrice) : booking.totalPrice
                             return isNaN(price) ? 'Price not set' : formatPrice(price)
                           })()}
                         </p>
