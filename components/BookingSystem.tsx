@@ -1030,9 +1030,25 @@ export default function BookingSystem() {
                           <div className="flex items-center space-x-2">
                             <Calendar className="h-4 w-4 text-slate-400" />
                             <div>
-                              <p className="text-sm font-medium text-white">{format(parseISO(booking.date), 'EEEE, MMMM do, yyyy')}</p>
+                              <p className="text-sm font-medium text-white">
+                                {(() => {
+                                  try {
+                                    return format(parseISO(booking.date), 'EEEE, MMMM do, yyyy')
+                                  } catch (error) {
+                                    console.error('Date parsing error:', error, 'Date value:', booking.date)
+                                    return booking.date || 'Invalid date'
+                                  }
+                                })()}
+                              </p>
                               <p className="text-xs text-slate-400">
-                                {format(parseISO(`2000-01-01T${booking.startTime}`), 'h:mm a')} - {booking.duration} hours
+                                {(() => {
+                                  try {
+                                    return `${format(parseISO(`2000-01-01T${booking.startTime}`), 'h:mm a')} - ${booking.duration} hours`
+                                  } catch (error) {
+                                    console.error('Time parsing error:', error, 'Time value:', booking.startTime)
+                                    return `${booking.startTime} - ${booking.duration} hours`
+                                  }
+                                })()}
                               </p>
                             </div>
                           </div>
