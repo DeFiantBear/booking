@@ -2,7 +2,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { addBooking, getBookingsByContact, isTimeSlotAvailable, getAvailableTimeSlots } from '@/lib/database'
 import { generateBookingId, validateEmail, validatePhone } from '@/lib/utils'
 import { Booking } from '@/lib/types'
-import { sendBookingConfirmation, sendAdminNotification } from '@/lib/email'
 
 // POST /api/bookings - Create a new booking
 export async function POST(request: NextRequest) {
@@ -121,50 +120,57 @@ export async function POST(request: NextRequest) {
     const savedBooking = await addBooking(booking)
     console.log('✅ Booking saved successfully:', savedBooking)
 
-    // Send confirmation emails
-    try {
-      console.log('📧 Sending confirmation emails...')
-      
-      // Send customer confirmation
-      const customerEmailSent = await sendBookingConfirmation({
-        bookingId: savedBooking.id,
-        customerName: savedBooking.contactName,
-        customerEmail: savedBooking.contactEmail,
-        customerPhone: savedBooking.contactPhone,
-        date: savedBooking.date,
-        startTime: savedBooking.startTime,
-        duration: savedBooking.duration,
-        adults: savedBooking.adults,
-        children: savedBooking.children,
-        totalPrice: savedBooking.totalPrice,
-        paymentMethod: savedBooking.paymentMethod,
-        bookingType: savedBooking.bookingType,
-        partyPackage: savedBooking.partyPackage,
-        specialRequests: savedBooking.specialRequests
-      })
+    // Send confirmation emails (only if Resend is configured)
+    if (process.env.RESEND_API_KEY) {
+      try {
+        console.log('📧 Sending confirmation emails...')
+        
+        // Dynamically import email functions
+        const { sendBookingConfirmation, sendAdminNotification } = await import('@/lib/email')
+        
+        // Send customer confirmation
+        const customerEmailSent = await sendBookingConfirmation({
+          bookingId: savedBooking.id,
+          customerName: savedBooking.contactName,
+          customerEmail: savedBooking.contactEmail,
+          customerPhone: savedBooking.contactPhone,
+          date: savedBooking.date,
+          startTime: savedBooking.startTime,
+          duration: savedBooking.duration,
+          adults: savedBooking.adults,
+          children: savedBooking.children,
+          totalPrice: savedBooking.totalPrice,
+          paymentMethod: savedBooking.paymentMethod,
+          bookingType: savedBooking.bookingType,
+          partyPackage: savedBooking.partyPackage,
+          specialRequests: savedBooking.specialRequests
+        })
 
-      // Send admin notification
-      const adminEmailSent = await sendAdminNotification({
-        bookingId: savedBooking.id,
-        customerName: savedBooking.contactName,
-        customerEmail: savedBooking.contactEmail,
-        customerPhone: savedBooking.contactPhone,
-        date: savedBooking.date,
-        startTime: savedBooking.startTime,
-        duration: savedBooking.duration,
-        adults: savedBooking.adults,
-        children: savedBooking.children,
-        totalPrice: savedBooking.totalPrice,
-        paymentMethod: savedBooking.paymentMethod,
-        bookingType: savedBooking.bookingType,
-        partyPackage: savedBooking.partyPackage,
-        specialRequests: savedBooking.specialRequests
-      })
+        // Send admin notification
+        const adminEmailSent = await sendAdminNotification({
+          bookingId: savedBooking.id,
+          customerName: savedBooking.contactName,
+          customerEmail: savedBooking.contactEmail,
+          customerPhone: savedBooking.contactPhone,
+          date: savedBooking.date,
+          startTime: savedBooking.startTime,
+          duration: savedBooking.duration,
+          adults: savedBooking.adults,
+          children: savedBooking.children,
+          totalPrice: savedBooking.totalPrice,
+          paymentMethod: savedBooking.paymentMethod,
+          bookingType: savedBooking.bookingType,
+          partyPackage: savedBooking.partyPackage,
+          specialRequests: savedBooking.specialRequests
+        })
 
-      console.log('📧 Email results:', { customerEmailSent, adminEmailSent })
-    } catch (emailError) {
-      console.error('❌ Email sending failed:', emailError)
-      // Don't fail the booking if emails fail
+        console.log('📧 Email results:', { customerEmailSent, adminEmailSent })
+      } catch (emailError) {
+        console.error('❌ Email sending failed:', emailError)
+        // Don't fail the booking if emails fail
+      }
+    } else {
+      console.log('📧 Email sending skipped - RESEND_API_KEY not configured')
     }
 
     return NextResponse.json({
