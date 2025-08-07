@@ -27,7 +27,7 @@ interface Booking {
   children: number
   totalPrice: number
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
-  paymentMethod: 'stripe' | 'usdc'
+  paymentMethod: 'stripe' | 'usdc' | 'cash'
   paymentStatus: 'pending' | 'paid' | 'failed'
   contactName: string
   contactEmail: string

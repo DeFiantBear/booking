@@ -16,7 +16,7 @@ interface Booking {
   children: number
   totalPrice: number
   status: 'pending' | 'confirmed' | 'cancelled' | 'completed'
-  paymentMethod: 'stripe' | 'usdc'
+  paymentMethod: 'stripe' | 'usdc' | 'cash'
   paymentStatus: 'pending' | 'paid' | 'failed'
   contactName: string
   contactEmail: string
@@ -221,7 +221,8 @@ export default function AdminPage() {
                     <div className="flex items-center justify-between mb-4">
                       <div>
                         <h3 className="text-lg font-semibold text-white">
-                          {booking.bookingType === 'vr' ? 'VR Session' : `${booking.partyPackage} Party`}
+                          {booking.bookingType === 'vr' ? 'VR Session' : 
+                           booking.partyPackage ? `${booking.partyPackage} Party` : 'Party Booking'}
                         </h3>
                         <p className="text-sm text-slate-400">Booking #{booking.id}</p>
                       </div>
@@ -281,9 +282,15 @@ export default function AdminPage() {
                       </div>
                       
                       <div className="text-right">
-                        <p className="text-lg font-bold text-blue-400">{formatPrice(booking.totalPrice)}</p>
+                        <p className="text-lg font-bold text-blue-400">
+                          {(() => {
+                            const price = parseFloat(booking.totalPrice)
+                            return isNaN(price) ? 'Price not set' : formatPrice(price)
+                          })()}
+                        </p>
                         <p className="text-xs text-slate-400">
-                          {booking.paymentMethod === 'usdc' ? 'USDC' : 'Card'} - {booking.paymentStatus}
+                          {booking.paymentMethod === 'usdc' ? 'USDC' : 
+                           booking.paymentMethod === 'cash' ? 'Cash' : 'Card'} - {booking.paymentStatus}
                         </p>
                       </div>
                     </div>
