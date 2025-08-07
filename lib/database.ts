@@ -33,6 +33,13 @@ const isServerless = process.env.VERCEL === '1' || process.env.NODE_ENV === 'pro
 // Check if Supabase is configured
 const hasSupabase = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
+// Debug logging
+console.log('Database configuration:')
+console.log('- Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set')
+console.log('- Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
+console.log('- Has Supabase:', hasSupabase)
+console.log('- Is Serverless:', isServerless)
+
 // Ensure data directory exists
 const ensureDataDir = () => {
   if (isServerless) return // Skip file system operations in serverless
@@ -47,6 +54,7 @@ const ensureDataDir = () => {
 export const loadBookings = async (): Promise<Booking[]> => {
   if (hasSupabase) {
     try {
+      console.log('Using Supabase for loadBookings')
       const { supabaseDb } = await import('./supabase')
       return await supabaseDb.getAllBookings()
     } catch (error) {
@@ -55,9 +63,11 @@ export const loadBookings = async (): Promise<Booking[]> => {
   }
   
   if (isServerless) {
+    console.log('Using in-memory storage (serverless)')
     return inMemoryBookings
   }
   
+  console.log('Using file storage')
   try {
     ensureDataDir()
     if (!fs.existsSync(BOOKINGS_FILE)) {
@@ -92,6 +102,7 @@ export const saveBookings = async (bookings: Booking[]): Promise<void> => {
 export const addBooking = async (booking: Booking): Promise<Booking> => {
   if (hasSupabase) {
     try {
+      console.log('Using Supabase for addBooking')
       const { supabaseDb } = await import('./supabase')
       return await supabaseDb.addBooking(booking)
     } catch (error) {
@@ -99,6 +110,7 @@ export const addBooking = async (booking: Booking): Promise<Booking> => {
     }
   }
   
+  console.log('Using local storage for addBooking')
   const bookings = await loadBookings()
   bookings.push(booking)
   await saveBookings(bookings)

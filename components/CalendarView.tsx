@@ -30,8 +30,7 @@ interface CalendarViewProps {
 }
 
 export default function CalendarView({ bookings }: CalendarViewProps) {
-  // Fix: Set current month to August 2024 since user mentioned it's August 7th
-  const [currentMonth, setCurrentMonth] = useState(new Date(2024, 7, 7)) // August is month 7 (0-indexed)
+  const [currentMonth, setCurrentMonth] = useState(new Date(2024, 7, 7))
 
   const monthStart = startOfMonth(currentMonth)
   const monthEnd = endOfMonth(currentMonth)
@@ -46,7 +45,7 @@ export default function CalendarView({ bookings }: CalendarViewProps) {
 
   const getDayClass = (date: Date) => {
     const dayBookings = getBookingsForDay(date)
-    const isToday = isSameDay(date, new Date(2024, 7, 7)) // August 7th, 2024
+    const isToday = isSameDay(date, new Date(2024, 7, 7))
     const isPast = date < new Date(2024, 7, 7)
     
     let baseClass = 'p-2 text-center min-h-[60px] border border-[#333333] hover:bg-[#1a1a1a] transition-colors'
@@ -88,7 +87,7 @@ export default function CalendarView({ bookings }: CalendarViewProps) {
   }
 
   const openGoogleCalendar = () => {
-    const url = addToGoogleCalendar(bookings[0]) // Use first booking as example
+    const url = addToGoogleCalendar(bookings[0])
     window.open(url, '_blank')
   }
 
@@ -101,18 +100,8 @@ export default function CalendarView({ bookings }: CalendarViewProps) {
             <h3 className="cyber-title text-xl">AVAILABILITY CALENDAR</h3>
           </div>
           <div className="flex space-x-2">
-            <button
-              onClick={prevMonth}
-              className="cyber-button px-3 py-1 text-sm"
-            >
-              ←
-            </button>
-            <button
-              onClick={nextMonth}
-              className="cyber-button px-3 py-1 text-sm"
-            >
-              →
-            </button>
+            <button onClick={prevMonth} className="cyber-button px-3 py-1 text-sm">←</button>
+            <button onClick={nextMonth} className="cyber-button px-3 py-1 text-sm">→</button>
           </div>
         </div>
       </div>
@@ -123,7 +112,6 @@ export default function CalendarView({ bookings }: CalendarViewProps) {
         </h3>
       </div>
 
-      {/* Calendar Grid */}
       <div className="grid grid-cols-7 gap-1 mb-4">
         {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
           <div key={day} className="p-2 text-center text-sm font-medium terminal-text">
@@ -151,7 +139,6 @@ export default function CalendarView({ bookings }: CalendarViewProps) {
         })}
       </div>
 
-      {/* Legend */}
       <div className="space-y-2 mb-4">
         <div className="flex items-center text-sm">
           <div className="w-4 h-4 bg-[#1a1a1a] border border-[#333333] mr-2"></div>
@@ -167,19 +154,12 @@ export default function CalendarView({ bookings }: CalendarViewProps) {
         </div>
       </div>
 
-      {/* Calendar Actions */}
       <div className="space-y-2">
-        <button
-          onClick={downloadICal}
-          className="cyber-button w-full"
-        >
+        <button onClick={downloadICal} className="cyber-button w-full">
           <Download className="h-4 w-4 mr-2 inline" />
           DOWNLOAD ICAL
         </button>
-        <button
-          onClick={openGoogleCalendar}
-          className="cyber-button w-full"
-        >
+        <button onClick={openGoogleCalendar} className="cyber-button w-full">
           <ExternalLink className="h-4 w-4 mr-2 inline" />
           ADD TO GOOGLE CALENDAR
         </button>

@@ -71,6 +71,15 @@ export function validateBookingTime(date: string, startTime: string, duration: n
   return isAfter(bookingDateTime, minBookingTime);
 }
 
+// Generate a UUID for Supabase compatibility
+export function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
 export function generateBookingId(): string {
   return `BK${Date.now()}${Math.random().toString(36).substr(2, 5).toUpperCase()}`;
 }

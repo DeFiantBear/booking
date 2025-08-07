@@ -1,4 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
+import { generateUUID } from './utils'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -15,7 +16,7 @@ export const supabaseDb = {
     const { data, error } = await supabase
       .from(BOOKINGS_TABLE)
       .select('*')
-      .order('createdAt', { ascending: false })
+      .order('createdat', { ascending: false })
     
     if (error) throw error
     return data || []
@@ -26,14 +27,14 @@ export const supabaseDb = {
     let query = supabase
       .from(BOOKINGS_TABLE)
       .select('*')
-      .eq('contactEmail', email.toLowerCase())
-      .eq('contactPhone', phone)
+      .eq('contactemail', email.toLowerCase())
+      .eq('contactphone', phone)
     
     if (date) {
       query = query.eq('date', date)
     }
     
-    const { data, error } = await query.order('createdAt', { ascending: false })
+    const { data, error } = await query.order('createdat', { ascending: false })
     
     if (error) throw error
     return data || []
@@ -41,9 +42,32 @@ export const supabaseDb = {
 
   // Add a new booking
   async addBooking(booking: any) {
+    // Map the booking data to match the actual column names
+    // Use UUID for Supabase compatibility
+    const mappedBooking = {
+      id: generateUUID(), // Use UUID instead of custom ID
+      date: booking.date,
+      starttime: booking.startTime,
+      duration: booking.duration,
+      adults: booking.adults,
+      children: booking.children,
+      totalprice: booking.totalPrice,
+      status: booking.status,
+      paymentmethod: booking.paymentMethod,
+      paymentstatus: booking.paymentStatus,
+      contactname: booking.contactName,
+      contactemail: booking.contactEmail,
+      contactphone: booking.contactPhone,
+      specialrequests: booking.specialRequests,
+      createdat: booking.createdAt,
+      updatedat: booking.updatedAt,
+      bookingtype: booking.bookingType,
+      partypackage: booking.partyPackage
+    }
+
     const { data, error } = await supabase
       .from(BOOKINGS_TABLE)
-      .insert([booking])
+      .insert([mappedBooking])
       .select()
       .single()
     
@@ -72,7 +96,7 @@ export const supabaseDb = {
     
     // Check for overlaps
     return !data?.some(booking => {
-      const bookingStart = new Date(`${booking.date}T${booking.startTime}`)
+      const bookingStart = new Date(`${booking.date}T${booking.starttime}`)
       const bookingEnd = new Date(bookingStart.getTime() + booking.duration * 60 * 60 * 1000)
       
       const newStart = new Date(`${date}T${startTime}`)
@@ -90,7 +114,7 @@ export const supabaseDb = {
   async updateBookingStatus(bookingId: string, status: string) {
     const { data, error } = await supabase
       .from(BOOKINGS_TABLE)
-      .update({ status, updatedAt: new Date().toISOString() })
+      .update({ status, updatedat: new Date().toISOString() })
       .eq('id', bookingId)
       .select()
       .single()
