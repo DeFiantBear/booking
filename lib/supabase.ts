@@ -19,7 +19,28 @@ export const supabaseDb = {
       .order('createdat', { ascending: false })
     
     if (error) throw error
-    return data || []
+    
+    // Map the data back to camelCase for frontend compatibility
+    return (data || []).map(booking => ({
+      id: booking.id,
+      date: booking.date,
+      startTime: booking.starttime,
+      duration: booking.duration,
+      adults: booking.adults,
+      children: booking.children,
+      totalPrice: booking.totalprice,
+      status: booking.status,
+      paymentMethod: booking.paymentmethod,
+      paymentStatus: booking.paymentstatus,
+      contactName: booking.contactname,
+      contactEmail: booking.contactemail,
+      contactPhone: booking.contactphone,
+      specialRequests: booking.specialrequests,
+      createdAt: booking.createdat,
+      updatedAt: booking.updatedat,
+      bookingType: booking.bookingtype,
+      partyPackage: booking.partypackage
+    }))
   },
 
   // Get bookings by contact info
@@ -37,7 +58,28 @@ export const supabaseDb = {
     const { data, error } = await query.order('createdat', { ascending: false })
     
     if (error) throw error
-    return data || []
+    
+    // Map the data back to camelCase for frontend compatibility
+    return (data || []).map(booking => ({
+      id: booking.id,
+      date: booking.date,
+      startTime: booking.starttime,
+      duration: booking.duration,
+      adults: booking.adults,
+      children: booking.children,
+      totalPrice: booking.totalprice,
+      status: booking.status,
+      paymentMethod: booking.paymentmethod,
+      paymentStatus: booking.paymentstatus,
+      contactName: booking.contactname,
+      contactEmail: booking.contactemail,
+      contactPhone: booking.contactphone,
+      specialRequests: booking.specialrequests,
+      createdAt: booking.createdat,
+      updatedAt: booking.updatedat,
+      bookingType: booking.bookingtype,
+      partyPackage: booking.partypackage
+    }))
   },
 
   // Add a new booking
@@ -72,7 +114,28 @@ export const supabaseDb = {
       .single()
     
     if (error) throw error
-    return data
+    
+    // Map the returned data back to camelCase for frontend compatibility
+    return {
+      id: data.id,
+      date: data.date,
+      startTime: data.starttime,
+      duration: data.duration,
+      adults: data.adults,
+      children: data.children,
+      totalPrice: data.totalprice,
+      status: data.status,
+      paymentMethod: data.paymentmethod,
+      paymentStatus: data.paymentstatus,
+      contactName: data.contactname,
+      contactEmail: data.contactemail,
+      contactPhone: data.contactphone,
+      specialRequests: data.specialrequests,
+      createdAt: data.createdat,
+      updatedAt: data.updatedat,
+      bookingType: data.bookingtype,
+      partyPackage: data.partypackage
+    }
   },
 
   // Check if time slot is available
