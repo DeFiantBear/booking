@@ -222,7 +222,7 @@ export default function AdminPage() {
                       <div>
                         <h3 className="text-lg font-semibold text-white">
                           {booking.bookingType === 'vr' ? 'VR Session' : 
-                           booking.partyPackage ? `${booking.partyPackage} Party` : 'Party Booking'}
+                           booking.partyPackage && booking.partyPackage !== 'undefined' ? `${booking.partyPackage} Party` : 'Party Booking'}
                         </h3>
                         <p className="text-sm text-slate-400">Booking #{booking.id}</p>
                       </div>
@@ -255,10 +255,11 @@ export default function AdminPage() {
                           <p className="text-xs text-slate-400">
                             {(() => {
                               try {
-                                return `${format(parseISO(`2000-01-01T${booking.startTime}`), 'h:mm a')} - ${booking.duration} hours`
+                                const startTime = booking.startTime && booking.startTime !== 'undefined' ? booking.startTime : 'TBD'
+                                return `${startTime} - ${booking.duration || 1} hours`
                               } catch (error) {
                                 console.error('Time parsing error:', error, 'Time value:', booking.startTime)
-                                return `${booking.startTime} - ${booking.duration} hours`
+                                return `${booking.startTime || 'TBD'} - ${booking.duration || 1} hours`
                               }
                             })()}
                           </p>
@@ -268,16 +269,16 @@ export default function AdminPage() {
                       <div className="flex items-center space-x-2">
                         <Users className="h-4 w-4 text-slate-400" />
                         <div>
-                          <p className="text-sm font-medium text-white">{booking.adults} adults, {booking.children} children</p>
-                          <p className="text-xs text-slate-400">Contact: {booking.contactName}</p>
+                          <p className="text-sm font-medium text-white">{booking.adults || 0} adults, {booking.children || 0} children</p>
+                          <p className="text-xs text-slate-400">Contact: {booking.contactName || 'Not provided'}</p>
                         </div>
                       </div>
                       
                       <div className="flex items-center space-x-2">
                         <Mail className="h-4 w-4 text-slate-400" />
                         <div>
-                          <p className="text-sm font-medium text-white">{booking.contactEmail}</p>
-                          <p className="text-xs text-slate-400">{booking.contactPhone}</p>
+                          <p className="text-sm font-medium text-white">{booking.contactEmail || 'Not provided'}</p>
+                          <p className="text-xs text-slate-400">{booking.contactPhone || 'Not provided'}</p>
                         </div>
                       </div>
                       
@@ -285,12 +286,12 @@ export default function AdminPage() {
                         <p className="text-lg font-bold text-blue-400">
                           {(() => {
                             const price = typeof booking.totalPrice === 'string' ? parseFloat(booking.totalPrice) : booking.totalPrice
-                            return isNaN(price) ? 'Price not set' : formatPrice(price)
+                            return isNaN(price) || price === 0 ? 'Price not set' : formatPrice(price)
                           })()}
                         </p>
                         <p className="text-xs text-slate-400">
                           {booking.paymentMethod === 'usdc' ? 'USDC' : 
-                           booking.paymentMethod === 'cash' ? 'Cash' : 'Card'} - {booking.paymentStatus}
+                           booking.paymentMethod === 'cash' ? 'Cash' : 'Card'} - {booking.paymentStatus || 'pending'}
                         </p>
                       </div>
                     </div>
