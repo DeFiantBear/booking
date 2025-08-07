@@ -7,6 +7,8 @@ import { Booking } from '@/lib/types'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+    console.log('Received booking data:', body)
+    
     const {
       date,
       startTime,
@@ -25,6 +27,7 @@ export async function POST(request: NextRequest) {
 
     // Validate required fields
     if (!date || !startTime || !duration || !contactName || !contactEmail || !contactPhone) {
+      console.log('Missing required fields:', { date, startTime, duration, contactName, contactEmail, contactPhone })
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -33,6 +36,7 @@ export async function POST(request: NextRequest) {
 
     // Validate email and phone
     if (!validateEmail(contactEmail)) {
+      console.log('Invalid email:', contactEmail)
       return NextResponse.json(
         { error: 'Invalid email address' },
         { status: 400 }
@@ -40,19 +44,25 @@ export async function POST(request: NextRequest) {
     }
 
     if (!validatePhone(contactPhone)) {
+      console.log('Invalid phone:', contactPhone)
       return NextResponse.json(
         { error: 'Invalid phone number' },
         { status: 400 }
       )
     }
 
+    console.log('Validation passed, checking time slot availability...')
+
     // Check if time slot is available
     if (!(await isTimeSlotAvailable(date, startTime, duration))) {
+      console.log('Time slot not available:', { date, startTime, duration })
       return NextResponse.json(
         { error: 'This time slot is no longer available. Please select a different time.' },
         { status: 409 }
       )
     }
+
+    console.log('Time slot available, creating booking...')
 
     // Create booking
     const booking: Booking = {
@@ -76,8 +86,11 @@ export async function POST(request: NextRequest) {
       partyPackage
     }
 
+    console.log('Booking object created:', booking)
+
     // Save booking
     const savedBooking = await addBooking(booking)
+    console.log('Booking saved successfully:', savedBooking)
 
     return NextResponse.json({
       success: true,

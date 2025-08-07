@@ -90,6 +90,20 @@ export function validateEmail(email: string): boolean {
 }
 
 export function validatePhone(phone: string): boolean {
-  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-  return phoneRegex.test(phone.replace(/\s/g, ''));
+  // Remove all non-digit characters except + at the start
+  const cleaned = phone.replace(/[^\d+]/g, '');
+  
+  // UK phone number patterns
+  const ukPatterns = [
+    /^07\d{9}$/,           // Mobile: 07123456789
+    /^01\d{8,9}$/,         // Landline: 01234567890 or 0123456789
+    /^02\d{8,9}$/,         // Landline: 02012345678 or 0201234567
+    /^03\d{8,9}$/,         // Landline: 03001234567
+    /^0800\d{6,7}$/,       // Freephone: 0800123456
+    /^0845\d{6,7}$/,       // Local rate: 0845123456
+    /^\+447\d{9}$/,        // International mobile: +447123456789
+    /^\+441\d{9,10}$/,     // International landline: +441234567890
+  ];
+  
+  return ukPatterns.some(pattern => pattern.test(cleaned));
 } 
