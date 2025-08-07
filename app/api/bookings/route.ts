@@ -7,7 +7,8 @@ import { Booking } from '@/lib/types'
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    console.log('Received booking data:', body)
+    console.log('=== BOOKING API DEBUG ===')
+    console.log('Received booking data:', JSON.stringify(body, null, 2))
     
     const {
       date,
@@ -25,44 +26,71 @@ export async function POST(request: NextRequest) {
       partyPackage
     } = body
 
+    console.log('Extracted fields:', {
+      date,
+      startTime,
+      duration,
+      adults,
+      children,
+      totalPrice,
+      contactName,
+      contactEmail,
+      contactPhone,
+      paymentMethod,
+      bookingType,
+      partyPackage
+    })
+
     // Validate required fields
     if (!date || !startTime || !duration || !contactName || !contactEmail || !contactPhone) {
-      console.log('Missing required fields:', { date, startTime, duration, contactName, contactEmail, contactPhone })
+      console.log('❌ Missing required fields:', { 
+        date: !!date, 
+        startTime: !!startTime, 
+        duration: !!duration, 
+        contactName: !!contactName, 
+        contactEmail: !!contactEmail, 
+        contactPhone: !!contactPhone 
+      })
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
+    console.log('✅ All required fields present')
+
     // Validate email and phone
     if (!validateEmail(contactEmail)) {
-      console.log('Invalid email:', contactEmail)
+      console.log('❌ Invalid email:', contactEmail)
       return NextResponse.json(
         { error: 'Invalid email address' },
         { status: 400 }
       )
     }
 
+    console.log('✅ Email validation passed')
+
     if (!validatePhone(contactPhone)) {
-      console.log('Invalid phone:', contactPhone)
+      console.log('❌ Invalid phone:', contactPhone)
       return NextResponse.json(
         { error: 'Invalid phone number' },
         { status: 400 }
       )
     }
 
+    console.log('✅ Phone validation passed')
     console.log('Validation passed, checking time slot availability...')
 
     // Check if time slot is available
     if (!(await isTimeSlotAvailable(date, startTime, duration))) {
-      console.log('Time slot not available:', { date, startTime, duration })
+      console.log('❌ Time slot not available:', { date, startTime, duration })
       return NextResponse.json(
         { error: 'This time slot is no longer available. Please select a different time.' },
         { status: 409 }
       )
     }
 
-    console.log('Time slot available, creating booking...')
+    console.log('✅ Time slot available, creating booking...')
 
     // Create booking
     const booking: Booking = {
@@ -86,11 +114,11 @@ export async function POST(request: NextRequest) {
       partyPackage
     }
 
-    console.log('Booking object created:', booking)
+    console.log('✅ Booking object created:', booking)
 
     // Save booking
     const savedBooking = await addBooking(booking)
-    console.log('Booking saved successfully:', savedBooking)
+    console.log('✅ Booking saved successfully:', savedBooking)
 
     return NextResponse.json({
       success: true,
@@ -98,7 +126,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error creating booking:', error)
+    console.error('❌ Error creating booking:', error)
     return NextResponse.json(
       { error: 'Failed to create booking' },
       { status: 500 }
