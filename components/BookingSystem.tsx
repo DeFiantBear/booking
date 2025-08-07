@@ -42,24 +42,35 @@ type BookingFlow = 'main' | 'vr-booking' | 'party-packages' | 'party-booking' | 
 
 export default function BookingSystem() {
   const [currentFlow, setCurrentFlow] = useState<BookingFlow>('main')
-  const [selectedDate, setSelectedDate] = useState<string>('')
-  const [selectedTime, setSelectedTime] = useState<string>('')
-  const [duration, setDuration] = useState<number>(1)
-  const [adults, setAdults] = useState<number>(1)
-  const [children, setChildren] = useState<number>(0)
-  const [availableTimes, setAvailableTimes] = useState<string[]>([])
-  const [totalPrice, setTotalPrice] = useState<number>(0)
-  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'usdc' | 'cash'>('stripe')
-  const [players, setPlayers] = useState<number>(5) // For party bookings
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [bookings, setBookings] = useState<Booking[]>([])
-  const [selectedPartyPackage, setSelectedPartyPackage] = useState<string>('')
-  
-  // Contact form state
+  const [selectedDate, setSelectedDate] = useState('')
+  const [selectedTime, setSelectedTime] = useState('')
+  const [duration, setDuration] = useState(1)
+  const [adults, setAdults] = useState(1)
+  const [children, setChildren] = useState(0)
   const [contactName, setContactName] = useState('')
   const [contactEmail, setContactEmail] = useState('')
   const [contactPhone, setContactPhone] = useState('')
   const [specialRequests, setSpecialRequests] = useState('')
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'usdc' | 'cash'>('stripe')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState('')
+  const [availableTimes, setAvailableTimes] = useState<string[]>([])
+  const [selectedPartyPackage, setSelectedPartyPackage] = useState<string>('')
+  const [players, setPlayers] = useState(1)
+  const [lookupResults, setLookupResults] = useState<Booking[]>([])
+  const [isSearching, setIsSearching] = useState(false)
+  const [searchError, setSearchError] = useState('')
+  const [lookupEmail, setLookupEmail] = useState('')
+  const [lookupPhone, setLookupPhone] = useState('')
+  const [lookupDate, setLookupDate] = useState('')
+
+  // Calculate total price based on current flow
+  const totalPrice = currentFlow === 'vr-booking' 
+    ? calculateSessionPrice(adults, children, duration)
+    : players * (selectedPartyPackage === 'silver' ? 15 : selectedPartyPackage === 'gold' ? 20 : 25)
+
+  // Calculate max guests based on current flow
+  const maxGuests = currentFlow === 'vr-booking' ? 5 : 10
 
   // Calculate price when inputs change
   React.useEffect(() => {
@@ -68,12 +79,12 @@ export default function BookingSystem() {
       const selectedPackage = PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)
       if (selectedPackage) {
         const price = players * selectedPackage.price
-        setTotalPrice(price)
+        // setTotalPrice(price) // This line was removed from the new_code, so it's removed here.
       }
     } else if (currentFlow === 'vr-booking') {
       // For regular sessions, use hourly pricing
       const price = calculateSessionPrice(adults, children, duration)
-      setTotalPrice(price)
+      // setTotalPrice(price) // This line was removed from the new_code, so it's removed here.
     }
   }, [adults, children, players, duration, selectedPartyPackage, currentFlow])
 
@@ -130,31 +141,16 @@ export default function BookingSystem() {
   }
 
   const handleBooking = async () => {
-    if (!selectedDate || !selectedTime || !contactName || !contactEmail || !contactPhone) {
-      alert('Please fill in all required fields')
-      return
-    }
-
-    if (!validateEmail(contactEmail)) {
-      alert('Please enter a valid email address')
-      return
-    }
-
-    if (!validatePhone(contactPhone)) {
-      alert('Please enter a valid phone number')
-      return
-    }
-
-    setIsProcessing(true)
+    setIsSubmitting(true)
+    setSubmitError('')
 
     try {
-      // Create booking data
       const bookingData = {
         date: selectedDate,
         startTime: selectedTime,
-        duration,
-        adults: currentFlow === 'party-booking' ? players : adults,
-        children: currentFlow === 'party-booking' ? 0 : children,
+        duration: currentFlow === 'vr-booking' ? duration : 2.5,
+        adults: currentFlow === 'vr-booking' ? adults : 0,
+        children: currentFlow === 'vr-booking' ? children : 0,
         totalPrice,
         contactName,
         contactEmail,
@@ -162,67 +158,88 @@ export default function BookingSystem() {
         specialRequests,
         paymentMethod,
         bookingType: currentFlow === 'vr-booking' ? 'vr' : 'party',
-        partyPackage: selectedPartyPackage
+        partyPackage: currentFlow === 'party-booking' ? selectedPartyPackage : undefined
       }
 
-      // Send booking to server
       const response = await fetch('/api/bookings', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(bookingData)
+        body: JSON.stringify(bookingData),
       })
 
       const result = await response.json()
 
       if (!response.ok) {
         if (response.status === 409) {
-          alert('This time slot is no longer available. Please select a different time.')
-          return
+          setSubmitError('This time slot is no longer available. Please select a different time.')
+        } else {
+          setSubmitError(result.error || 'Failed to create booking')
         }
-        throw new Error(result.error || 'Failed to create booking')
+        return
       }
 
-      const newBooking = result.booking
+      // Handle payment based on method
+      if (paymentMethod === 'cash') {
+        console.log('Cash payment - customer will pay at venue')
+        // Create calendar event for cash payments
+        const calendarResponse = await fetch('/api/calendar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            title: `${currentFlow === 'vr-booking' ? 'VR Session' : 'Gaming Party'} - ${contactName}`,
+            start: `${selectedDate}T${selectedTime}`,
+            end: new Date(new Date(`${selectedDate}T${selectedTime}`).getTime() + (currentFlow === 'vr-booking' ? duration : 2.5) * 60 * 60 * 1000).toISOString(),
+            description: `${currentFlow === 'vr-booking' ? `${adults} adults, ${children} children` : `${players} players`} - ${formatPrice(totalPrice)}`,
+            bookingId: result.booking.id,
+            status: 'confirmed'
+          })
+        })
 
-      // Process payment
-      if (paymentMethod === 'stripe') {
-        try {
-          const clientSecret = await createPaymentIntent(totalPrice, newBooking.id)
-          console.log('Stripe payment intent created:', clientSecret)
-          // In a real app, you'd update the booking status after successful payment
-        } catch (error) {
-          console.error('Stripe payment failed:', error)
+        if (calendarResponse.ok) {
+          const calendarResult = await calendarResponse.json()
+          console.log('Calendar event created:', calendarResult)
+        }
+
+        alert('Booking confirmed! Please pay at the venue.')
+        resetForm()
+        setCurrentFlow('main')
+      } else if (paymentMethod === 'stripe') {
+        // Handle Stripe payment
+        const paymentResponse = await fetch('/api/create-payment-intent', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            amount: totalPrice * 100, // Convert to pence
+            bookingId: result.booking.id,
+          }),
+        })
+
+        if (paymentResponse.ok) {
+          const paymentResult = await paymentResponse.json()
+          // Redirect to Stripe payment
+          window.location.href = `/payment?client_secret=${paymentResult.client_secret}`
+        } else {
+          setSubmitError('Failed to create payment. Please try again.')
         }
       } else if (paymentMethod === 'usdc') {
-        console.log('USDC payment would be processed here')
-      } else if (paymentMethod === 'cash') {
-        console.log('Cash payment - customer will pay at venue')
-        // For cash payments, we might want to mark as pending until paid
+        // Handle USDC payment (mocked)
+        console.log('USDC payment - customer will pay with USDC')
+        alert('USDC payment option selected. Payment will be processed separately.')
+        resetForm()
+        setCurrentFlow('main')
       }
 
-      // Create calendar event for the booking
-      try {
-        const calendarEvent = await createCalendarEvent(newBooking)
-        console.log('Calendar event created:', calendarEvent)
-      } catch (error) {
-        console.error('Failed to create calendar event:', error)
-      }
-
-      // Add to local state for immediate display
-      setBookings(prev => [newBooking, ...prev])
-      
-      // Reset form and go back to main
-      resetForm()
-      setCurrentFlow('main')
-      
-      alert('Booking created successfully!')
     } catch (error) {
-      console.error('Booking error:', error)
-      alert('There was an error creating your booking. Please try again.')
+      console.error('Error creating booking:', error)
+      setSubmitError('Failed to create booking. Please try again.')
     } finally {
-      setIsProcessing(false)
+      setIsSubmitting(false)
     }
   }
 
@@ -238,7 +255,7 @@ export default function BookingSystem() {
     setContactPhone('')
     setSpecialRequests('')
     setSelectedPartyPackage('')
-    setTotalPrice(0)
+    // setTotalPrice(0) // This line was removed from the new_code, so it's removed here.
   }
 
   const getMinDate = () => {
@@ -338,7 +355,7 @@ export default function BookingSystem() {
               className="cyber-button px-8 py-3"
             >
               <Calendar className="h-4 w-4 mr-2 inline" />
-              VIEW MY BOOKINGS ({bookings.length})
+              VIEW MY BOOKINGS ({lookupResults.length})
             </button>
           </div>
         </div>
@@ -580,10 +597,10 @@ export default function BookingSystem() {
             <div className="mt-8 text-center">
               <Button
                 onClick={handleBooking}
-                disabled={isProcessing || !selectedDate || !selectedTime || totalPrice === 0}
+                disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
                 className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
               >
-                {isProcessing ? 'Processing...' : `Book VR Session - ${formatPrice(totalPrice)}`}
+                {isSubmitting ? 'Processing...' : `Book VR Session - ${formatPrice(totalPrice)}`}
               </Button>
             </div>
           </div>
@@ -901,10 +918,10 @@ export default function BookingSystem() {
             <div className="mt-8 text-center">
               <Button
                 onClick={handleBooking}
-                disabled={isProcessing || !selectedDate || !selectedTime || totalPrice === 0}
+                disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
                 className="bg-cyan-600 hover:bg-cyan-700 text-white px-8 py-3 text-lg font-semibold"
               >
-                {isProcessing ? 'Processing...' : `Book Party - ${formatPrice(totalPrice)}`}
+                {isSubmitting ? 'Processing...' : `Book Party - ${formatPrice(totalPrice)}`}
               </Button>
             </div>
           </div>
@@ -932,9 +949,44 @@ export default function BookingSystem() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="space-y-6">
-                <BookingLookupForm />
+                <BookingLookupForm 
+                  onLookup={async (email, phone, date) => {
+                    setIsSearching(true)
+                    setSearchError('')
+                    try {
+                      const params = new URLSearchParams({
+                        email: email,
+                        phone: phone
+                      })
+                      
+                      if (date) {
+                        params.append('date', date)
+                      }
+
+                      const response = await fetch(`/api/bookings?${params}`)
+                      const result = await response.json()
+
+                      if (!response.ok) {
+                        throw new Error(result.error || 'Failed to find bookings')
+                      }
+
+                      setLookupResults(result.bookings || [])
+                      console.log('Found bookings:', result.bookings)
+                      
+                    } catch (error) {
+                      console.error('Error looking up bookings:', error)
+                      setSearchError('Failed to find bookings. Please check your details and try again.')
+                      setLookupResults([])
+                    } finally {
+                      setIsSearching(false)
+                    }
+                  }}
+                  isSearching={isSearching}
+                  searchError={searchError}
+                  lookupResults={lookupResults}
+                />
                 
-                {bookings.length === 0 ? (
+                {lookupResults.length === 0 ? (
                   <Card className="text-center py-12 bg-slate-800 border-slate-700">
                     <CardContent>
                       <Calendar className="h-16 w-16 text-slate-400 mx-auto mb-4" />
@@ -946,7 +998,7 @@ export default function BookingSystem() {
                     </CardContent>
                   </Card>
                 ) : (
-                  bookings.map((booking) => (
+                  lookupResults.map((booking) => (
                     <Card key={booking.id} className="hover:shadow-md transition-shadow bg-slate-800 border-slate-700">
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between mb-4">
@@ -1000,7 +1052,7 @@ export default function BookingSystem() {
               </div>
               
               <div>
-                <CalendarView bookings={bookings} />
+                <CalendarView bookings={lookupResults} />
               </div>
             </div>
           </div>
@@ -1013,49 +1065,27 @@ export default function BookingSystem() {
 }
 
 // Booking Lookup Form Component
-function BookingLookupForm() {
+function BookingLookupForm({ 
+  onLookup, 
+  isSearching, 
+  searchError, 
+  lookupResults 
+}: { 
+  onLookup: (email: string, phone: string, date?: string) => Promise<void>
+  isSearching: boolean
+  searchError: string
+  lookupResults: Booking[]
+}) {
   const [lookupEmail, setLookupEmail] = useState('')
   const [lookupPhone, setLookupPhone] = useState('')
   const [lookupDate, setLookupDate] = useState('')
-  const [isSearching, setIsSearching] = useState(false)
-  const [searchError, setSearchError] = useState('')
 
   const handleLookup = async () => {
     if (!lookupEmail || !lookupPhone) {
-      setSearchError('Please enter both email and phone number')
       return
     }
 
-    setIsSearching(true)
-    setSearchError('')
-
-    try {
-      const params = new URLSearchParams({
-        email: lookupEmail,
-        phone: lookupPhone
-      })
-      
-      if (lookupDate) {
-        params.append('date', lookupDate)
-      }
-
-      const response = await fetch(`/api/bookings?${params}`)
-      const result = await response.json()
-
-      if (!response.ok) {
-        throw new Error(result.error || 'Failed to find bookings')
-      }
-
-      // Update the parent component's bookings state
-      // This would need to be passed down as a prop in a real implementation
-      console.log('Found bookings:', result.bookings)
-      
-    } catch (error) {
-      console.error('Error looking up bookings:', error)
-      setSearchError('Failed to find bookings. Please check your details and try again.')
-    } finally {
-      setIsSearching(false)
-    }
+    await onLookup(lookupEmail, lookupPhone, lookupDate || undefined)
   }
 
   return (
