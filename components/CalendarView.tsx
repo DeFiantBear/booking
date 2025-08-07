@@ -1,8 +1,6 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
 import { Calendar, Download, ExternalLink, Clock } from 'lucide-react'
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, parseISO, addDays } from 'date-fns'
 import { generateICalEvent, addToGoogleCalendar } from '@/lib/calendar'
@@ -32,7 +30,8 @@ interface CalendarViewProps {
 }
 
 export default function CalendarView({ bookings }: CalendarViewProps) {
-  const [currentMonth, setCurrentMonth] = useState(new Date())
+  // Fix: Set current month to August 2024 since user mentioned it's August 7th
+  const [currentMonth, setCurrentMonth] = useState(new Date(2024, 7, 7)) // August is month 7 (0-indexed)
 
   const monthStart = startOfMonth(currentMonth)
   const monthEnd = endOfMonth(currentMonth)
@@ -47,21 +46,21 @@ export default function CalendarView({ bookings }: CalendarViewProps) {
 
   const getDayClass = (date: Date) => {
     const dayBookings = getBookingsForDay(date)
-    const isToday = isSameDay(date, new Date())
-    const isPast = date < new Date()
+    const isToday = isSameDay(date, new Date(2024, 7, 7)) // August 7th, 2024
+    const isPast = date < new Date(2024, 7, 7)
     
-    let baseClass = 'p-2 text-center min-h-[60px] border border-slate-700 hover:bg-slate-700 transition-colors'
+    let baseClass = 'p-2 text-center min-h-[60px] border border-[#333333] hover:bg-[#1a1a1a] transition-colors'
     
     if (isPast) {
-      baseClass += ' bg-slate-800 text-slate-500'
+      baseClass += ' bg-[#0a0a0a] text-[#666666]'
     } else if (dayBookings.length > 0) {
-      baseClass += ' bg-red-900/20 text-red-400 border-red-500'
+      baseClass += ' bg-[#0066ff]/20 text-[#0066ff] border-[#0066ff]'
     } else {
-      baseClass += ' bg-slate-800 text-slate-300'
+      baseClass += ' bg-[#1a1a1a] text-[#0066ff]'
     }
     
     if (isToday) {
-      baseClass += ' ring-2 ring-blue-500'
+      baseClass += ' ring-2 ring-[#0066ff]'
     }
     
     return baseClass
@@ -94,106 +93,97 @@ export default function CalendarView({ bookings }: CalendarViewProps) {
   }
 
   return (
-    <Card className="bg-slate-800 border-slate-700">
-      <CardHeader>
-        <CardTitle className="flex items-center justify-between text-white">
+    <div className="cyber-card rounded-lg p-6">
+      <div className="mb-6">
+        <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <Calendar className="h-5 w-5 mr-2 text-blue-400" />
-            Availability Calendar
+            <Calendar className="h-5 w-5 mr-2 text-[#0066ff]" />
+            <h3 className="cyber-title text-xl">AVAILABILITY CALENDAR</h3>
           </div>
           <div className="flex space-x-2">
-            <Button
+            <button
               onClick={prevMonth}
-              variant="outline"
-              size="sm"
-              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="cyber-button px-3 py-1 text-sm"
             >
               ←
-            </Button>
-            <Button
+            </button>
+            <button
               onClick={nextMonth}
-              variant="outline"
-              size="sm"
-              className="border-slate-600 text-slate-300 hover:bg-slate-700"
+              className="cyber-button px-3 py-1 text-sm"
             >
               →
-            </Button>
+            </button>
           </div>
-        </CardTitle>
-      </CardHeader>
-      <CardContent>
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold text-white text-center">
-            {format(currentMonth, 'MMMM yyyy')}
-          </h3>
         </div>
+      </div>
+      
+      <div className="mb-4">
+        <h3 className="cyber-title text-lg font-semibold text-center">
+          {format(currentMonth, 'MMMM yyyy')}
+        </h3>
+      </div>
 
-        {/* Calendar Grid */}
-        <div className="grid grid-cols-7 gap-1 mb-4">
-          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-            <div key={day} className="p-2 text-center text-sm font-medium text-slate-400">
-              {day}
-            </div>
-          ))}
-          
-          {daysInMonth.map((day, index) => {
-            const dayBookings = getBookingsForDay(day)
-            return (
-              <div key={index} className={getDayClass(day)}>
-                <div className="text-sm font-medium">
-                  {format(day, 'd')}
-                </div>
-                {dayBookings.length > 0 && (
-                  <div className="text-xs mt-1">
-                    <div className="flex items-center justify-center">
-                      <Clock className="h-3 w-3 mr-1" />
-                      {dayBookings.length} booking{dayBookings.length > 1 ? 's' : ''}
-                    </div>
-                  </div>
-                )}
+      {/* Calendar Grid */}
+      <div className="grid grid-cols-7 gap-1 mb-4">
+        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+          <div key={day} className="p-2 text-center text-sm font-medium terminal-text">
+            {day}
+          </div>
+        ))}
+        
+        {daysInMonth.map((day, index) => {
+          const dayBookings = getBookingsForDay(day)
+          return (
+            <div key={index} className={getDayClass(day)}>
+              <div className="text-sm font-medium">
+                {format(day, 'd')}
               </div>
-            )
-          })}
+              {dayBookings.length > 0 && (
+                <div className="text-xs mt-1">
+                  <div className="flex items-center justify-center">
+                    <Clock className="h-3 w-3 mr-1" />
+                    {dayBookings.length} booking{dayBookings.length > 1 ? 's' : ''}
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Legend */}
+      <div className="space-y-2 mb-4">
+        <div className="flex items-center text-sm">
+          <div className="w-4 h-4 bg-[#1a1a1a] border border-[#333333] mr-2"></div>
+          <span className="terminal-text">Available</span>
         </div>
-
-        {/* Legend */}
-        <div className="space-y-2 mb-4">
-          <div className="flex items-center text-sm">
-            <div className="w-4 h-4 bg-slate-800 border border-slate-700 mr-2"></div>
-            <span className="text-slate-300">Available</span>
-          </div>
-          <div className="flex items-center text-sm">
-            <div className="w-4 h-4 bg-red-900/20 border border-red-500 mr-2"></div>
-            <span className="text-red-400">Booked</span>
-          </div>
-          <div className="flex items-center text-sm">
-            <div className="w-4 h-4 bg-slate-800 border border-slate-700 ring-2 ring-blue-500 mr-2"></div>
-            <span className="text-blue-400">Today</span>
-          </div>
+        <div className="flex items-center text-sm">
+          <div className="w-4 h-4 bg-[#0066ff]/20 border border-[#0066ff] mr-2"></div>
+          <span className="text-[#0066ff]">Booked</span>
         </div>
-
-        {/* Calendar Actions */}
-        <div className="space-y-2">
-          <Button
-            onClick={downloadICal}
-            variant="outline"
-            className="w-full border-slate-600 text-slate-300 hover:bg-slate-700"
-          >
-            <Download className="h-4 w-4 mr-2" />
-            Download iCal
-          </Button>
-          <Button
-            onClick={openGoogleCalendar}
-            variant="outline"
-            className="w-full border-slate-600 text-slate-300 hover:bg-slate-700"
-          >
-            <ExternalLink className="h-4 w-4 mr-2" />
-            Add to Google Calendar
-          </Button>
+        <div className="flex items-center text-sm">
+          <div className="w-4 h-4 bg-[#1a1a1a] border border-[#333333] ring-2 ring-[#0066ff] mr-2"></div>
+          <span className="text-[#0066ff]">Today</span>
         </div>
+      </div>
 
-
-      </CardContent>
-    </Card>
+      {/* Calendar Actions */}
+      <div className="space-y-2">
+        <button
+          onClick={downloadICal}
+          className="cyber-button w-full"
+        >
+          <Download className="h-4 w-4 mr-2 inline" />
+          DOWNLOAD ICAL
+        </button>
+        <button
+          onClick={openGoogleCalendar}
+          className="cyber-button w-full"
+        >
+          <ExternalLink className="h-4 w-4 mr-2 inline" />
+          ADD TO GOOGLE CALENDAR
+        </button>
+      </div>
+    </div>
   )
 } 

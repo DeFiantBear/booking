@@ -284,69 +284,62 @@ export default function BookingSystem() {
   // Main Selection Screen
   if (currentFlow === 'main') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="min-h-screen relative">
         <div className="container mx-auto px-4 py-16">
           <div className="text-center mb-16">
-            <h1 className="text-6xl font-bold text-white mb-6">
-              <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
-                VR Arcade
-              </span>
+            <h1 className="cyber-title text-6xl font-bold mb-6" data-text="VR ARCADE">
+              VR ARCADE
             </h1>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            <p className="terminal-text text-xl max-w-2xl mx-auto">
               Your Ultimate Virtual Reality Destination
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* VR Booking Option */}
-            <Card className="bg-slate-800 border-slate-700 hover:border-blue-500 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20">
-              <CardContent className="p-8 text-center">
-                <div className="mb-6">
-                  <Gamepad2 className="h-16 w-16 text-blue-400 mx-auto mb-4" />
-                  <h2 className="text-3xl font-bold text-white mb-4">Book VR</h2>
-                  <p className="text-slate-300 text-lg">
-                    VR gaming for up to 5 people booked by the hour
-                  </p>
-                </div>
-                <Button 
-                  onClick={startVRBooking}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4 text-lg font-semibold"
-                >
-                  Start VR Booking
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="cyber-card rounded-lg p-8 text-center hover:scale-105 transition-transform duration-300">
+              <div className="mb-6">
+                <Gamepad2 className="h-16 w-16 text-[#00ff41] mx-auto mb-4" />
+                <h2 className="cyber-title text-3xl font-bold mb-4" data-text="BOOK VR">BOOK VR</h2>
+                <p className="terminal-text text-lg">
+                  VR gaming for up to 5 people booked by the hour
+                </p>
+              </div>
+              <button 
+                onClick={startVRBooking}
+                className="cyber-button w-full py-4 text-lg font-semibold"
+              >
+                START VR BOOKING
+              </button>
+            </div>
 
             {/* Party Booking Option */}
-            <Card className="bg-slate-800 border-slate-700 hover:border-cyan-500 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
-              <CardContent className="p-8 text-center">
-                <div className="mb-6">
-                  <PartyPopper className="h-16 w-16 text-cyan-400 mx-auto mb-4" />
-                  <h2 className="text-3xl font-bold text-white mb-4">Book Gaming Party</h2>
-                  <p className="text-slate-300 text-lg">
-                    Console and VR gaming for up to 10 players, 2.5 hours, cakes, snacks and other options available
-                  </p>
-                </div>
-                <Button 
-                  onClick={startPartyBooking}
-                  className="w-full bg-cyan-600 hover:bg-cyan-700 text-white py-4 text-lg font-semibold"
-                >
-                  Start Party Booking
-                </Button>
-              </CardContent>
-            </Card>
+            <div className="cyber-card rounded-lg p-8 text-center hover:scale-105 transition-transform duration-300">
+              <div className="mb-6">
+                <PartyPopper className="h-16 w-16 text-[#00ff41] mx-auto mb-4" />
+                <h2 className="cyber-title text-3xl font-bold mb-4" data-text="BOOK GAMING PARTY">BOOK GAMING PARTY</h2>
+                <p className="terminal-text text-lg">
+                  Console and VR gaming for up to 10 players, 2.5 hours, cakes, snacks and other options available
+                </p>
+              </div>
+              <button 
+                onClick={startPartyBooking}
+                className="cyber-button w-full py-4 text-lg font-semibold"
+              >
+                START PARTY BOOKING
+              </button>
+            </div>
           </div>
 
           {/* View Bookings Button */}
           <div className="text-center mt-12">
-            <Button 
+            <button 
               onClick={() => setCurrentFlow('bookings')}
-              variant="outline"
-              className="border-slate-600 text-slate-300 hover:bg-slate-700 hover:text-white"
+              className="cyber-button px-8 py-3"
             >
-              <Calendar className="h-4 w-4 mr-2" />
-              View My Bookings ({bookings.length})
-            </Button>
+              <Calendar className="h-4 w-4 mr-2 inline" />
+              VIEW MY BOOKINGS ({bookings.length})
+            </button>
           </div>
         </div>
       </div>
@@ -356,19 +349,18 @@ export default function BookingSystem() {
   // VR Booking Form
   if (currentFlow === 'vr-booking') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="min-h-screen relative">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
-              <Button 
+              <button 
                 onClick={goBack}
-                variant="outline"
-                className="mb-4 border-slate-600 text-slate-300 hover:bg-slate-700"
+                className="cyber-button mb-4"
               >
-                ← Back to Main Menu
-              </Button>
-              <h1 className="text-4xl font-bold text-white mb-4">VR Session Booking</h1>
-              <p className="text-slate-300">Book your VR gaming session</p>
+                ← BACK TO MAIN MENU
+              </button>
+              <h1 className="cyber-title text-4xl font-bold mb-4" data-text="VR SESSION BOOKING">VR SESSION BOOKING</h1>
+              <p className="terminal-text text-lg">Book your VR gaming session</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
