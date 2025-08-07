@@ -22,7 +22,7 @@ export interface EmailData {
 export async function sendBookingConfirmation(data: EmailData) {
   try {
     const { data: result, error } = await resend.emails.send({
-      from: 'VR Arcade <bookings@yourdomain.com>',
+      from: 'VR Arcade <contact@secondcitystudio.xyz>',
       to: [data.customerEmail],
       subject: `Booking Confirmation - ${data.bookingType} Session`,
       html: generateCustomerEmailHTML(data),
@@ -43,10 +43,10 @@ export async function sendBookingConfirmation(data: EmailData) {
 
 export async function sendAdminNotification(data: EmailData) {
   try {
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@yourdomain.com';
+    const adminEmail = process.env.ADMIN_EMAIL || 'contact@secondcitystudio.xyz';
     
     const { data: result, error } = await resend.emails.send({
-      from: 'VR Arcade <bookings@yourdomain.com>',
+      from: 'VR Arcade <contact@secondcitystudio.xyz>',
       to: [adminEmail],
       subject: `New Booking - ${data.bookingType} Session`,
       html: generateAdminEmailHTML(data),
@@ -143,11 +143,9 @@ function generateCustomerEmailHTML(data: EmailData): string {
             <li>Water and refreshments available on site</li>
           </ul>
           
-          <h3>📞 Contact Information</h3>
-          <p>If you need to make any changes or have questions:</p>
-          <p><strong>Phone:</strong> [Your Phone Number]</p>
-          <p><strong>Email:</strong> [Your Email]</p>
-          <p><strong>Address:</strong> [Your Address]</p>
+                     <h3>📞 Contact Information</h3>
+           <p>If you need to make any changes or have questions:</p>
+           <p><strong>Email:</strong> contact@secondcitystudio.xyz</p>
         </div>
         
         <div class="footer">

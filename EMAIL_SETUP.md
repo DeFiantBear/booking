@@ -13,7 +13,7 @@ Add these to your `.env.local` file:
 ```env
 # Email Configuration
 RESEND_API_KEY=your_resend_api_key_here
-ADMIN_EMAIL=your_email@example.com
+ADMIN_EMAIL=contact@secondcitystudio.xyz
 ```
 
 ### 3. Update Email Settings
