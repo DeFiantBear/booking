@@ -41,17 +41,24 @@ export default function AdminPage() {
   const loadBookings = async () => {
     try {
       setLoading(true)
+      setError('')
+      console.log('Loading admin bookings...')
+      
       const response = await fetch('/api/admin/bookings')
+      console.log('Admin API response status:', response.status)
+      
       const result = await response.json()
+      console.log('Admin API result:', result)
 
       if (!response.ok) {
         throw new Error(result.error || 'Failed to load bookings')
       }
 
-      setBookings(result.bookings)
+      setBookings(result.bookings || [])
+      console.log('Bookings loaded:', result.bookings?.length || 0)
     } catch (error) {
       console.error('Error loading bookings:', error)
-      setError('Failed to load bookings')
+      setError('Failed to load bookings: ' + (error instanceof Error ? error.message : 'Unknown error'))
     } finally {
       setLoading(false)
     }

@@ -953,6 +953,8 @@ export default function BookingSystem() {
                   onLookup={async (email, phone, date) => {
                     setIsSearching(true)
                     setSearchError('')
+                    console.log('Searching for bookings with:', { email, phone, date })
+                    
                     try {
                       const params = new URLSearchParams({
                         email: email,
@@ -963,8 +965,12 @@ export default function BookingSystem() {
                         params.append('date', date)
                       }
 
+                      console.log('Making API request to:', `/api/bookings?${params}`)
                       const response = await fetch(`/api/bookings?${params}`)
+                      console.log('Search API response status:', response.status)
+                      
                       const result = await response.json()
+                      console.log('Search API result:', result)
 
                       if (!response.ok) {
                         throw new Error(result.error || 'Failed to find bookings')
@@ -972,6 +978,7 @@ export default function BookingSystem() {
 
                       setLookupResults(result.bookings || [])
                       console.log('Found bookings:', result.bookings)
+                      console.log('Set lookup results:', result.bookings?.length || 0)
                       
                     } catch (error) {
                       console.error('Error looking up bookings:', error)
