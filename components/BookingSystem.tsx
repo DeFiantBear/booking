@@ -883,14 +883,11 @@ export default function BookingSystem() {
                    <div className="mt-4 p-4 bg-gradient-to-r from-blue-900/30 to-purple-900/30 border border-blue-500/40 rounded-lg">
                      <div className="space-y-2">
                        <p className="text-sm text-blue-200 font-medium">
-                         🎉 <strong>Party Time Details:</strong>
+                         🎉 <strong>Planning an adults-only party or private event?</strong>
                        </p>
-                       <ul className="text-xs text-blue-300 space-y-1 ml-4">
-                         <li>• <strong>2 hours of epic gaming</strong> with 30 min buffer for cake time & setup</li>
-                         <li>• <strong>🍷 Adult Events (18+):</strong> Feel free to bring your own alcohol</li>
-                         <li>• <strong>🍕 Food:</strong> Feel free to order food while you're here</li>
-                         <li>• <strong>❓ Questions?</strong> Any special requests? Reach out to us!</li>
-                       </ul>
+                       <p className="text-xs text-blue-300">
+                         If your group is 18+, you're welcome to bring your own alcohol. Just let us know when booking! 🍻
+                       </p>
                      </div>
                    </div>
                  </div>
