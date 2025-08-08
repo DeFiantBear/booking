@@ -976,7 +976,7 @@ export default function BookingSystem() {
                           <div className="text-right">
                             <p className="text-blue-400 text-xl font-bold">{formatPrice(booking.totalPrice)}</p>
                             <p className="text-sm text-gray-400 capitalize">{booking.status}</p>
-                            <p className="text-sm text-gray-400 capitalize">{booking.paymentMethod}</p>
+                            <p className="text-sm text-gray-400">Pay at venue</p>
                           </div>
                         </div>
                       </CardContent>

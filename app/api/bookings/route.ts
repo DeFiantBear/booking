@@ -61,7 +61,6 @@ export async function POST(request: NextRequest) {
       contactEmail,
       contactPhone,
       specialRequests,
-      paymentMethod,
       bookingType,
       partyPackage
     } = body
@@ -77,7 +76,6 @@ export async function POST(request: NextRequest) {
         contactName,
         contactEmail,
         contactPhone,
-        paymentMethod,
         bookingType,
         partyPackage
       })
@@ -162,7 +160,7 @@ export async function POST(request: NextRequest) {
       children,
       totalPrice,
       status: 'pending',
-      paymentMethod,
+      paymentMethod: 'cash', // Default to cash since we're using "pay at venue"
       paymentStatus: 'pending',
       contactName,
       contactEmail,
