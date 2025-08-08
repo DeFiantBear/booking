@@ -637,54 +637,54 @@ export default function BookingSystem() {
                   <CardContent className="p-4 sm:p-6">
                     <p className="text-center mb-4 text-gray-300 text-sm sm:text-base">{pkg.description}</p>
                     <ul className="space-y-2 mb-6">
-                      {pkg.includes.map((item, index) => (
-                        <li key={index} className="flex items-center text-sm text-slate-300">
-                          <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
-                          {item}
-                        </li>
-                      ))}
+                                             {pkg.includes.map((item, index) => (
+                         <li key={index} className="flex items-center text-sm text-gray-300">
+                           <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                           {item}
+                         </li>
+                       ))}
                     </ul>
-                    <Button 
-                      onClick={() => selectPartyPackage(pkg.id)}
-                      className="w-full bg-cyan-600 hover:bg-cyan-700 text-white"
-                    >
-                      Select {pkg.name} Package
-                    </Button>
+                                         <button 
+                       onClick={() => selectPartyPackage(pkg.id)}
+                       className="cyber-button w-full"
+                     >
+                       Select {pkg.name} Package
+                     </button>
                   </CardContent>
                 </Card>
               ))}
             </div>
 
-            <Card className="bg-slate-800 border-slate-700">
-              <CardContent className="p-6">
-                <h3 className="text-xl font-semibold mb-4 text-white">Party Package Details</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="font-semibold mb-2 text-slate-300">What's Included:</h4>
-                    <ul className="space-y-1 text-sm text-slate-400">
-                      <li>• Dedicated VR gaming space</li>
-                      <li>• Professional game master</li>
-                      <li>• All VR equipment provided</li>
-                      <li>• Party decorations</li>
-                      <li>• Refreshments & snacks</li>
-                      <li>• Safety briefing & instructions</li>
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="font-semibold mb-2 text-slate-300">Booking Information:</h4>
-                    <ul className="space-y-1 text-sm text-slate-400">
-                      <li>• Maximum 10 guests per party</li>
-                      <li>• 2.5 hour duration</li>
-                      <li>• Priced per person</li>
-                      <li>• Available during business hours</li>
-                      <li>• 24-hour cancellation policy</li>
-                      <li>• Suitable for ages 8+</li>
-                      <li>• Parental consent required for minors</li>
-                    </ul>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                         <Card className="cyber-card">
+               <CardContent className="p-6">
+                 <h3 className="text-xl font-semibold mb-4 text-white">Party Package Details</h3>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   <div>
+                     <h4 className="font-semibold mb-2 text-gray-300">What's Included:</h4>
+                     <ul className="space-y-1 text-sm text-gray-400">
+                       <li>• Dedicated VR gaming space</li>
+                       <li>• Professional game master</li>
+                       <li>• All VR equipment provided</li>
+                       <li>• Party decorations</li>
+                       <li>• Refreshments & snacks</li>
+                       <li>• Safety briefing & instructions</li>
+                     </ul>
+                   </div>
+                   <div>
+                     <h4 className="font-semibold mb-2 text-gray-300">Booking Information:</h4>
+                     <ul className="space-y-1 text-sm text-gray-400">
+                       <li>• Maximum 10 guests per party</li>
+                       <li>• 2.5 hour duration</li>
+                       <li>• Priced per person</li>
+                       <li>• Available during business hours</li>
+                       <li>• 24-hour cancellation policy</li>
+                       <li>• Suitable for ages 8+</li>
+                       <li>• Parental consent required for minors</li>
+                     </ul>
+                   </div>
+                 </div>
+               </CardContent>
+             </Card>
           </div>
         </div>
       </div>
@@ -720,44 +720,44 @@ export default function BookingSystem() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Date</label>
-                    <input
-                      type="date"
-                      min={getMinDate()}
-                      max={getMaxDate()}
-                      value={selectedDate}
-                      onChange={(e) => handleDateChange(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                    />
-                  </div>
+                                     <div>
+                     <label className="block text-sm font-medium mb-2 text-gray-300">Date</label>
+                     <input
+                       type="date"
+                       min={getMinDate()}
+                       max={getMaxDate()}
+                       value={selectedDate}
+                       onChange={(e) => handleDateChange(e.target.value)}
+                       className="cyber-input w-full text-base"
+                     />
+                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Start Time</label>
-                    <select
-                      value={selectedTime}
-                      onChange={(e) => handleTimeChange(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                      disabled={!selectedDate}
-                    >
-                      <option value="">Select time</option>
-                      {availableTimes.map((time) => (
-                        <option key={time} value={time}>
-                          {format(parseISO(`2000-01-01T${time}`), 'h:mm a')}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
+                   <div>
+                     <label className="block text-sm font-medium mb-2 text-gray-300">Start Time</label>
+                     <select
+                       value={selectedTime}
+                       onChange={(e) => handleTimeChange(e.target.value)}
+                       className="cyber-input w-full text-base"
+                       disabled={!selectedDate}
+                     >
+                       <option value="">Select time</option>
+                       {availableTimes.map((time) => (
+                         <option key={time} value={time}>
+                           {format(parseISO(`2000-01-01T${time}`), 'h:mm a')}
+                         </option>
+                       ))}
+                     </select>
+                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Duration</label>
-                    <input
-                      type="text"
-                      value={`${PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.duration} hours`}
-                      disabled
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-slate-400"
-                    />
-                  </div>
+                   <div>
+                     <label className="block text-sm font-medium mb-2 text-gray-300">Duration</label>
+                     <input
+                       type="text"
+                       value={`${PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.duration} hours`}
+                       disabled
+                       className="cyber-input w-full text-base text-gray-400"
+                     />
+                   </div>
                 </CardContent>
               </Card>
 
@@ -770,158 +770,158 @@ export default function BookingSystem() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Number of Players</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="10"
-                      value={players}
-                      onChange={(e) => {
-                        const value = Math.max(1, Math.min(10, Number(e.target.value)))
-                        setPlayers(value)
-                      }}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                    />
-                    <div className="text-sm text-slate-400 text-center mt-2">
-                      Total players: {players}/10
-                    </div>
-                  </div>
+                                     <div>
+                     <label className="block text-sm font-medium mb-2 text-gray-300">Number of Players</label>
+                     <input
+                       type="number"
+                       min="1"
+                       max="10"
+                       value={players}
+                       onChange={(e) => {
+                         const value = Math.max(1, Math.min(10, Number(e.target.value)))
+                         setPlayers(value)
+                       }}
+                       className="cyber-input w-full text-base"
+                     />
+                     <div className="text-sm text-gray-400 text-center mt-2">
+                       Total players: {players}/10
+                     </div>
+                   </div>
 
-                  <div className="bg-slate-700 p-4 rounded-md">
-                    <h4 className="font-semibold mb-2 text-white">Pricing Summary</h4>
-                    <div className="space-y-1 text-sm text-slate-300">
-                      <div className="flex justify-between">
-                        <span>Party Package ({PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.name}):</span>
-                        <span>£{PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.price} per person</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Total Players ({players} people):</span>
-                        <span>{players} × £{PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.price}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span>Duration:</span>
-                        <span>{PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.duration} hours</span>
-                      </div>
-                      <hr className="my-2 border-slate-600" />
-                      <div className="flex justify-between font-bold text-lg text-white">
-                        <span>Total:</span>
-                        <span className="text-cyan-400">{formatPrice(totalPrice)}</span>
-                      </div>
-                    </div>
-                  </div>
+                   <div className="bg-gray-800 p-4 rounded-md">
+                     <h4 className="font-semibold mb-2 text-white">Pricing Summary</h4>
+                     <div className="space-y-1 text-sm text-gray-300">
+                       <div className="flex justify-between">
+                         <span>Party Package ({PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.name}):</span>
+                         <span>£{PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.price} per person</span>
+                       </div>
+                       <div className="flex justify-between">
+                         <span>Total Players ({players} people):</span>
+                         <span>{players} × £{PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.price}</span>
+                       </div>
+                       <div className="flex justify-between">
+                         <span>Duration:</span>
+                         <span>{PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.duration} hours</span>
+                       </div>
+                       <hr className="my-2 border-gray-600" />
+                       <div className="flex justify-between font-bold text-lg text-white">
+                         <span>Total:</span>
+                         <span className="text-blue-400">{formatPrice(totalPrice)}</span>
+                       </div>
+                     </div>
+                   </div>
                 </CardContent>
               </Card>
             </div>
 
-            {/* Contact Information */}
-            <Card className="mt-8 bg-slate-800 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white">Contact Information</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Name *</label>
-                    <input
-                      type="text"
-                      value={contactName}
-                      onChange={(e) => setContactName(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                      placeholder="Your full name"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Email *</label>
-                    <input
-                      type="email"
-                      value={contactEmail}
-                      onChange={(e) => setContactEmail(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                      placeholder="your.email@example.com"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Phone *</label>
-                    <input
-                      type="tel"
-                      value={contactPhone}
-                      onChange={(e) => setContactPhone(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                      placeholder="+44 20 1234 5678"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Special Requests</label>
-                    <textarea
-                      value={specialRequests}
-                      onChange={(e) => setSpecialRequests(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent"
-                      placeholder="Any special requests or accommodations..."
-                      rows={3}
-                    />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
+                         {/* Contact Information */}
+             <Card className="mt-8 cyber-card">
+               <CardHeader>
+                 <CardTitle className="text-white">Contact Information</CardTitle>
+               </CardHeader>
+               <CardContent>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   <div>
+                     <label className="block text-sm font-medium mb-2 text-gray-300">Name *</label>
+                     <input
+                       type="text"
+                       value={contactName}
+                       onChange={(e) => setContactName(e.target.value)}
+                       className="cyber-input w-full text-base"
+                       placeholder="Your full name"
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium mb-2 text-gray-300">Email *</label>
+                     <input
+                       type="email"
+                       value={contactEmail}
+                       onChange={(e) => setContactEmail(e.target.value)}
+                       className="cyber-input w-full text-base"
+                       placeholder="your.email@example.com"
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium mb-2 text-gray-300">Phone *</label>
+                     <input
+                       type="tel"
+                       value={contactPhone}
+                       onChange={(e) => setContactPhone(e.target.value)}
+                       className="cyber-input w-full text-base"
+                       placeholder="+44 20 1234 5678"
+                     />
+                   </div>
+                   <div>
+                     <label className="block text-sm font-medium mb-2 text-gray-300">Special Requests</label>
+                     <textarea
+                       value={specialRequests}
+                       onChange={(e) => setSpecialRequests(e.target.value)}
+                       className="cyber-input w-full text-base"
+                       placeholder="Any special requests or accommodations..."
+                       rows={3}
+                     />
+                   </div>
+                 </div>
+               </CardContent>
+             </Card>
 
-            {/* Payment Method */}
-            <Card className="mt-8 bg-slate-800 border-slate-700">
-              <CardHeader>
-                <CardTitle className="text-white">Payment Method</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex space-x-4">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('stripe')}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
-                      paymentMethod === 'stripe'
-                        ? 'border-cyan-500 bg-cyan-600 text-white'
-                        : 'border-slate-600 text-slate-300 hover:border-slate-500'
-                    }`}
-                  >
-                    <CreditCard className="h-4 w-4" />
-                    <span>Credit/Debit Card</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('usdc')}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
-                      paymentMethod === 'usdc'
-                        ? 'border-cyan-500 bg-cyan-600 text-white'
-                        : 'border-slate-600 text-slate-300 hover:border-slate-500'
-                    }`}
-                  >
-                    <Wallet className="h-4 w-4" />
-                    <span>USDC (Crypto)</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('cash')}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
-                      paymentMethod === 'cash'
-                        ? 'border-cyan-500 bg-cyan-600 text-white'
-                        : 'border-slate-600 text-slate-300 hover:border-slate-500'
-                    }`}
-                  >
-                    <span>💵</span>
-                    <span>Pay at Venue</span>
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
+                         {/* Payment Method */}
+             <Card className="mt-8 cyber-card">
+               <CardHeader>
+                 <CardTitle className="text-white">Payment Method</CardTitle>
+               </CardHeader>
+               <CardContent>
+                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
+                   <button
+                     type="button"
+                     onClick={() => setPaymentMethod('stripe')}
+                     className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
+                       paymentMethod === 'stripe'
+                         ? 'border-blue-500 bg-blue-600 text-white'
+                         : 'border-gray-600 text-gray-300 hover:border-gray-500'
+                     }`}
+                   >
+                     <CreditCard className="h-4 w-4" />
+                     <span>Credit/Debit Card</span>
+                   </button>
+                   <button
+                     type="button"
+                     onClick={() => setPaymentMethod('usdc')}
+                     className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
+                       paymentMethod === 'usdc'
+                         ? 'border-blue-500 bg-blue-600 text-white'
+                         : 'border-gray-600 text-gray-300 hover:border-gray-500'
+                     }`}
+                   >
+                     <Wallet className="h-4 w-4" />
+                     <span>USDC (Crypto)</span>
+                   </button>
+                   <button
+                     type="button"
+                     onClick={() => setPaymentMethod('cash')}
+                     className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
+                       paymentMethod === 'cash'
+                         ? 'border-blue-500 bg-blue-600 text-white'
+                         : 'border-gray-600 text-gray-300 hover:border-gray-500'
+                     }`}
+                   >
+                     <span>💵</span>
+                     <span>Pay at Venue</span>
+                   </button>
+                 </div>
+               </CardContent>
+             </Card>
 
-            {/* Book Button */}
-            <div className="mt-8 text-center">
-              <Button
-                onClick={handleBooking}
-                disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
-                className="bg-cyan-600 hover:bg-cyan-700 text-white px-8 py-3 text-lg font-semibold"
-              >
-                {isSubmitting ? 'Processing...' : `Book Party - ${formatPrice(totalPrice)}`}
-              </Button>
-            </div>
+                         {/* Book Button */}
+             <div className="mt-8 text-center">
+               <button
+                 onClick={handleBooking}
+                 disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
+                 className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+               >
+                 {isSubmitting ? 'Processing...' : `Book Party - ${formatPrice(totalPrice)}`}
+               </button>
+             </div>
           </div>
         </div>
       </div>
