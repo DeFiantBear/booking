@@ -121,6 +121,8 @@ export async function POST(request: NextRequest) {
     console.log('✅ Booking saved successfully:', savedBooking)
 
     // Send confirmation emails (only if Resend is configured)
+    let emailStatus = { customerEmailSent: false, adminEmailSent: false };
+    
     if (process.env.RESEND_API_KEY) {
       try {
         console.log('📧 Sending confirmation emails...')
@@ -164,7 +166,8 @@ export async function POST(request: NextRequest) {
           specialRequests: savedBooking.specialRequests
         })
 
-        console.log('📧 Email results:', { customerEmailSent, adminEmailSent })
+        emailStatus = { customerEmailSent, adminEmailSent };
+        console.log('📧 Email results:', emailStatus)
       } catch (emailError) {
         console.error('❌ Email sending failed:', emailError)
         // Don't fail the booking if emails fail
@@ -175,7 +178,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      booking: savedBooking
+      booking: savedBooking,
+      emailStatus
     })
 
   } catch (error) {

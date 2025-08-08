@@ -1,6 +1,12 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Check if Resend API key is configured
+if (!process.env.RESEND_API_KEY) {
+  console.warn('⚠️ RESEND_API_KEY is not configured. Email functionality will be disabled.');
+}
+
+// Only create Resend instance if API key is available
+const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null;
 
 export interface EmailData {
   bookingId: string;
@@ -20,7 +26,14 @@ export interface EmailData {
 }
 
 export async function sendBookingConfirmation(data: EmailData) {
+  if (!process.env.RESEND_API_KEY || !resend) {
+    console.warn('📧 Email sending skipped - RESEND_API_KEY not configured');
+    return false;
+  }
+
   try {
+    console.log('📧 Sending customer confirmation email to:', data.customerEmail);
+    
     const { data: result, error } = await resend.emails.send({
       from: 'VR Arcade <contact@secondcitystudio.xyz>',
       to: [data.customerEmail],
@@ -29,21 +42,27 @@ export async function sendBookingConfirmation(data: EmailData) {
     });
 
     if (error) {
-      console.error('Error sending customer confirmation:', error);
+      console.error('❌ Error sending customer confirmation:', error);
       return false;
     }
 
-    console.log('Customer confirmation email sent:', result);
+    console.log('✅ Customer confirmation email sent successfully:', result?.id);
     return true;
   } catch (error) {
-    console.error('Failed to send customer confirmation:', error);
+    console.error('❌ Failed to send customer confirmation:', error);
     return false;
   }
 }
 
 export async function sendAdminNotification(data: EmailData) {
+  if (!process.env.RESEND_API_KEY || !resend) {
+    console.warn('📧 Email sending skipped - RESEND_API_KEY not configured');
+    return false;
+  }
+
   try {
     const adminEmail = process.env.ADMIN_EMAIL || 'contact@secondcitystudio.xyz';
+    console.log('📧 Sending admin notification email to:', adminEmail);
     
     const { data: result, error } = await resend.emails.send({
       from: 'VR Arcade <contact@secondcitystudio.xyz>',
@@ -53,14 +72,14 @@ export async function sendAdminNotification(data: EmailData) {
     });
 
     if (error) {
-      console.error('Error sending admin notification:', error);
+      console.error('❌ Error sending admin notification:', error);
       return false;
     }
 
-    console.log('Admin notification email sent:', result);
+    console.log('✅ Admin notification email sent successfully:', result?.id);
     return true;
   } catch (error) {
-    console.error('Failed to send admin notification:', error);
+    console.error('❌ Failed to send admin notification:', error);
     return false;
   }
 }
@@ -143,9 +162,9 @@ function generateCustomerEmailHTML(data: EmailData): string {
             <li>Water and refreshments available on site</li>
           </ul>
           
-                     <h3>📞 Contact Information</h3>
-           <p>If you need to make any changes or have questions:</p>
-           <p><strong>Email:</strong> contact@secondcitystudio.xyz</p>
+          <h3>📞 Contact Information</h3>
+          <p>If you need to make any changes or have questions:</p>
+          <p><strong>Email:</strong> contact@secondcitystudio.xyz</p>
         </div>
         
         <div class="footer">

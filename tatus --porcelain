@@ -1,0 +1,5 @@
+[33md634523[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Update README and trigger deployment with environment variables
+[33ma0ed4a7[m Fix Vercel build error: make email sending conditional and use dynamic imports
+[33m529ca60[m Update email sender to use admin email address
+[33m1d1e25d[m Add email confirmation system with Resend - customer confirmations and admin notifications
+[33m92915a6[m Fix phone validation: accept any phone number with 7+ digits
