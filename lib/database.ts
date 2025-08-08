@@ -102,20 +102,28 @@ export const saveBookings = async (bookings: Booking[]): Promise<void> => {
 
 // Add a new booking
 export const addBooking = async (booking: Booking): Promise<Booking> => {
+  console.log('🔍 Database addBooking called with:', JSON.stringify(booking, null, 2))
+  console.log('🔍 Has Supabase config:', hasSupabase)
+  console.log('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set')
+  console.log('🔍 Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
+  
   if (hasSupabase) {
     try {
-      console.log('Using Supabase for addBooking')
+      console.log('🔍 Attempting to use Supabase for addBooking')
       const { supabaseDb } = await import('./supabase')
-      return await supabaseDb.addBooking(booking)
+      const result = await supabaseDb.addBooking(booking)
+      console.log('✅ Supabase addBooking successful:', JSON.stringify(result, null, 2))
+      return result
     } catch (error) {
-      console.error('Supabase error, falling back to local storage:', error)
+      console.error('❌ Supabase error, falling back to local storage:', error)
     }
   }
   
-  console.log('Using local storage for addBooking')
+  console.log('🔍 Using local storage for addBooking')
   const bookings = await loadBookings()
   bookings.push(booking)
   await saveBookings(bookings)
+  console.log('✅ Local storage addBooking successful')
   return booking
 }
 

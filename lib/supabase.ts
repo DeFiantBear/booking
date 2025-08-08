@@ -84,6 +84,8 @@ export const supabaseDb = {
 
   // Add a new booking
   async addBooking(booking: any) {
+    console.log('🔍 Supabase addBooking called with:', JSON.stringify(booking, null, 2))
+    
     // Map the booking data to match the actual column names
     // Use UUID for Supabase compatibility
     const mappedBooking = {
@@ -107,34 +109,49 @@ export const supabaseDb = {
       partypackage: booking.partyPackage
     }
 
-    const { data, error } = await supabase
-      .from(BOOKINGS_TABLE)
-      .insert([mappedBooking])
-      .select()
-      .single()
-    
-    if (error) throw error
-    
-    // Map the returned data back to camelCase for frontend compatibility
-    return {
-      id: data.id,
-      date: data.date,
-      startTime: data.starttime,
-      duration: data.duration,
-      adults: data.adults,
-      children: data.children,
-      totalPrice: data.totalprice,
-      status: data.status,
-      paymentMethod: data.paymentmethod,
-      paymentStatus: data.paymentstatus,
-      contactName: data.contactname,
-      contactEmail: data.contactemail,
-      contactPhone: data.contactphone,
-      specialRequests: data.specialrequests,
-      createdAt: data.createdat,
-      updatedAt: data.updatedat,
-      bookingType: data.bookingtype,
-      partyPackage: data.partypackage
+    console.log('🔍 Mapped booking data for Supabase:', JSON.stringify(mappedBooking, null, 2))
+
+    try {
+      const { data, error } = await supabase
+        .from(BOOKINGS_TABLE)
+        .insert([mappedBooking])
+        .select()
+        .single()
+      
+      if (error) {
+        console.error('❌ Supabase insert error:', error)
+        throw error
+      }
+      
+      console.log('✅ Supabase insert successful, returned data:', JSON.stringify(data, null, 2))
+      
+      // Map the returned data back to camelCase for frontend compatibility
+      const result = {
+        id: data.id,
+        date: data.date,
+        startTime: data.starttime,
+        duration: data.duration,
+        adults: data.adults,
+        children: data.children,
+        totalPrice: data.totalprice,
+        status: data.status,
+        paymentMethod: data.paymentmethod,
+        paymentStatus: data.paymentstatus,
+        contactName: data.contactname,
+        contactEmail: data.contactemail,
+        contactPhone: data.contactphone,
+        specialRequests: data.specialrequests,
+        createdAt: data.createdat,
+        updatedAt: data.updatedat,
+        bookingType: data.bookingtype,
+        partyPackage: data.partypackage
+      }
+      
+      console.log('✅ Final result object:', JSON.stringify(result, null, 2))
+      return result
+    } catch (error) {
+      console.error('❌ Error in addBooking:', error)
+      throw error
     }
   },
 
