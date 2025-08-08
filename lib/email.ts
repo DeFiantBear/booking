@@ -101,7 +101,9 @@ function generateCustomerEmailHTML(data: EmailData): string {
   });
 
   const startDateTime = new Date(`2000-01-01T${data.startTime}`);
-  const endTime = new Date(startDateTime.getTime() + (data.duration * 60 * 60 * 1000));
+  // Convert duration from hours back to minutes for calculation
+  const durationInMinutes = data.duration * 60;
+  const endTime = new Date(startDateTime.getTime() + (durationInMinutes * 60 * 1000));
   const formattedEndTime = endTime.toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit'
