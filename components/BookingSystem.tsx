@@ -846,24 +846,26 @@ export default function BookingSystem() {
 
                 {/* Stripe Card Element */}
                 {paymentMethod === 'stripe' && (
-                  <div className="mt-4 p-4 bg-gray-800 rounded-lg border border-gray-600">
-                    <label className="block text-sm font-medium mb-2 text-gray-300">Card Details</label>
-                    <div className="cyber-input p-3">
-                      <CardElement
-                        options={{
-                          style: {
-                            base: {
-                              fontSize: '16px',
-                              color: '#ffffff',
-                              '::placeholder': {
-                                color: '#9ca3af',
+                  <Elements stripe={stripePromise}>
+                    <div className="mt-4 p-4 bg-gray-800 rounded-lg border border-gray-600">
+                      <label className="block text-sm font-medium mb-2 text-gray-300">Card Details</label>
+                      <div className="cyber-input p-3">
+                        <CardElement
+                          options={{
+                            style: {
+                              base: {
+                                fontSize: '16px',
+                                color: '#ffffff',
+                                '::placeholder': {
+                                  color: '#9ca3af',
+                                },
                               },
                             },
-                          },
-                        }}
-                      />
+                          }}
+                        />
+                      </div>
                     </div>
-                  </div>
+                  </Elements>
                 )}
               </CardContent>
             </Card>
@@ -1239,24 +1241,26 @@ export default function BookingSystem() {
 
                  {/* Stripe Card Element */}
                  {paymentMethod === 'stripe' && (
-                   <div className="mt-4 p-4 bg-gray-800 rounded-lg border border-gray-600">
-                     <label className="block text-sm font-medium mb-2 text-gray-300">Card Details</label>
-                     <div className="cyber-input p-3">
-                       <CardElement
-                         options={{
-                           style: {
-                             base: {
-                               fontSize: '16px',
-                               color: '#ffffff',
-                               '::placeholder': {
-                                 color: '#9ca3af',
+                   <Elements stripe={stripePromise}>
+                     <div className="mt-4 p-4 bg-gray-800 rounded-lg border border-gray-600">
+                       <label className="block text-sm font-medium mb-2 text-gray-300">Card Details</label>
+                       <div className="cyber-input p-3">
+                         <CardElement
+                           options={{
+                             style: {
+                               base: {
+                                 fontSize: '16px',
+                                 color: '#ffffff',
+                                 '::placeholder': {
+                                   color: '#9ca3af',
+                                 },
                                },
                              },
-                           },
-                         }}
-                       />
+                           }}
+                         />
+                       </div>
                      </div>
-                   </div>
+                   </Elements>
                  )}
                </CardContent>
              </Card>
