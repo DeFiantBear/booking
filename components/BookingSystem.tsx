@@ -314,8 +314,8 @@ export default function BookingSystem() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-3xl mx-auto px-2">
             {/* VR Booking Option */}
-            <div className="cyber-card p-4 sm:p-6 md:p-8 text-center hover:scale-105 transition-transform duration-300">
-              <div className="mb-4 md:mb-6">
+            <div className="cyber-card p-4 sm:p-6 md:p-8 text-center hover:scale-105 transition-transform duration-300 flex flex-col h-full">
+              <div className="flex-1 mb-4 md:mb-6">
                 <Gamepad2 className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-blue-500 mx-auto mb-3 md:mb-4" />
                 <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4">VR Gaming</h2>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
@@ -324,15 +324,15 @@ export default function BookingSystem() {
               </div>
               <button 
                 onClick={startVRBooking}
-                className="cyber-button w-full text-sm sm:text-base py-2 sm:py-3"
+                className="cyber-button w-full text-sm sm:text-base py-2 sm:py-3 mt-auto"
               >
                 Book VR Session
               </button>
             </div>
 
             {/* Party Booking Option */}
-            <div className="cyber-card p-4 sm:p-6 md:p-8 text-center hover:scale-105 transition-transform duration-300">
-              <div className="mb-4 md:mb-6">
+            <div className="cyber-card p-4 sm:p-6 md:p-8 text-center hover:scale-105 transition-transform duration-300 flex flex-col h-full">
+              <div className="flex-1 mb-4 md:mb-6">
                 <PartyPopper className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-blue-500 mx-auto mb-3 md:mb-4" />
                 <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4">Gaming Party</h2>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
@@ -341,7 +341,7 @@ export default function BookingSystem() {
               </div>
               <button 
                 onClick={startPartyBooking}
-                className="cyber-button w-full text-sm sm:text-base py-2 sm:py-3"
+                className="cyber-button w-full text-sm sm:text-base py-2 sm:py-3 mt-auto"
               >
                 Book Party
               </button>
@@ -366,7 +366,7 @@ export default function BookingSystem() {
   // VR Booking Form
   if (currentFlow === 'vr-booking') {
     return (
-      <div className="min-h-screen relative">
+      <div className="min-h-screen bg-black">
         <div className="container mx-auto px-4 py-4 sm:py-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-6 sm:mb-8">
@@ -376,13 +376,13 @@ export default function BookingSystem() {
               >
                 ← BACK TO MAIN MENU
               </button>
-              <h1 className="cyber-title text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4" data-text="VR SESSION BOOKING">VR SESSION BOOKING</h1>
-              <p className="terminal-text text-base sm:text-lg">Book your VR gaming session</p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">VR SESSION BOOKING</h1>
+              <p className="text-base sm:text-lg text-gray-300">Book your VR gaming session</p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               {/* Date & Time Selection */}
-              <Card className="bg-slate-800 border-slate-700">
+              <Card className="cyber-card">
                 <CardHeader>
                   <CardTitle className="flex items-center text-white">
                     <Calendar className="h-5 w-5 mr-2 text-blue-400" />
@@ -398,7 +398,7 @@ export default function BookingSystem() {
                       max={getMaxDate()}
                       value={selectedDate}
                       onChange={(e) => handleDateChange(e.target.value)}
-                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                      className="cyber-input w-full text-base"
                     />
                   </div>
 
@@ -407,7 +407,7 @@ export default function BookingSystem() {
                     <select
                       value={selectedTime}
                       onChange={(e) => handleTimeChange(e.target.value)}
-                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                      className="cyber-input w-full text-base"
                       disabled={!selectedDate}
                     >
                       <option value="">Select time</option>
@@ -420,11 +420,11 @@ export default function BookingSystem() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Duration (hours)</label>
+                                          <label className="block text-sm font-medium mb-2 text-gray-300">Duration (hours)</label>
                     <select
                       value={duration}
                       onChange={(e) => handleDurationChange(Number(e.target.value))}
-                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                      className="cyber-input w-full text-base"
                     >
                       {AVAILABLE_DURATIONS.map((d) => (
                         <option key={d} value={d}>
@@ -437,7 +437,7 @@ export default function BookingSystem() {
               </Card>
 
               {/* Guest Count & Pricing */}
-              <Card className="bg-slate-800 border-slate-700">
+              <Card className="cyber-card">
                 <CardHeader>
                   <CardTitle className="flex items-center text-white">
                     <Users className="h-5 w-5 mr-2 text-blue-400" />
@@ -447,35 +447,35 @@ export default function BookingSystem() {
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2 text-slate-300">Adults</label>
+                      <label className="block text-sm font-medium mb-2 text-gray-300">Adults</label>
                       <input
                         type="number"
                         min="0"
                         max="5"
                         value={adults}
                         onChange={(e) => handleGuestChange('adults', Number(e.target.value))}
-                        className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                        className="cyber-input w-full text-base"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2 text-slate-300">Children</label>
+                      <label className="block text-sm font-medium mb-2 text-gray-300">Children</label>
                       <input
                         type="number"
                         min="0"
                         max="5"
                         value={children}
                         onChange={(e) => handleGuestChange('children', Number(e.target.value))}
-                        className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                        className="cyber-input w-full text-base"
                       />
                     </div>
                   </div>
-                  <div className="text-sm text-slate-400 text-center">
+                  <div className="text-sm text-gray-400 text-center">
                     Total guests: {adults + children}/5
                   </div>
 
-                  <div className="bg-slate-700 p-4 rounded-md">
+                  <div className="bg-gray-800 p-4 rounded-md">
                     <h4 className="font-semibold mb-2 text-white">Pricing Summary</h4>
-                    <div className="space-y-1 text-sm text-slate-300">
+                    <div className="space-y-1 text-sm text-gray-300">
                       <div className="flex justify-between">
                         <span>Adults ({adults} × £{PRICING.adultPerHour}/hour × {duration}h):</span>
                         <span>{formatPrice(adults * PRICING.adultPerHour * duration)}</span>
@@ -484,7 +484,7 @@ export default function BookingSystem() {
                         <span>Children ({children} × £{PRICING.childPerHour}/hour × {duration}h):</span>
                         <span>{formatPrice(children * PRICING.childPerHour * duration)}</span>
                       </div>
-                      <hr className="my-2 border-slate-600" />
+                      <hr className="my-2 border-gray-600" />
                       <div className="flex justify-between font-bold text-lg text-white">
                         <span>Total:</span>
                         <span className="text-blue-400">{formatPrice(totalPrice)}</span>
@@ -496,48 +496,48 @@ export default function BookingSystem() {
             </div>
 
             {/* Contact Information */}
-            <Card className="mt-6 sm:mt-8 bg-slate-800 border-slate-700">
+            <Card className="mt-6 sm:mt-8 cyber-card">
               <CardHeader>
                 <CardTitle className="text-white text-lg sm:text-xl">Contact Information</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Name *</label>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Name *</label>
                     <input
                       type="text"
                       value={contactName}
                       onChange={(e) => setContactName(e.target.value)}
-                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                      className="cyber-input w-full text-base"
                       placeholder="Your full name"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Email *</label>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Email *</label>
                     <input
                       type="email"
                       value={contactEmail}
                       onChange={(e) => setContactEmail(e.target.value)}
-                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                      className="cyber-input w-full text-base"
                       placeholder="your.email@example.com"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Phone *</label>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Phone *</label>
                     <input
                       type="tel"
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
-                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                      className="cyber-input w-full text-base"
                       placeholder="+44 20 1234 5678"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2 text-slate-300">Special Requests</label>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Special Requests</label>
                     <textarea
                       value={specialRequests}
                       onChange={(e) => setSpecialRequests(e.target.value)}
-                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
+                      className="cyber-input w-full text-base"
                       placeholder="Any special requests or accommodations..."
                       rows={3}
                     />
@@ -547,7 +547,7 @@ export default function BookingSystem() {
             </Card>
 
             {/* Payment Method */}
-            <Card className="mt-6 sm:mt-8 bg-slate-800 border-slate-700">
+            <Card className="mt-6 sm:mt-8 cyber-card">
               <CardHeader>
                 <CardTitle className="text-white text-lg sm:text-xl">Payment Method</CardTitle>
               </CardHeader>
@@ -595,13 +595,13 @@ export default function BookingSystem() {
 
             {/* Book Button */}
             <div className="mt-6 sm:mt-8 text-center">
-              <Button
+              <button
                 onClick={handleBooking}
                 disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto"
+                className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {isSubmitting ? 'Processing...' : `Book VR Session - ${formatPrice(totalPrice)}`}
-              </Button>
+              </button>
             </div>
           </div>
         </div>
@@ -612,31 +612,30 @@ export default function BookingSystem() {
   // Party Packages Selection
   if (currentFlow === 'party-packages') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="min-h-screen bg-black">
         <div className="container mx-auto px-4 py-4 sm:py-8">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-6 sm:mb-8">
-              <Button 
+              <button 
                 onClick={goBack}
-                variant="outline"
-                className="mb-4 border-slate-600 text-slate-300 hover:bg-slate-700 text-sm sm:text-base"
+                className="cyber-button mb-4 text-sm sm:text-base"
               >
                 ← Back to Main Menu
-              </Button>
+              </button>
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">Gaming Party Packages</h1>
-              <p className="text-slate-300 text-base sm:text-lg">Choose your perfect party package</p>
+              <p className="text-gray-300 text-base sm:text-lg">Choose your perfect party package</p>
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
               {PARTY_PACKAGES.map((pkg) => (
-                <Card key={pkg.id} className="bg-slate-800 border-slate-700 hover:border-cyan-500 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
+                <Card key={pkg.id} className="cyber-card hover:border-blue-500 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20">
                   <CardHeader className="text-center p-4 sm:p-6">
                     <CardTitle className="text-xl sm:text-2xl capitalize text-white">{pkg.name} Package</CardTitle>
-                    <div className="text-2xl sm:text-3xl font-bold text-cyan-400">£{pkg.price}</div>
-                    <div className="text-xs sm:text-sm text-slate-400">per person • {pkg.duration} hours</div>
+                    <div className="text-2xl sm:text-3xl font-bold text-blue-400">£{pkg.price}</div>
+                    <div className="text-xs sm:text-sm text-gray-400">per person • {pkg.duration} hours</div>
                   </CardHeader>
                   <CardContent className="p-4 sm:p-6">
-                    <p className="text-center mb-4 text-slate-300 text-sm sm:text-base">{pkg.description}</p>
+                    <p className="text-center mb-4 text-gray-300 text-sm sm:text-base">{pkg.description}</p>
                     <ul className="space-y-2 mb-6">
                       {pkg.includes.map((item, index) => (
                         <li key={index} className="flex items-center text-sm text-slate-300">
@@ -695,26 +694,25 @@ export default function BookingSystem() {
   // Party Booking Form
   if (currentFlow === 'party-booking') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="min-h-screen bg-black">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center mb-8">
-              <Button 
+              <button 
                 onClick={goBack}
-                variant="outline"
-                className="mb-4 border-slate-600 text-slate-300 hover:bg-slate-700"
+                className="cyber-button mb-4"
               >
                 ← Back to Packages
-              </Button>
+              </button>
               <h1 className="text-4xl font-bold text-white mb-4">Party Booking</h1>
-              <p className="text-slate-300">
+              <p className="text-gray-300">
                 {PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.name} Package Selected
               </p>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Date & Time Selection */}
-              <Card className="bg-slate-800 border-slate-700">
+              <Card className="cyber-card">
                 <CardHeader>
                   <CardTitle className="flex items-center text-white">
                     <Calendar className="h-5 w-5 mr-2 text-cyan-400" />
@@ -764,10 +762,10 @@ export default function BookingSystem() {
               </Card>
 
               {/* Guest Count & Pricing */}
-              <Card className="bg-slate-800 border-slate-700">
+              <Card className="cyber-card">
                 <CardHeader>
                   <CardTitle className="flex items-center text-white">
-                    <Users className="h-5 w-5 mr-2 text-cyan-400" />
+                    <Users className="h-5 w-5 mr-2 text-blue-400" />
                     Guest Count & Pricing
                   </CardTitle>
                 </CardHeader>
@@ -933,17 +931,16 @@ export default function BookingSystem() {
   // Bookings View
   if (currentFlow === 'bookings') {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+      <div className="min-h-screen bg-black">
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-6xl mx-auto">
             <div className="text-center mb-8">
-              <Button 
+              <button 
                 onClick={() => setCurrentFlow('main')}
-                variant="outline"
-                className="mb-4 border-slate-600 text-slate-300 hover:bg-slate-700"
+                className="cyber-button mb-4"
               >
                 ← Back to Main Menu
-              </Button>
+              </button>
               <h1 className="text-4xl font-bold text-white mb-4">My Bookings</h1>
             </div>
 
@@ -994,19 +991,19 @@ export default function BookingSystem() {
                 />
                 
                 {lookupResults.length === 0 ? (
-                  <Card className="text-center py-12 bg-slate-800 border-slate-700">
+                  <Card className="text-center py-12 cyber-card">
                     <CardContent>
-                      <Calendar className="h-16 w-16 text-slate-400 mx-auto mb-4" />
+                      <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                       <h3 className="text-lg font-semibold text-white mb-2">No bookings found</h3>
-                      <p className="text-slate-300 mb-6">Enter your email and phone number above to find your bookings!</p>
-                      <Button onClick={() => setCurrentFlow('main')} className="bg-blue-600 hover:bg-blue-700">
+                      <p className="text-gray-300 mb-6">Enter your email and phone number above to find your bookings!</p>
+                      <button onClick={() => setCurrentFlow('main')} className="cyber-button">
                         Book a Session
-                      </Button>
+                      </button>
                     </CardContent>
                   </Card>
                 ) : (
                   lookupResults.map((booking) => (
-                    <Card key={booking.id} className="hover:shadow-md transition-shadow bg-slate-800 border-slate-700">
+                    <Card key={booking.id} className="hover:shadow-md transition-shadow cyber-card">
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between mb-4">
                           <div>
@@ -1120,41 +1117,41 @@ function BookingLookupForm({
   }
 
   return (
-    <Card className="bg-slate-800 border-slate-700">
+    <Card className="cyber-card">
       <CardHeader>
         <CardTitle className="text-white">Find My Bookings</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-2 text-slate-300">Email *</label>
+            <label className="block text-sm font-medium mb-2 text-gray-300">Email *</label>
             <input
               type="email"
               value={lookupEmail}
               onChange={(e) => setLookupEmail(e.target.value)}
-              className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="cyber-input w-full"
               placeholder="Enter the email used for booking"
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium mb-2 text-slate-300">Phone *</label>
+            <label className="block text-sm font-medium mb-2 text-gray-300">Phone *</label>
             <input
               type="tel"
               value={lookupPhone}
               onChange={(e) => setLookupPhone(e.target.value)}
-              className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="cyber-input w-full"
               placeholder="Enter the phone number used for booking"
             />
           </div>
           
           <div>
-            <label className="block text-sm font-medium mb-2 text-slate-300">Date (Optional)</label>
+            <label className="block text-sm font-medium mb-2 text-gray-300">Date (Optional)</label>
             <input
               type="date"
               value={lookupDate}
               onChange={(e) => setLookupDate(e.target.value)}
-              className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="cyber-input w-full"
             />
           </div>
 
@@ -1162,13 +1159,13 @@ function BookingLookupForm({
             <div className="text-red-400 text-sm">{searchError}</div>
           )}
 
-          <Button
+          <button
             onClick={handleLookup}
             disabled={isSearching || !lookupEmail || !lookupPhone}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+            className="cyber-button w-full disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSearching ? 'Searching...' : 'Find My Bookings'}
-          </Button>
+          </button>
         </div>
       </CardContent>
     </Card>
