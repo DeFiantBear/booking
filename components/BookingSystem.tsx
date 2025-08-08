@@ -16,7 +16,6 @@ import {
 import { AVAILABLE_DURATIONS, BUSINESS_HOURS, PRICING, PARTY_PACKAGES } from '@/lib/constants'
 import { createPaymentIntent } from '@/lib/stripe'
 import { createCalendarEvent } from '@/lib/calendar'
-import CalendarView from './CalendarView'
 
 interface Booking {
   id: string
@@ -67,7 +66,10 @@ export default function BookingSystem() {
   // Calculate total price based on current flow
   const totalPrice = currentFlow === 'vr-booking' 
     ? calculateSessionPrice(adults, children, duration)
-    : players * (selectedPartyPackage === 'silver' ? 15 : selectedPartyPackage === 'gold' ? 20 : 25)
+    : (() => {
+        const selectedPackage = PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)
+        return selectedPackage ? players * selectedPackage.price : 0
+      })()
 
   // Calculate max guests based on current flow
   const maxGuests = currentFlow === 'vr-booking' ? 5 : 10
@@ -954,65 +956,65 @@ export default function BookingSystem() {
               <h1 className="text-4xl font-bold text-white mb-4">My Bookings</h1>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <BookingLookupForm 
-                  onLookup={async (email, phone, date) => {
-                    setIsSearching(true)
-                    setSearchError('')
-                    console.log('Searching for bookings with:', { email, phone, date })
-                    
-                    try {
-                      const params = new URLSearchParams({
-                        email: email,
-                        phone: phone
-                      })
-                      
-                      if (date) {
-                        params.append('date', date)
-                      }
-
-                      console.log('Making API request to:', `/api/bookings?${params}`)
-                      const response = await fetch(`/api/bookings?${params}`)
-                      console.log('Search API response status:', response.status)
-                      
-                      const result = await response.json()
-                      console.log('Search API result:', result)
-
-                      if (!response.ok) {
-                        throw new Error(result.error || 'Failed to find bookings')
-                      }
-
-                      setLookupResults(result.bookings || [])
-                      console.log('Found bookings:', result.bookings)
-                      console.log('Set lookup results:', result.bookings?.length || 0)
-                      
-                    } catch (error) {
-                      console.error('Error looking up bookings:', error)
-                      setSearchError('Failed to find bookings. Please check your details and try again.')
-                      setLookupResults([])
-                    } finally {
-                      setIsSearching(false)
+                        <div className="max-w-4xl mx-auto">
+              <BookingLookupForm 
+                onLookup={async (email, phone, date) => {
+                  setIsSearching(true)
+                  setSearchError('')
+                  console.log('Searching for bookings with:', { email, phone, date })
+                  
+                  try {
+                    const params = new URLSearchParams({
+                      email: email,
+                      phone: phone
+                    })
+                     
+                    if (date) {
+                      params.append('date', date)
                     }
-                  }}
-                  isSearching={isSearching}
-                  searchError={searchError}
-                  lookupResults={lookupResults}
-                />
-                
-                {lookupResults.length === 0 ? (
-                  <Card className="text-center py-12 cyber-card">
-                    <CardContent>
-                      <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                      <h3 className="text-lg font-semibold text-white mb-2">No bookings found</h3>
-                      <p className="text-gray-300 mb-6">Enter your email and phone number above to find your bookings!</p>
-                      <button onClick={() => setCurrentFlow('main')} className="cyber-button">
-                        Book a Session
-                      </button>
-                    </CardContent>
-                  </Card>
-                ) : (
-                  lookupResults.map((booking) => (
+
+                    console.log('Making API request to:', `/api/bookings?${params}`)
+                    const response = await fetch(`/api/bookings?${params}`)
+                    console.log('Search API response status:', response.status)
+                     
+                    const result = await response.json()
+                    console.log('Search API result:', result)
+
+                    if (!response.ok) {
+                      throw new Error(result.error || 'Failed to find bookings')
+                    }
+
+                    setLookupResults(result.bookings || [])
+                    console.log('Found bookings:', result.bookings)
+                    console.log('Set lookup results:', result.bookings?.length || 0)
+                     
+                  } catch (error) {
+                    console.error('Error looking up bookings:', error)
+                    setSearchError('Failed to find bookings. Please check your details and try again.')
+                    setLookupResults([])
+                  } finally {
+                    setIsSearching(false)
+                  }
+                }}
+                isSearching={isSearching}
+                searchError={searchError}
+                lookupResults={lookupResults}
+              />
+              
+              {lookupResults.length === 0 ? (
+                <Card className="text-center py-12 cyber-card mt-6">
+                  <CardContent>
+                    <Calendar className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-lg font-semibold text-white mb-2">No bookings found</h3>
+                    <p className="text-gray-300 mb-6">Enter your email and phone number above to find your bookings!</p>
+                    <button onClick={() => setCurrentFlow('main')} className="cyber-button">
+                      Book a Session
+                    </button>
+                  </CardContent>
+                </Card>
+              ) : (
+                <div className="space-y-6 mt-6">
+                  {lookupResults.map((booking) => (
                     <Card key={booking.id} className="hover:shadow-md transition-shadow cyber-card">
                       <CardContent className="p-6">
                         <div className="flex items-center justify-between mb-4">
@@ -1065,7 +1067,12 @@ export default function BookingSystem() {
                           <div className="flex items-center space-x-2">
                             <Users className="h-4 w-4 text-slate-400" />
                             <div>
-                              <p className="text-sm font-medium text-white">{booking.adults || 0} adults, {booking.children || 0} children</p>
+                              <p className="text-sm font-medium text-white">
+                                {booking.bookingType === 'party' 
+                                  ? `${booking.adults || 0} players` 
+                                  : `${booking.adults || 0} adults, ${booking.children || 0} children`
+                                }
+                              </p>
                               <p className="text-xs text-slate-400">Contact: {booking.contactName || 'Not provided'}</p>
                             </div>
                           </div>
@@ -1085,13 +1092,9 @@ export default function BookingSystem() {
                         </div>
                       </CardContent>
                     </Card>
-                  ))
-                )}
-              </div>
-              
-              <div>
-                <CalendarView bookings={lookupResults} />
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         </div>
