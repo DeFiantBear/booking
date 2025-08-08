@@ -133,9 +133,9 @@ export const supabaseDb = {
     }
     
     // Map the booking data to match the actual column names
-    // Use UUID for Supabase compatibility
+    // Use proper UUID for Supabase compatibility
     const mappedBooking = {
-      id: generateUUID(), // Use UUID instead of custom ID
+      id: generateUUID(), // Use proper UUID format
       date: cleanBooking.date,
       starttime: cleanBooking.startTime,
       duration: cleanBooking.duration,

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { supabase, BOOKINGS_TABLE } from '@/lib/supabase'
+import { generateUUID } from '@/lib/utils'
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
     
     // Try to get table info by attempting an insert with minimal data
     const testBooking = {
-      id: 'test-' + Date.now(),
+      id: generateUUID(), // Use proper UUID format
       date: '2025-01-01',
       starttime: '12:00',
       duration: 1,

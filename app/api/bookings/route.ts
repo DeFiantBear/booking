@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { addBooking, getBookingsByContact, isTimeSlotAvailable, getAvailableTimeSlots } from '@/lib/database'
-import { generateBookingId, validateEmail, validatePhone } from '@/lib/utils'
+import { generateUUID, validateEmail, validatePhone } from '@/lib/utils'
 import { Booking } from '@/lib/types'
 import { testSupabaseConnection } from '@/lib/supabase'
 
@@ -98,9 +98,9 @@ export async function POST(request: NextRequest) {
 
     console.log('✅ Time slot available, creating booking...')
 
-    // Create booking
+    // Create booking with UUID format
     const booking: Booking = {
-      id: generateBookingId(),
+      id: generateUUID(), // Use UUID format for Supabase compatibility
       date,
       startTime,
       duration,
