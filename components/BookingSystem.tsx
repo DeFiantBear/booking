@@ -103,13 +103,34 @@ function StripePaymentForm({
   }
 
   return (
-    <button
-      onClick={handleStripePayment}
-      disabled={isSubmitting || !stripe}
-      className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-    >
-      {isSubmitting ? 'Processing Payment...' : `Pay ${formatPrice(totalPrice)}`}
-    </button>
+    <div className="space-y-4">
+      <div className="p-4 border border-gray-600 rounded-lg bg-gray-900/50">
+        <Label htmlFor="card-element" className="text-white text-sm font-medium mb-2 block">
+          Card Details
+        </Label>
+        <CardElement
+          id="card-element"
+          options={{
+            style: {
+              base: {
+                fontSize: '16px',
+                color: '#ffffff',
+                '::placeholder': {
+                  color: '#9ca3af',
+                },
+              },
+            },
+          }}
+        />
+      </div>
+      <button
+        onClick={handleStripePayment}
+        disabled={isSubmitting || !stripe}
+        className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isSubmitting ? 'Processing Payment...' : `Pay ${formatPrice(totalPrice)}`}
+      </button>
+    </div>
   )
 }
 
