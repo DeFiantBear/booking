@@ -44,7 +44,6 @@ export default function BookingSystem() {
   const [contactEmail, setContactEmail] = useState('')
   const [contactPhone, setContactPhone] = useState('')
   const [specialRequests, setSpecialRequests] = useState('')
-  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'card'>('cash')
 
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
@@ -149,7 +148,6 @@ export default function BookingSystem() {
         contactEmail,
         contactPhone,
         specialRequests,
-        paymentMethod,
         bookingType: currentFlow === 'vr-booking' ? 'vr' : 'party',
         partyPackage: currentFlow === 'party-booking' ? selectedPartyPackage : undefined
       }
@@ -228,7 +226,6 @@ export default function BookingSystem() {
     setContactPhone('')
     setSpecialRequests('')
     setSelectedPartyPackage('')
-    setPaymentMethod('cash')
   }
 
   const getMinDate = () => {
@@ -283,7 +280,6 @@ export default function BookingSystem() {
                   <img src="/logo.svg" alt="SECOND CITY STUDIO" className="h-20 mx-auto" />
                 </div>
                 <h2 className="text-2xl font-bold text-white mb-2">Booking Confirmed!</h2>
-                <p className="text-gray-300">Please screenshot this confirmation for your records</p>
               </div>
 
               <div className="space-y-4 mb-6">
@@ -354,7 +350,7 @@ export default function BookingSystem() {
                 <div className="bg-yellow-900/20 border border-yellow-500 p-4 rounded-lg">
                   <h3 className="text-lg font-semibold text-yellow-400 mb-2">Payment Instructions</h3>
                   <p className="text-yellow-300">
-                    Please pay <strong>{formatPrice(confirmedBooking.totalPrice)}</strong> in {confirmedBooking.paymentMethod} when you arrive at the venue.
+                    Please pay <strong>{formatPrice(confirmedBooking.totalPrice)}</strong> in cash or card when you arrive at the venue.
                   </p>
                 </div>
               </div>
@@ -613,32 +609,13 @@ export default function BookingSystem() {
                 <CardTitle className="text-white">Payment Method</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="cash"
-                      checked={paymentMethod === 'cash'}
-                      onChange={(e) => setPaymentMethod(e.target.value as 'cash' | 'card')}
-                      className="text-blue-500"
-                    />
-                    <span className="text-white">Cash</span>
-                  </label>
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="card"
-                      checked={paymentMethod === 'card'}
-                      onChange={(e) => setPaymentMethod(e.target.value as 'cash' | 'card')}
-                      className="text-blue-500"
-                    />
-                    <span className="text-white">Card</span>
-                  </label>
-                  <p className="text-sm text-gray-400 mt-2">
-                    Payment will be collected when you arrive at the venue.
-                  </p>
+                <div className="text-center">
+                  <div className="bg-blue-900/20 border border-blue-500 p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold text-blue-400 mb-2">Pay at Venue</h3>
+                    <p className="text-blue-300">
+                      Payment will be collected when you arrive at the venue.
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -880,32 +857,13 @@ export default function BookingSystem() {
                 <CardTitle className="text-white">Payment Method</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-3">
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="cash"
-                      checked={paymentMethod === 'cash'}
-                      onChange={(e) => setPaymentMethod(e.target.value as 'cash' | 'card')}
-                      className="text-blue-500"
-                    />
-                    <span className="text-white">Cash</span>
-                  </label>
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="card"
-                      checked={paymentMethod === 'card'}
-                      onChange={(e) => setPaymentMethod(e.target.value as 'cash' | 'card')}
-                      className="text-blue-500"
-                    />
-                    <span className="text-white">Card</span>
-                  </label>
-                  <p className="text-sm text-gray-400 mt-2">
-                    Payment will be collected when you arrive at the venue.
-                  </p>
+                <div className="text-center">
+                  <div className="bg-blue-900/20 border border-blue-500 p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold text-blue-400 mb-2">Pay at Venue</h3>
+                    <p className="text-blue-300">
+                      Payment will be collected when you arrive at the venue.
+                    </p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
