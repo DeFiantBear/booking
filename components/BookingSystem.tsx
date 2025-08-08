@@ -64,6 +64,7 @@ export default function BookingSystem() {
   const [lookupDate, setLookupDate] = useState('')
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null)
+  const [isLoadingTimes, setIsLoadingTimes] = useState(false)
 
   // Calculate total price based on current flow
   const totalPrice = currentFlow === 'vr-booking' 
@@ -94,25 +95,40 @@ export default function BookingSystem() {
 
   // Update available times when date or duration changes
   React.useEffect(() => {
-    if (selectedDate && duration) {
-      // Fetch available times from server
-      fetch(`/api/availability?date=${selectedDate}&duration=${duration}`)
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            setAvailableTimes(data.availableSlots)
+    if (selectedDate) {
+      // Determine the duration based on current flow
+      let currentDuration = duration
+      if (currentFlow === 'party-booking' && selectedPartyPackage) {
+        const selectedPackage = PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)
+        currentDuration = selectedPackage ? selectedPackage.duration : 2.5
+      }
+      
+      if (currentDuration) {
+        setIsLoadingTimes(true)
+        setAvailableTimes([]) // Clear previous times immediately
+        
+        // Fetch available times from server
+        fetch(`/api/availability?date=${selectedDate}&duration=${currentDuration}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              setAvailableTimes(data.availableSlots)
+              setSelectedTime('')
+            }
+          })
+          .catch(error => {
+            console.error('Error fetching available times:', error)
+            // Fallback to client-side calculation
+            const times = getAvailableTimeSlots(new Date(selectedDate), currentDuration)
+            setAvailableTimes(times)
             setSelectedTime('')
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching available times:', error)
-          // Fallback to client-side calculation
-          const times = getAvailableTimeSlots(new Date(selectedDate), duration)
-          setAvailableTimes(times)
-          setSelectedTime('')
-        })
+          })
+          .finally(() => {
+            setIsLoadingTimes(false)
+          })
+      }
     }
-  }, [selectedDate, duration])
+  }, [selectedDate, duration, currentFlow, selectedPartyPackage])
 
   const handleDateChange = (date: string) => {
     setSelectedDate(date)
@@ -801,22 +817,30 @@ export default function BookingSystem() {
                      />
                    </div>
 
-                   <div>
-                     <label className="block text-sm font-medium mb-2 text-gray-300">Start Time</label>
-                     <select
-                       value={selectedTime}
-                       onChange={(e) => handleTimeChange(e.target.value)}
-                       className="cyber-input w-full text-base"
-                       disabled={!selectedDate}
-                     >
-                       <option value="">Select time</option>
-                       {availableTimes.map((time) => (
-                         <option key={time} value={time}>
-                           {format(parseISO(`2000-01-01T${time}`), 'h:mm a')}
-                         </option>
-                       ))}
-                     </select>
-                   </div>
+                                     <div>
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Start Time</label>
+                    <select
+                      value={selectedTime}
+                      onChange={(e) => handleTimeChange(e.target.value)}
+                      className="cyber-input w-full text-base"
+                      disabled={!selectedDate || isLoadingTimes}
+                    >
+                      <option value="">
+                        {isLoadingTimes ? 'Loading times...' : 'Select time'}
+                      </option>
+                      {availableTimes.map((time) => (
+                        <option key={time} value={time}>
+                          {format(parseISO(`2000-01-01T${time}`), 'h:mm a')}
+                        </option>
+                      ))}
+                    </select>
+                    {isLoadingTimes && (
+                      <div className="mt-2 text-sm text-blue-400 flex items-center">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-400 mr-2"></div>
+                        Loading available times...
+                      </div>
+                    )}
+                  </div>
 
                    <div>
                      <label className="block text-sm font-medium mb-2 text-gray-300">Duration</label>

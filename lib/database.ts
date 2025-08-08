@@ -221,8 +221,27 @@ export const getAvailableTimeSlots = async (date: string, duration: number): Pro
   const { TIME_SLOTS, BUSINESS_HOURS } = require('./constants')
   const availableSlots: string[] = []
   
+  // Load all bookings for this date ONCE instead of making individual calls
+  const bookings = await loadBookings()
+  const dateBookings = bookings.filter(booking => booking.date === date)
+  
   for (const time of TIME_SLOTS) {
-    if (await isTimeSlotAvailable(date, time, duration)) {
+    // Check availability in memory instead of making database calls
+    const isAvailable = !dateBookings.some(booking => {
+      const bookingStartMinutes = timeToMinutes(booking.startTime)
+      const bookingEndMinutes = bookingStartMinutes + (booking.duration * 60)
+      const slotStartMinutes = timeToMinutes(time)
+      const slotEndMinutes = slotStartMinutes + (duration * 60)
+      
+      // Check for overlap
+      return (
+        (slotStartMinutes >= bookingStartMinutes && slotStartMinutes < bookingEndMinutes) ||
+        (slotEndMinutes > bookingStartMinutes && slotEndMinutes <= bookingEndMinutes) ||
+        (slotStartMinutes <= bookingStartMinutes && slotEndMinutes >= bookingEndMinutes)
+      )
+    })
+    
+    if (isAvailable) {
       availableSlots.push(time)
     }
   }
