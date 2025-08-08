@@ -405,21 +405,18 @@ export default function BookingSystem() {
                 <div className="bg-yellow-900/20 border border-yellow-500 p-4 rounded-lg">
                   <h3 className="text-lg font-semibold text-yellow-400 mb-2">Payment Instructions</h3>
                   <p className="text-yellow-300">
-                    Please pay <strong>{formatPrice(confirmedBooking.totalPrice)}</strong> in cash when you arrive at the venue.
+                    Please pay <strong>{formatPrice(confirmedBooking.totalPrice)}</strong> in cash or card when you arrive at the venue.
                   </p>
                 </div>
               </div>
 
               <div className="text-center space-y-3">
-                <Button 
+                                <Button
                   onClick={closeConfirmation}
                   className="cyber-button w-full"
                 >
                   Done
                 </Button>
-                <p className="text-xs text-gray-400">
-                  A confirmation email has been sent to {confirmedBooking.contactEmail}
-                </p>
               </div>
             </CardContent>
           </Card>
