@@ -638,16 +638,16 @@ export default function BookingSystem() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
               {PARTY_PACKAGES.map((pkg) => (
-                <Card key={pkg.id} className="cyber-card hover:border-blue-500 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20">
-                  <CardHeader className="text-center p-4 sm:p-6">
-                    <CardTitle className="text-xl sm:text-2xl capitalize text-white">{pkg.name} Package</CardTitle>
-                    <div className="text-2xl sm:text-3xl font-bold text-blue-400">£{pkg.price}</div>
-                    <div className="text-xs sm:text-sm text-gray-400">per person • {pkg.duration} hours</div>
-                  </CardHeader>
-                  <CardContent className="p-4 sm:p-6">
-                    <p className="text-center mb-4 text-gray-300 text-sm sm:text-base">{pkg.description}</p>
-                    <ul className="space-y-2 mb-6">
-                                             {pkg.includes.map((item, index) => (
+                                 <Card key={pkg.id} className="cyber-card hover:border-blue-500 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-500/20 flex flex-col h-full">
+                   <CardHeader className="text-center p-4 sm:p-6">
+                     <CardTitle className="text-xl sm:text-2xl capitalize text-white">{pkg.name} Package</CardTitle>
+                     <div className="text-2xl sm:text-3xl font-bold text-blue-400">£{pkg.price}</div>
+                     <div className="text-xs sm:text-sm text-gray-400">per person • {pkg.duration} hours</div>
+                   </CardHeader>
+                   <CardContent className="p-4 sm:p-6 flex flex-col flex-1">
+                     <p className="text-center mb-4 text-gray-300 text-sm sm:text-base">{pkg.description}</p>
+                     <ul className="space-y-2 mb-6 flex-1">
+                                              {pkg.includes.map((item, index) => (
                          <li key={index} className="flex items-center text-sm text-gray-300">
                            <CheckCircle className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
                            {item}
@@ -656,7 +656,7 @@ export default function BookingSystem() {
                     </ul>
                                          <button 
                        onClick={() => selectPartyPackage(pkg.id)}
-                       className="cyber-button w-full"
+                       className="cyber-button w-full mt-auto"
                      >
                        Select {pkg.name} Package
                      </button>
@@ -701,31 +701,31 @@ export default function BookingSystem() {
     )
   }
 
-  // Party Booking Form
-  if (currentFlow === 'party-booking') {
-    return (
-      <div className="min-h-screen bg-black">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-8">
-              <button 
-                onClick={goBack}
-                className="cyber-button mb-4"
-              >
-                ← Back to Packages
-              </button>
-              <h1 className="text-4xl font-bold text-white mb-4">Party Booking</h1>
-              <p className="text-gray-300">
-                {PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.name} Package Selected
-              </p>
-            </div>
+     // Party Booking Form
+   if (currentFlow === 'party-booking') {
+     return (
+       <div className="min-h-screen bg-black">
+         <div className="container mx-auto px-4 py-4 sm:py-8">
+           <div className="max-w-4xl mx-auto">
+             <div className="text-center mb-6 sm:mb-8">
+               <button 
+                 onClick={goBack}
+                 className="cyber-button mb-4 text-sm sm:text-base"
+               >
+                 ← Back to Packages
+               </button>
+               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">Party Booking</h1>
+               <p className="text-base sm:text-lg text-gray-300">
+                 {PARTY_PACKAGES.find(pkg => pkg.id === selectedPartyPackage)?.name} Package Selected
+               </p>
+             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               {/* Date & Time Selection */}
               <Card className="cyber-card">
                 <CardHeader>
                   <CardTitle className="flex items-center text-white">
-                    <Calendar className="h-5 w-5 mr-2 text-cyan-400" />
+                    <Calendar className="h-5 w-5 mr-2 text-blue-400" />
                     Select Date & Time
                   </CardTitle>
                 </CardHeader>
@@ -824,11 +824,11 @@ export default function BookingSystem() {
               </Card>
             </div>
 
-                         {/* Contact Information */}
-             <Card className="mt-8 cyber-card">
-               <CardHeader>
-                 <CardTitle className="text-white">Contact Information</CardTitle>
-               </CardHeader>
+                                                   {/* Contact Information */}
+              <Card className="mt-6 sm:mt-8 cyber-card">
+                <CardHeader>
+                  <CardTitle className="text-white text-lg sm:text-xl">Contact Information</CardTitle>
+                </CardHeader>
                <CardContent>
                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                    <div>
@@ -875,11 +875,11 @@ export default function BookingSystem() {
                </CardContent>
              </Card>
 
-                         {/* Payment Method */}
-             <Card className="mt-8 cyber-card">
-               <CardHeader>
-                 <CardTitle className="text-white">Payment Method</CardTitle>
-               </CardHeader>
+                                                   {/* Payment Method */}
+              <Card className="mt-6 sm:mt-8 cyber-card">
+                <CardHeader>
+                  <CardTitle className="text-white text-lg sm:text-xl">Payment Method</CardTitle>
+                </CardHeader>
                <CardContent>
                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                    <button
@@ -922,16 +922,16 @@ export default function BookingSystem() {
                </CardContent>
              </Card>
 
-                         {/* Book Button */}
-             <div className="mt-8 text-center">
-               <button
-                 onClick={handleBooking}
-                 disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
-                 className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-               >
-                 {isSubmitting ? 'Processing...' : `Book Party - ${formatPrice(totalPrice)}`}
-               </button>
-             </div>
+                                                   {/* Book Button */}
+              <div className="mt-6 sm:mt-8 text-center">
+                <button
+                  onClick={handleBooking}
+                  disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
+                  className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Processing...' : `Book Party - ${formatPrice(totalPrice)}`}
+                </button>
+              </div>
           </div>
         </div>
       </div>
