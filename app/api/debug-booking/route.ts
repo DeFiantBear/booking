@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       id: generateUUID(),
       date: body.date || '2025-01-01',
       starttime: body.startTime || '12:00',
-      duration: Number(body.duration) || 1,
+      duration: Math.round((Number(body.duration) || 1) * 60), // Convert hours to minutes
       adults: Number(body.adults) || 1,
       children: Number(body.children) || 0,
       totalprice: Number(body.totalPrice) || 15,

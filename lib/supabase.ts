@@ -50,7 +50,7 @@ export const supabaseDb = {
       id: booking.id,
       date: booking.date,
       startTime: booking.starttime,
-      duration: booking.duration,
+      duration: booking.duration / 60, // Convert minutes back to hours
       adults: booking.adults,
       children: booking.children,
       totalPrice: booking.totalprice,
@@ -89,7 +89,7 @@ export const supabaseDb = {
       id: booking.id,
       date: booking.date,
       startTime: booking.starttime,
-      duration: booking.duration,
+      duration: booking.duration / 60, // Convert minutes back to hours
       adults: booking.adults,
       children: booking.children,
       totalPrice: booking.totalprice,
@@ -115,7 +115,7 @@ export const supabaseDb = {
     const cleanBooking = {
       date: String(booking.date),
       startTime: String(booking.startTime),
-      duration: Number(booking.duration),
+      duration: Number(booking.duration), // Keep as number, let Supabase handle conversion
       adults: Number(booking.adults),
       children: Number(booking.children),
       totalPrice: Number(booking.totalPrice),
@@ -138,7 +138,7 @@ export const supabaseDb = {
       id: generateUUID(), // Use proper UUID format
       date: cleanBooking.date,
       starttime: cleanBooking.startTime,
-      duration: cleanBooking.duration,
+      duration: Math.round(cleanBooking.duration * 60), // Convert hours to minutes for integer storage
       adults: cleanBooking.adults,
       children: cleanBooking.children,
       totalprice: cleanBooking.totalPrice,
