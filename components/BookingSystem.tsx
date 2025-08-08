@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Calendar, Clock, Users, CreditCard, Wallet, CheckCircle, XCircle, Gamepad2, PartyPopper } from 'lucide-react'
+import { Calendar, Clock, Users, CheckCircle, XCircle, Gamepad2, PartyPopper } from 'lucide-react'
 import { format, addDays, isAfter, isBefore, parseISO, startOfDay } from 'date-fns'
 import { 
   calculateSessionPrice, 
@@ -50,7 +50,7 @@ export default function BookingSystem() {
   const [contactEmail, setContactEmail] = useState('')
   const [contactPhone, setContactPhone] = useState('')
   const [specialRequests, setSpecialRequests] = useState('')
-  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'usdc' | 'cash'>('stripe')
+  const [paymentMethod, setPaymentMethod] = useState<'stripe' | 'usdc' | 'cash'>('cash')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState('')
   const [availableTimes, setAvailableTimes] = useState<string[]>([])
@@ -224,33 +224,6 @@ export default function BookingSystem() {
         alert('Booking confirmed! Please pay at the venue.')
         resetForm()
         setCurrentFlow('main')
-      } else if (paymentMethod === 'stripe') {
-        // Handle Stripe payment
-        const paymentResponse = await fetch('/api/create-payment-intent', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            amount: totalPrice * 100, // Convert to pence
-            bookingId: result.booking.id,
-          }),
-        })
-
-        if (paymentResponse.ok) {
-          const paymentResult = await paymentResponse.json()
-          // Redirect to Stripe payment
-          window.location.href = `/payment?client_secret=${paymentResult.client_secret}`
-        } else {
-          setSubmitError('Failed to create payment. Please try again.')
-        }
-      } else if (paymentMethod === 'usdc') {
-        // Handle USDC payment (mocked)
-        console.log('USDC payment - customer will pay with USDC')
-        alert('USDC payment option selected. Payment will be processed separately.')
-        resetForm()
-        setCurrentFlow('main')
-      }
 
     } catch (error) {
       console.error('Error creating booking:', error)
@@ -563,52 +536,7 @@ export default function BookingSystem() {
               </CardContent>
             </Card>
 
-            {/* Payment Method */}
-            <Card className="mt-6 sm:mt-8 cyber-card">
-              <CardHeader>
-                <CardTitle className="text-white text-lg sm:text-xl">Payment Method</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('stripe')}
-                    className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
-                      paymentMethod === 'stripe'
-                        ? 'border-blue-500 bg-blue-600 text-white'
-                        : 'border-slate-600 text-slate-300 hover:border-slate-500'
-                    }`}
-                  >
-                    <CreditCard className="h-4 w-4" />
-                    <span>Credit/Debit Card</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('usdc')}
-                    className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
-                      paymentMethod === 'usdc'
-                        ? 'border-blue-500 bg-blue-600 text-white'
-                        : 'border-slate-600 text-slate-300 hover:border-slate-500'
-                    }`}
-                  >
-                    <Wallet className="h-4 w-4" />
-                    <span>USDC (Crypto)</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPaymentMethod('cash')}
-                    className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
-                      paymentMethod === 'cash'
-                        ? 'border-blue-500 bg-blue-600 text-white'
-                        : 'border-slate-600 text-slate-300 hover:border-slate-500'
-                    }`}
-                  >
-                    <span>💵</span>
-                    <span>Pay at Venue</span>
-                  </button>
-                </div>
-              </CardContent>
-            </Card>
+
 
             {/* Book Button */}
             <div className="mt-6 sm:mt-8 text-center">
@@ -894,52 +822,7 @@ export default function BookingSystem() {
                </CardContent>
              </Card>
 
-                                                   {/* Payment Method */}
-              <Card className="mt-6 sm:mt-8 cyber-card">
-                <CardHeader>
-                  <CardTitle className="text-white text-lg sm:text-xl">Payment Method</CardTitle>
-                </CardHeader>
-               <CardContent>
-                 <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                   <button
-                     type="button"
-                     onClick={() => setPaymentMethod('stripe')}
-                     className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
-                       paymentMethod === 'stripe'
-                         ? 'border-blue-500 bg-blue-600 text-white'
-                         : 'border-gray-600 text-gray-300 hover:border-gray-500'
-                     }`}
-                   >
-                     <CreditCard className="h-4 w-4" />
-                     <span>Credit/Debit Card</span>
-                   </button>
-                   <button
-                     type="button"
-                     onClick={() => setPaymentMethod('usdc')}
-                     className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
-                       paymentMethod === 'usdc'
-                         ? 'border-blue-500 bg-blue-600 text-white'
-                         : 'border-gray-600 text-gray-300 hover:border-gray-500'
-                     }`}
-                   >
-                     <Wallet className="h-4 w-4" />
-                     <span>USDC (Crypto)</span>
-                   </button>
-                   <button
-                     type="button"
-                     onClick={() => setPaymentMethod('cash')}
-                     className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
-                       paymentMethod === 'cash'
-                         ? 'border-blue-500 bg-blue-600 text-white'
-                         : 'border-gray-600 text-gray-300 hover:border-gray-500'
-                     }`}
-                   >
-                     <span>💵</span>
-                     <span>Pay at Venue</span>
-                   </button>
-                 </div>
-               </CardContent>
-             </Card>
+
 
                                                    {/* Book Button */}
               <div className="mt-6 sm:mt-8 text-center">

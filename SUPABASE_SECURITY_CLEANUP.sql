@@ -1,12 +1,22 @@
 -- =====================================================
--- SUPABASE SECURITY SETUP FOR BOOKING SYSTEM
+-- CLEANUP EXISTING POLICIES AND APPLY SECURE ONES
 -- =====================================================
 
--- Enable Row Level Security on the bookings table
+-- First, drop all existing policies on the bookings table
+DROP POLICY IF EXISTS "Allow public read access to bookings" ON bookings;
+DROP POLICY IF EXISTS "Allow public insert for new bookings" ON bookings;
+DROP POLICY IF EXISTS "Allow public update booking status" ON bookings;
+DROP POLICY IF EXISTS "Allow public read access to own bookings" ON bookings;
+
+-- =====================================================
+-- NOW APPLY SECURE POLICIES
+-- =====================================================
+
+-- Enable Row Level Security on the bookings table (if not already enabled)
 ALTER TABLE bookings ENABLE ROW LEVEL SECURITY;
 
 -- =====================================================
--- POLICY 1: Allow public read access to all bookings
+-- POLICY 1: Allow public read access to all bookings (for lookup)
 -- This allows the booking lookup functionality to work
 -- =====================================================
 CREATE POLICY "Allow public read access to bookings" ON bookings
@@ -20,15 +30,13 @@ CREATE POLICY "Allow public insert for new bookings" ON bookings
 FOR INSERT WITH CHECK (true);
 
 -- =====================================================
--- POLICY 3: Allow public update for booking status only
--- This allows updating payment status, etc. but not core data
+-- POLICY 3: NO PUBLIC UPDATE ACCESS (SECURE)
+-- No one can modify existing bookings through public API
 -- =====================================================
-CREATE POLICY "Allow public update booking status" ON bookings
-FOR UPDATE USING (true)
-WITH CHECK (true);
+-- No update policy = no public update access
 
 -- =====================================================
--- POLICY 4: NO DELETE ACCESS (Security by default)
+-- POLICY 4: NO DELETE ACCESS (SECURE)
 -- No one can delete bookings through the API
 -- =====================================================
 -- No policy created = no delete access
@@ -48,16 +56,8 @@ FROM pg_policies
 WHERE tablename = 'bookings';
 
 -- =====================================================
--- OPTIONAL: Add rate limiting at application level
+-- SECURITY SUMMARY:
 -- =====================================================
--- Consider implementing rate limiting in your Next.js API routes
--- to prevent spam bookings from the same IP address
-
--- =====================================================
--- NOTES:
--- =====================================================
--- 1. These policies allow public read/write access but prevent deletion
--- 2. The update policy is restrictive to prevent data tampering
--- 3. For production, consider adding authentication for admin functions
--- 4. Monitor your Supabase logs for any policy violations
--- 5. Test thoroughly after applying these policies 
+-- ✅ Public CAN: Read all bookings, Create new bookings
+-- ❌ Public CANNOT: Update existing bookings, Delete any bookings
+-- 🔒 Admin functions should use service role key for full access 
