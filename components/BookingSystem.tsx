@@ -149,7 +149,7 @@ export default function BookingSystem() {
         date: selectedDate,
         startTime: selectedTime,
         duration: currentFlow === 'vr-booking' ? duration : 2.5,
-        adults: currentFlow === 'vr-booking' ? adults : 0,
+        adults: currentFlow === 'vr-booking' ? adults : players,
         children: currentFlow === 'vr-booking' ? children : 0,
         totalPrice,
         contactName,
@@ -161,6 +161,11 @@ export default function BookingSystem() {
         partyPackage: currentFlow === 'party-booking' ? selectedPartyPackage : undefined
       }
 
+      console.log('🎯 Submitting booking data:', bookingData)
+      console.log('🎯 Current flow:', currentFlow)
+      console.log('🎯 Players count:', players)
+      console.log('🎯 Selected party package:', selectedPartyPackage)
+
       const response = await fetch('/api/bookings', {
         method: 'POST',
         headers: {
@@ -170,8 +175,11 @@ export default function BookingSystem() {
       })
 
       const result = await response.json()
+      console.log('🎯 API Response status:', response.status)
+      console.log('🎯 API Response result:', result)
 
       if (!response.ok) {
+        console.log('❌ API Error:', result)
         if (response.status === 409) {
           setSubmitError('This time slot is no longer available. Please select a different time.')
         } else {
@@ -179,6 +187,8 @@ export default function BookingSystem() {
         }
         return
       }
+
+      console.log('✅ Booking created successfully:', result.booking)
 
       // Handle payment based on method
       if (paymentMethod === 'cash') {
