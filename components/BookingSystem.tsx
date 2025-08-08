@@ -343,8 +343,9 @@ export default function BookingSystem() {
         console.log('✅ Booking created successfully:', result.booking)
       }
 
-      // Handle payment based on method
-      if (paymentMethod === 'cash') {
+        // Handle payment based on method
+  // Updated: Stripe payments now fully integrated
+  if (paymentMethod === 'cash') {
         console.log('Cash payment - customer will pay at venue')
         // Create calendar event for cash payments
         const calendarResponse = await fetch('/api/calendar', {
