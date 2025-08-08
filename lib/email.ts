@@ -139,7 +139,7 @@ function generateCustomerEmailHTML(data: EmailData): string {
             <p><strong>Booking ID:</strong> ${data.bookingId}</p>
             <p><strong>Date:</strong> ${formattedDate}</p>
             <p><strong>Time:</strong> ${formattedTime} - ${formattedEndTime}</p>
-            <p><strong>Duration:</strong> ${data.duration} hour${data.duration > 1 ? 's' : ''}</p>
+            <p><strong>Duration:</strong> ${data.bookingType === 'party' ? '2 hours' : `${data.duration} hour${data.duration > 1 ? 's' : ''}`}</p>
             <p><strong>Session Type:</strong> ${data.bookingType}</p>
             ${data.partyPackage ? `<p><strong>Package:</strong> ${data.partyPackage}</p>` : ''}
             
@@ -223,7 +223,7 @@ function generateAdminEmailHTML(data: EmailData): string {
             <p><strong>Booking ID:</strong> ${data.bookingId}</p>
             <p><strong>Date:</strong> ${formattedDate}</p>
             <p><strong>Time:</strong> ${formattedTime}</p>
-            <p><strong>Duration:</strong> ${data.duration} hour${data.duration > 1 ? 's' : ''}</p>
+            <p><strong>Duration:</strong> ${data.bookingType === 'party' ? '2 hours' : `${data.duration} hour${data.duration > 1 ? 's' : ''}`}</p>
             <p><strong>Session Type:</strong> ${data.bookingType}</p>
             ${data.partyPackage ? `<p><strong>Package:</strong> ${data.partyPackage}</p>` : ''}
             
