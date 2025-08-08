@@ -886,7 +886,7 @@ export default function BookingSystem() {
                          🎉 <strong>Party Time Details:</strong>
                        </p>
                        <ul className="text-xs text-blue-300 space-y-1 ml-4">
-                         <li>• <strong>2 hours of epic gaming</strong> with 15 min buffer for cake time & setup</li>
+                         <li>• <strong>2 hours of epic gaming</strong> with 30 min buffer for cake time & setup</li>
                          <li>• <strong>🍷 Adult Events (18+):</strong> Feel free to bring your own alcohol</li>
                          <li>• <strong>🍕 Food:</strong> Feel free to order food while you're here</li>
                          <li>• <strong>❓ Questions?</strong> Any special requests? Reach out to us!</li>

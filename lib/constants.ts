@@ -21,13 +21,13 @@ export const PARTY_PACKAGES: PartyPackage[] = [
     id: 'silver',
     name: 'silver',
     price: 15, // £15 per head
-    duration: 2.5, // 2 hours + 15 min buffer each side
+    duration: 3, // 2 hours + 30 min buffer each side
     maxGuests: 10,
     description: 'SILVER GAMING PARTY - The Ultimate Console Gaming Experience! 🎮',
     includes: [
       '£15 per head',
       'Max 10 players',
-      '2 hours epic gaming time with 15 min buffer for cake & setup',
+      '2 hours epic gaming time with 30 min buffer for cake & setup',
       'Console gaming stations only',
       'Unlimited soft drinks & refreshments',
       'Delicious birthday cake with candles',
@@ -39,19 +39,16 @@ export const PARTY_PACKAGES: PartyPackage[] = [
     id: 'gold',
     name: 'gold',
     price: 20, // £20 per head
-    duration: 2.5, // 2 hours + 15 min buffer each side
+    duration: 3, // 2 hours + 30 min buffer each side
     maxGuests: 10,
     description: 'GOLD GAMING PARTY - Premium VR & Console Gaming Adventure! 🚀',
     includes: [
       '£20 per head',
       'Max 10 players',
-      '2 hours epic gaming time with 15 min buffer for cake & setup',
+      '2 hours epic gaming time with 30 min buffer for cake & setup',
+      'Everything from Silver package',
       '6 VR headsets for mind-blowing VR experiences',
-      'Unlimited soft drinks & premium refreshments',
-      'Delicious birthday cake with candles',
       'Console gaming stations',
-      'Extra party decorations & balloons',
-      'Party bags for all guests',
       'Dedicated game master',
       'Priority game selection',
     ],
@@ -60,24 +57,22 @@ export const PARTY_PACKAGES: PartyPackage[] = [
     id: 'platinum',
     name: 'platinum',
     price: 25, // £25 per head
-    duration: 2.5, // 2 hours + 15 min buffer either side
+    duration: 3, // 2 hours + 30 min buffer each side
     maxGuests: 10,
     description: 'PLATINUM GAMING PARTY - The Ultimate Gaming Extravaganza! ⭐',
     includes: [
       '£25 per head',
       'Max 10 players',
-      '2 hours epic gaming time with 15 min buffer for cake & setup',
+      '2 hours epic gaming time with 30 min buffer for cake & setup',
+      'Everything from Gold package',
       '6 VR headsets for incredible VR adventures',
-      'Unlimited soft drinks & premium refreshments',
-      'Delicious birthday cake with candles',
       'Console gaming stations',
-      'Premium party decorations & balloons',
-      'Luxury party bags for all guests',
-      'Party snacks & treats included',
+      'Extra party snacks & treats',
+      'Party bags for all guests',
+      'Balloons included',
       'Dedicated game master',
       'Priority game selection',
       'Custom party playlist',
-      'Party photos & memories',
     ],
   },
 ];
