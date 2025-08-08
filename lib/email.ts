@@ -101,9 +101,9 @@ function generateCustomerEmailHTML(data: EmailData): string {
   });
 
   const startDateTime = new Date(`2000-01-01T${data.startTime}`);
-  // Convert duration from hours back to minutes for calculation
-  const durationInMinutes = data.duration * 60;
-  const endTime = new Date(startDateTime.getTime() + (durationInMinutes * 60 * 1000));
+  // Duration is now in minutes from Supabase, convert to hours for calculation
+  const durationInHours = data.duration / 60;
+  const endTime = new Date(startDateTime.getTime() + (durationInHours * 60 * 60 * 1000));
   const formattedEndTime = endTime.toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit'
@@ -141,7 +141,7 @@ function generateCustomerEmailHTML(data: EmailData): string {
             <p><strong>Booking ID:</strong> ${data.bookingId}</p>
             <p><strong>Date:</strong> ${formattedDate}</p>
             <p><strong>Time:</strong> ${formattedTime} - ${formattedEndTime}</p>
-            <p><strong>Duration:</strong> ${data.bookingType === 'party' ? '2 hours' : `${data.duration} hour${data.duration > 1 ? 's' : ''}`}</p>
+            <p><strong>Duration:</strong> ${data.bookingType === 'party' ? '2 hours' : `${data.duration / 60} hour${(data.duration / 60) > 1 ? 's' : ''}`}</p>
             <p><strong>Session Type:</strong> ${data.bookingType}</p>
             ${data.partyPackage ? `<p><strong>Package:</strong> ${data.partyPackage}</p>` : ''}
             
@@ -225,7 +225,7 @@ function generateAdminEmailHTML(data: EmailData): string {
             <p><strong>Booking ID:</strong> ${data.bookingId}</p>
             <p><strong>Date:</strong> ${formattedDate}</p>
             <p><strong>Time:</strong> ${formattedTime}</p>
-            <p><strong>Duration:</strong> ${data.bookingType === 'party' ? '2 hours' : `${data.duration} hour${data.duration > 1 ? 's' : ''}`}</p>
+            <p><strong>Duration:</strong> ${data.bookingType === 'party' ? '2 hours' : `${data.duration / 60} hour${(data.duration / 60) > 1 ? 's' : ''}`}</p>
             <p><strong>Session Type:</strong> ${data.bookingType}</p>
             ${data.partyPackage ? `<p><strong>Package:</strong> ${data.partyPackage}</p>` : ''}
             
