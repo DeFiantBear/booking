@@ -23,14 +23,17 @@ export const PARTY_PACKAGES: PartyPackage[] = [
     price: 15, // £15 per head
     duration: 2.5, // 2 hours + 15 min buffer each side
     maxGuests: 10,
-    description: 'SILVER GAMING PARTY - Perfect for small groups and birthday parties',
+    description: 'SILVER GAMING PARTY - The Ultimate Console Gaming Experience! 🎮',
     includes: [
       '£15 per head',
       'Max 10 players',
-      '2 hours play time with 15 min buffer either side',
-      'Consoles only',
-      'Cake and candles',
-      'Drinks included',
+      '2 hours epic gaming time with 15 min buffer for cake & setup',
+      '6 VR headsets included for immersive gaming',
+      'Unlimited soft drinks & refreshments',
+      'Delicious birthday cake with candles',
+      'Console gaming stations',
+      'Professional game selection assistance',
+      'Party decorations included',
     ],
   },
   {
@@ -39,14 +42,19 @@ export const PARTY_PACKAGES: PartyPackage[] = [
     price: 20, // £20 per head
     duration: 2.5, // 2 hours + 15 min buffer each side
     maxGuests: 10,
-    description: 'GOLD GAMING PARTY - Enhanced experience with VR gaming',
+    description: 'GOLD GAMING PARTY - Premium VR & Console Gaming Adventure! 🚀',
     includes: [
       '£20 per head',
       'Max 10 players',
-      '2 hours play time with 15 min buffer either side',
-      'Consoles and VR gaming',
-      'Cake and candles',
-      'Drinks included',
+      '2 hours epic gaming time with 15 min buffer for cake & setup',
+      '6 VR headsets for mind-blowing VR experiences',
+      'Unlimited soft drinks & premium refreshments',
+      'Delicious birthday cake with candles',
+      'Console gaming stations',
+      'Extra party decorations & balloons',
+      'Party bags for all guests',
+      'Dedicated game master',
+      'Priority game selection',
     ],
   },
   {
@@ -55,17 +63,22 @@ export const PARTY_PACKAGES: PartyPackage[] = [
     price: 25, // £25 per head
     duration: 2.5, // 2 hours + 15 min buffer either side
     maxGuests: 10,
-    description: 'PLATINUM GAMING PARTY - Ultimate gaming party experience',
+    description: 'PLATINUM GAMING PARTY - The Ultimate Gaming Extravaganza! ⭐',
     includes: [
       '£25 per head',
       'Max 10 players',
-      '2 hours play time with 15 min buffer either side',
-      'Consoles and VR gaming',
-      'Cake and candles',
-      'Drinks included',
-      'Party bags',
-      'Balloons',
-      'Party snacks included',
+      '2 hours epic gaming time with 15 min buffer for cake & setup',
+      '6 VR headsets for incredible VR adventures',
+      'Unlimited soft drinks & premium refreshments',
+      'Delicious birthday cake with candles',
+      'Console gaming stations',
+      'Premium party decorations & balloons',
+      'Luxury party bags for all guests',
+      'Party snacks & treats included',
+      'Dedicated game master',
+      'Priority game selection',
+      'Custom party playlist',
+      'Party photos & memories',
     ],
   },
 ];
