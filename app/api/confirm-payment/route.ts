@@ -7,7 +7,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
-    const { paymentIntentId } = await request.json()
+    const { paymentIntentId, bookingId } = await request.json()
 
     if (!paymentIntentId) {
       return NextResponse.json(
@@ -20,18 +20,26 @@ export async function POST(request: NextRequest) {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId)
 
     if (paymentIntent.status === 'succeeded') {
-      // Payment was successful
-      // Here you would update your booking status in the database
-      const bookingId = paymentIntent.metadata.bookingId
+      // If bookingId is provided, update the payment intent metadata
+      if (bookingId) {
+        await stripe.paymentIntents.update(paymentIntentId, {
+          metadata: {
+            ...paymentIntent.metadata,
+            bookingId,
+          },
+        })
+      }
 
-      // TODO: Update booking status to 'confirmed' and payment status to 'paid'
+      // Payment was successful
+      const finalBookingId = bookingId || paymentIntent.metadata.bookingId
+
       if (process.env.NODE_ENV === 'development') {
-        console.log(`Payment confirmed for booking: ${bookingId}`)
+        console.log(`Payment confirmed for booking: ${finalBookingId}`)
       }
 
       return NextResponse.json({
         success: true,
-        bookingId,
+        bookingId: finalBookingId,
         paymentStatus: 'paid',
         amount: paymentIntent.amount / 100, // Convert from cents
       })

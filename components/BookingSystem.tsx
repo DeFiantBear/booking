@@ -66,24 +66,8 @@ function StripePaymentForm({
     }
 
     try {
-      // First create the booking
-      const bookingResponse = await fetch('/api/bookings', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(bookingData),
-      })
-
-      const bookingResult = await bookingResponse.json()
-      
-      if (!bookingResponse.ok) {
-        onPaymentError(bookingResult.error || 'Failed to create booking')
-        return
-      }
-
-      // Create payment intent with the actual booking ID
-      const clientSecret = await createPaymentIntent(totalPrice, bookingResult.booking.id)
+      // Create payment intent first (without booking ID)
+      const clientSecret = await createPaymentIntent(totalPrice)
       
       // Confirm payment
       const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
@@ -95,6 +79,38 @@ function StripePaymentForm({
       if (error) {
         onPaymentError(error.message || 'Payment failed')
       } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        // Only create booking after successful payment
+        const bookingResponse = await fetch('/api/bookings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...bookingData,
+            paymentStatus: 'paid',
+            status: 'confirmed'
+          }),
+        })
+
+        const bookingResult = await bookingResponse.json()
+        
+        if (!bookingResponse.ok) {
+          onPaymentError(bookingResult.error || 'Failed to create booking')
+          return
+        }
+
+        // Update payment intent with booking ID
+        await fetch('/api/confirm-payment', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            paymentIntentId: paymentIntent.id,
+            bookingId: bookingResult.booking.id
+          }),
+        })
+
         onPaymentSuccess(paymentIntent.id)
       }
     } catch (error) {
@@ -273,20 +289,15 @@ export default function BookingSystem() {
       
       if (confirmResponse.ok) {
         setPaymentSuccess(true)
-        // Update booking status to paid
-        const updateResponse = await fetch(`/api/bookings/${confirmedBooking?.id}`, {
-          method: 'PATCH',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ 
-            paymentStatus: 'paid',
-            status: 'confirmed'
-          }),
-        })
-
-        if (updateResponse.ok) {
-          setConfirmedBooking(prev => prev ? { ...prev, paymentStatus: 'paid', status: 'confirmed' } : null)
+        // The booking was already created with correct status in StripePaymentForm
+        // Just update the local state to show the confirmation
+        if (confirmResult.bookingId) {
+          // Fetch the booking details to show in confirmation
+          const bookingResponse = await fetch(`/api/bookings/${confirmResult.bookingId}`)
+          if (bookingResponse.ok) {
+            const booking = await bookingResponse.json()
+            setConfirmedBooking(booking)
+          }
         }
       } else {
         setPaymentError('Payment confirmation failed')
@@ -364,9 +375,9 @@ export default function BookingSystem() {
         console.log('✅ Booking created successfully:', result.booking)
       }
 
-        // Handle payment based on method
-  // Updated: Stripe payments now fully integrated
-  if (paymentMethod === 'cash') {
+      // Handle payment based on method
+      // Updated: Stripe payments now fully integrated
+      if (paymentMethod === 'cash') {
         console.log('Cash payment - customer will pay at venue')
         // Create calendar event for cash payments
         const calendarResponse = await fetch('/api/calendar', {
@@ -398,7 +409,8 @@ export default function BookingSystem() {
         // For Stripe payments, we'll handle the payment first, then create the booking
         console.log('Stripe payment - will be handled by payment form')
         // Store booking data temporarily and show payment form
-        setConfirmedBooking(result.booking)
+        // The booking will be created after successful payment in StripePaymentForm
+        setConfirmedBooking(null) // No booking yet
         setShowConfirmation(true)
       }
 
@@ -473,7 +485,124 @@ export default function BookingSystem() {
   }
 
   // Confirmation Modal
-  if (showConfirmation && confirmedBooking) {
+  if (showConfirmation) {
+    // For Stripe payments, we might not have confirmedBooking initially
+    if (paymentMethod === 'stripe' && !confirmedBooking) {
+      return (
+        <div className="min-h-screen bg-black flex items-center justify-center px-4 py-8">
+          <div className="max-w-2xl w-full">
+            <Card className="cyber-card">
+              <CardContent className="p-6">
+                <div className="text-center mb-6">
+                  <div className="mb-4">
+                    <img src="/logo.svg" alt="SECOND CITY STUDIO" className="h-20 mx-auto" />
+                  </div>
+                  <h2 className="text-2xl font-bold text-white mb-2">Payment Processing</h2>
+                  <p className="text-gray-300">Please complete your payment to confirm your booking</p>
+                </div>
+
+                <div className="space-y-4 mb-6">
+                  <div className="bg-slate-800 p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold text-white mb-3">Booking Summary</h3>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-sm text-gray-400">Type</p>
+                        <p className="text-white capitalize">
+                          {currentFlow === 'vr-booking' ? 'VR Session' : 
+                           selectedPartyPackage ? `${selectedPartyPackage} Party` : 'Gaming Party'}
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="text-sm text-gray-400">Date</p>
+                        <p className="text-white">
+                          {format(parseISO(selectedDate), 'EEEE, MMMM do, yyyy')}
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="text-sm text-gray-400">Time</p>
+                        <p className="text-white">
+                          {selectedTime} - {currentFlow === 'vr-booking' ? duration : 2.5} hours
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="text-sm text-gray-400">Guests</p>
+                        <p className="text-white">
+                          {currentFlow === 'vr-booking' 
+                            ? `${adults} adults, ${children} children`
+                            : `${players} players`
+                          }
+                        </p>
+                      </div>
+                      
+                      <div>
+                        <p className="text-sm text-gray-400">Total Price</p>
+                        <p className="text-white font-bold text-lg">{formatPrice(totalPrice)}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-slate-800 p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold text-white mb-3">Contact Information</h3>
+                    <div className="space-y-2">
+                      <p className="text-white"><strong>Name:</strong> {contactName}</p>
+                      <p className="text-white"><strong>Email:</strong> {contactEmail}</p>
+                      <p className="text-white"><strong>Phone:</strong> {contactPhone}</p>
+                    </div>
+                  </div>
+
+                  {specialRequests && (
+                    <div className="bg-slate-800 p-4 rounded-lg">
+                      <h3 className="text-lg font-semibold text-white mb-3">Special Requests</h3>
+                      <p className="text-white">{specialRequests}</p>
+                    </div>
+                  )}
+                </div>
+
+                <div className="text-center space-y-3">
+                  <Elements stripe={stripePromise}>
+                    <StripePaymentForm
+                      totalPrice={totalPrice}
+                      onPaymentSuccess={handlePaymentSuccess}
+                      onPaymentError={handlePaymentError}
+                      isSubmitting={isSubmitting}
+                      bookingData={{
+                        date: selectedDate,
+                        startTime: selectedTime,
+                        duration: currentFlow === 'vr-booking' ? duration : 2.5,
+                        adults: currentFlow === 'vr-booking' ? adults : players,
+                        children: currentFlow === 'vr-booking' ? children : 0,
+                        totalPrice,
+                        contactName,
+                        contactEmail,
+                        contactPhone,
+                        specialRequests,
+                        paymentMethod,
+                        bookingType: currentFlow === 'vr-booking' ? 'vr' : 'party',
+                        partyPackage: currentFlow === 'party-booking' ? selectedPartyPackage : undefined
+                      }}
+                    />
+                  </Elements>
+                  
+                  <Button
+                    onClick={() => setShowConfirmation(false)}
+                    className="cyber-button w-full"
+                  >
+                    Back to Booking
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      )
+    }
+
+    // For confirmed bookings (cash payments or successful Stripe payments)
+    if (confirmedBooking) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center px-4 py-8">
         <div className="max-w-2xl w-full">
@@ -555,7 +684,11 @@ export default function BookingSystem() {
                 <div className="bg-yellow-900/20 border border-yellow-500 p-4 rounded-lg">
                   <h3 className="text-lg font-semibold text-yellow-400 mb-2">Payment Instructions</h3>
                   <p className="text-yellow-300">
-                    Please pay <strong>{formatPrice(confirmedBooking.totalPrice)}</strong> in cash or card when you arrive at the venue.
+                    {confirmedBooking.paymentMethod === 'stripe' ? (
+                      <>Payment of <strong>{formatPrice(confirmedBooking.totalPrice)}</strong> has been completed successfully.</>
+                    ) : (
+                      <>Please pay <strong>{formatPrice(confirmedBooking.totalPrice)}</strong> in cash or card when you arrive at the venue.</>
+                    )}
                   </p>
                 </div>
               </div>
@@ -573,6 +706,7 @@ export default function BookingSystem() {
         </div>
       </div>
     )
+  }
   }
 
   // Main Selection Screen

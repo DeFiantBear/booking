@@ -9,9 +9,9 @@ export async function POST(request: NextRequest) {
   try {
     const { amount, bookingId, currency = 'gbp' } = await request.json()
 
-    if (!amount || !bookingId) {
+    if (!amount) {
       return NextResponse.json(
-        { error: 'Amount and booking ID are required' },
+        { error: 'Amount is required' },
         { status: 400 }
       )
     }
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
       amount: Math.round(amount * 100), // Convert to cents
       currency,
       metadata: {
-        bookingId,
+        ...(bookingId && { bookingId }),
         type: 'vr_arcade_booking',
       },
       automatic_payment_methods: {
