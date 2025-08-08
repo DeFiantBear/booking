@@ -204,7 +204,7 @@ export const supabaseDb = {
   // Check if time slot is available
   async isTimeSlotAvailable(date: string, startTime: string, duration: number, excludeBookingId?: string) {
     const endTime = new Date(`${date}T${startTime}`)
-    endTime.setHours(endTime.getHours() + duration)
+    endTime.setHours(endTime.getHours() + duration) // duration is in hours
     
     let query = supabase
       .from(BOOKINGS_TABLE)
@@ -223,7 +223,9 @@ export const supabaseDb = {
     // Check for overlaps
     return !data?.some(booking => {
       const bookingStart = new Date(`${booking.date}T${booking.starttime}`)
-      const bookingEnd = new Date(bookingStart.getTime() + booking.duration * 60 * 60 * 1000)
+      // Convert booking.duration from minutes back to hours for calculation
+      const bookingDurationHours = booking.duration / 60
+      const bookingEnd = new Date(bookingStart.getTime() + bookingDurationHours * 60 * 60 * 1000)
       
       const newStart = new Date(`${date}T${startTime}`)
       const newEnd = endTime
