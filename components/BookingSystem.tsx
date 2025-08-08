@@ -878,6 +878,14 @@ export default function BookingSystem() {
                        rows={3}
                      />
                    </div>
+                   
+                   {/* Alcohol Note for Adult Events */}
+                   <div className="mt-4 p-3 bg-blue-900/20 border border-blue-500/30 rounded-md">
+                     <p className="text-sm text-blue-300">
+                       <strong>🍷 Adult Events:</strong> If booking for adults (18+) and everyone is over 18, 
+                       feel free to bring your own alcohol.
+                     </p>
+                   </div>
                  </div>
                </CardContent>
              </Card>

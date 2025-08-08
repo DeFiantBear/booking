@@ -20,50 +20,52 @@ export const PARTY_PACKAGES: PartyPackage[] = [
   {
     id: 'silver',
     name: 'silver',
-    price: 15, // Price per person
-    duration: 2.5,
+    price: 15, // £15 per head
+    duration: 2.5, // 2 hours + 15 min buffer each side
     maxGuests: 10,
-    description: 'Perfect for small groups and birthday parties',
+    description: 'SILVER GAMING PARTY - Perfect for small groups and birthday parties',
     includes: [
-      '2.5 hours of VR gaming',
-      'Up to 10 guests',
-      'Basic refreshments',
-      'Party decorations',
-      'Game selection assistance',
+      '£15 per head',
+      'Max 10 players',
+      '2 hours play time with 15 min buffer either side',
+      'Consoles only',
+      'Cake and candles',
+      'Drinks included',
     ],
   },
   {
     id: 'gold',
     name: 'gold',
-    price: 20, // Price per person
-    duration: 2.5,
+    price: 20, // £20 per head
+    duration: 2.5, // 2 hours + 15 min buffer each side
     maxGuests: 10,
-    description: 'Enhanced experience with premium features',
+    description: 'GOLD GAMING PARTY - Enhanced experience with VR gaming',
     includes: [
-      '2.5 hours of VR gaming',
-      'Up to 10 guests',
-      'Premium refreshments',
-      'Enhanced party decorations',
-      'Dedicated game master',
-      'Priority game selection',
+      '£20 per head',
+      'Max 10 players',
+      '2 hours play time with 15 min buffer either side',
+      'Consoles and VR gaming',
+      'Cake and candles',
+      'Drinks included',
     ],
   },
   {
     id: 'platinum',
     name: 'platinum',
-    price: 25, // Price per person
-    duration: 2.5,
+    price: 25, // £25 per head
+    duration: 2.5, // 2 hours + 15 min buffer either side
     maxGuests: 10,
-    description: 'Ultimate VR party experience',
+    description: 'PLATINUM GAMING PARTY - Ultimate gaming party experience',
     includes: [
-      '2.5 hours of VR gaming',
-      'Up to 10 guests',
-      'Premium refreshments & snacks',
-      'Full party decorations',
-      'Dedicated game master',
-      'Priority game selection',
-      'Party photos & videos',
-      'Custom party playlist',
+      '£25 per head',
+      'Max 10 players',
+      '2 hours play time with 15 min buffer either side',
+      'Consoles and VR gaming',
+      'Cake and candles',
+      'Drinks included',
+      'Party bags',
+      'Balloons',
+      'Party snacks included',
     ],
   },
 ];
