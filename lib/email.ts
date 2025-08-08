@@ -47,7 +47,7 @@ export async function sendCustomerConfirmation(data: EmailData) {
     });
 
     if (process.env.NODE_ENV === 'development') {
-      console.log('✅ Customer confirmation email sent successfully:', result?.id);
+      console.log('✅ Customer confirmation email sent successfully:', result?.data?.id);
     }
     return true;
   } catch (error) {
@@ -78,7 +78,7 @@ export async function sendAdminNotification(data: EmailData) {
     });
 
     if (process.env.NODE_ENV === 'development') {
-      console.log('✅ Admin notification email sent successfully:', result?.id);
+      console.log('✅ Admin notification email sent successfully:', result?.data?.id);
     }
     return true;
   } catch (error) {

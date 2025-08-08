@@ -220,10 +220,10 @@ export async function POST(request: NextRequest) {
         }
         
         // Dynamically import email functions
-        const { sendBookingConfirmation, sendAdminNotification } = await import('@/lib/email')
+        const { sendCustomerConfirmation, sendAdminNotification } = await import('@/lib/email')
         
         // Send customer confirmation
-        const customerEmailSent = await sendBookingConfirmation({
+        const customerEmailSent = await sendCustomerConfirmation({
           bookingId: savedBooking.id,
           customerName: savedBooking.contactName,
           customerEmail: savedBooking.contactEmail,
