@@ -831,40 +831,38 @@ export default function BookingSystem() {
               <CardContent>
                 <div className="space-y-4">
                   {PAYMENT_METHODS.map((method) => (
-                    method.id !== 'usdc' ? (
-                      <div
-                        key={method.id}
-                        className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                          paymentMethod === method.id
-                            ? 'border-blue-500 bg-blue-500/10'
-                            : 'border-gray-600 bg-gray-800 hover:border-gray-500'
-                        }`}
-                        onClick={() => setPaymentMethod(method.id as 'stripe' | 'usdc' | 'cash')}
-                      >
-                        <div className="text-2xl mr-3">{method.icon}</div>
-                        <div className="flex-1">
-                          <div className="font-semibold text-white">{method.name}</div>
-                          {method.id === 'cash' && (
-                            <div className="text-sm text-gray-400">Pay when you arrive at the venue</div>
-                          )}
-                          {method.id === 'stripe' && (
-                            <div className="text-sm text-gray-400">Secure card payment</div>
-                          )}
-                          {method.id === 'usdc' && (
-                            <div className="text-sm text-gray-400">Cryptocurrency payment</div>
-                          )}
-                        </div>
-                        <div className={`w-4 h-4 rounded-full border-2 ${
-                          paymentMethod === method.id
-                            ? 'border-blue-500 bg-blue-500'
-                            : 'border-gray-500'
-                        }`}>
-                          {paymentMethod === method.id && (
-                            <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
-                          )}
-                        </div>
+                    <div
+                      key={method.id}
+                      className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                        paymentMethod === method.id
+                          ? 'border-blue-500 bg-blue-500/10'
+                          : 'border-gray-600 bg-gray-800 hover:border-gray-500'
+                      } ${method.id === 'usdc' ? 'hidden' : ''}`}
+                      onClick={() => setPaymentMethod(method.id as 'stripe' | 'usdc' | 'cash')}
+                    >
+                      <div className="text-2xl mr-3">{method.icon}</div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-white">{method.name}</div>
+                        {method.id === 'cash' && (
+                          <div className="text-sm text-gray-400">Pay when you arrive at the venue</div>
+                        )}
+                        {method.id === 'stripe' && (
+                          <div className="text-sm text-gray-400">Secure card payment</div>
+                        )}
+                        {method.id === 'usdc' && (
+                          <div className="text-sm text-gray-400">Cryptocurrency payment</div>
+                        )}
                       </div>
-                    ) : null
+                      <div className={`w-4 h-4 rounded-full border-2 ${
+                        paymentMethod === method.id
+                          ? 'border-blue-500 bg-blue-500'
+                          : 'border-gray-500'
+                      }`}>
+                        {paymentMethod === method.id && (
+                          <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
+                        )}
+                      </div>
+                    </div>
                   ))}
                 </div>
 
@@ -1228,40 +1226,38 @@ export default function BookingSystem() {
                <CardContent>
                  <div className="space-y-4">
                    {PAYMENT_METHODS.map((method) => (
-                     method.id !== 'usdc' ? (
-                       <div
-                         key={method.id}
-                         className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                           paymentMethod === method.id
-                             ? 'border-blue-500 bg-blue-500/10'
-                             : 'border-gray-600 bg-gray-800 hover:border-gray-500'
-                         }`}
-                         onClick={() => setPaymentMethod(method.id as 'stripe' | 'usdc' | 'cash')}
-                       >
-                         <div className="text-2xl mr-3">{method.icon}</div>
-                         <div className="flex-1">
-                           <div className="font-semibold text-white">{method.name}</div>
-                           {method.id === 'cash' && (
-                             <div className="text-sm text-gray-400">Pay when you arrive at the venue</div>
-                           )}
-                           {method.id === 'stripe' && (
-                             <div className="text-sm text-gray-400">Secure card payment</div>
-                           )}
-                           {method.id === 'usdc' && (
-                             <div className="text-sm text-gray-400">Cryptocurrency payment</div>
-                           )}
-                         </div>
-                         <div className={`w-4 h-4 rounded-full border-2 ${
-                           paymentMethod === method.id
-                             ? 'border-blue-500 bg-blue-500'
-                             : 'border-gray-500'
-                         }`}>
-                           {paymentMethod === method.id && (
-                             <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
-                           )}
-                         </div>
+                     <div
+                       key={method.id}
+                       className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                         paymentMethod === method.id
+                           ? 'border-blue-500 bg-blue-500/10'
+                           : 'border-gray-600 bg-gray-800 hover:border-gray-500'
+                       } ${method.id === 'usdc' ? 'hidden' : ''}`}
+                       onClick={() => setPaymentMethod(method.id as 'stripe' | 'usdc' | 'cash')}
+                     >
+                       <div className="text-2xl mr-3">{method.icon}</div>
+                       <div className="flex-1">
+                         <div className="font-semibold text-white">{method.name}</div>
+                         {method.id === 'cash' && (
+                           <div className="text-sm text-gray-400">Pay when you arrive at the venue</div>
+                         )}
+                         {method.id === 'stripe' && (
+                           <div className="text-sm text-gray-400">Secure card payment</div>
+                         )}
+                         {method.id === 'usdc' && (
+                           <div className="text-sm text-gray-400">Cryptocurrency payment</div>
+                         )}
                        </div>
-                     ) : null
+                       <div className={`w-4 h-4 rounded-full border-2 ${
+                         paymentMethod === method.id
+                           ? 'border-blue-500 bg-blue-500'
+                           : 'border-gray-500'
+                       }`}>
+                         {paymentMethod === method.id && (
+                           <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
+                         )}
+                       </div>
+                     </div>
                    ))}
                  </div>
 
