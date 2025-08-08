@@ -21,7 +21,7 @@ export const PARTY_PACKAGES: PartyPackage[] = [
     id: 'silver',
     name: 'silver',
     price: 15, // £15 per head
-    duration: 3, // 2 hours + 30 min buffer each side
+    duration: 2.5, // 2 hours + 30 min buffer each side
     maxGuests: 10,
     description: 'SILVER GAMING PARTY - The Ultimate Console Gaming Experience! 🎮',
     includes: [
@@ -39,7 +39,7 @@ export const PARTY_PACKAGES: PartyPackage[] = [
     id: 'gold',
     name: 'gold',
     price: 20, // £20 per head
-    duration: 3, // 2 hours + 30 min buffer each side
+    duration: 2.5, // 2 hours + 30 min buffer each side
     maxGuests: 10,
     description: 'GOLD GAMING PARTY - Premium VR & Console Gaming Adventure! 🚀',
     includes: [
@@ -57,7 +57,7 @@ export const PARTY_PACKAGES: PartyPackage[] = [
     id: 'platinum',
     name: 'platinum',
     price: 25, // £25 per head
-    duration: 3, // 2 hours + 30 min buffer each side
+    duration: 2.5, // 2 hours + 30 min buffer each side
     maxGuests: 10,
     description: 'PLATINUM GAMING PARTY - The Ultimate Gaming Extravaganza! ⭐',
     includes: [
