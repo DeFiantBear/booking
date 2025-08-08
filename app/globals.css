@@ -5,24 +5,24 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap');
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #0066ff;
-  --card: #1a1a1a;
-  --card-foreground: #0066ff;
-  --popover: #1a1a1a;
-  --popover-foreground: #0066ff;
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #111111;
+  --card-foreground: #ffffff;
+  --popover: #111111;
+  --popover-foreground: #ffffff;
   --primary: #0066ff;
   --primary-foreground: #ffffff;
   --secondary: #0044cc;
   --secondary-foreground: #ffffff;
-  --muted: #2a2a2a;
-  --muted-foreground: #888888;
+  --muted: #1a1a1a;
+  --muted-foreground: #a0a0a0;
   --accent: #00aaff;
   --accent-foreground: #ffffff;
-  --destructive: #ff0000;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
   --border: #333333;
-  --input: #2a2a2a;
+  --input: #1a1a1a;
   --ring: #0066ff;
   --radius: 0.5rem;
 }
@@ -32,87 +32,77 @@
 }
 
 body {
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
-  color: hsl(var(--foreground));
-  font-family: 'Share Tech Mono', monospace;
+  background: #000000;
+  color: #ffffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
 }
 
-/* Terminal-style elements */
+/* Clean minimalist elements */
 .terminal-text {
-  font-family: 'Share Tech Mono', monospace;
-  color: #0066ff;
-  text-shadow: 0 0 5px #0066ff;
+  font-family: 'Inter', sans-serif;
+  color: #ffffff;
+  font-weight: 400;
 }
 
 .cyber-title {
-  font-family: 'Orbitron', sans-serif;
-  font-weight: 900;
-  color: #0066ff;
-  text-shadow: 
-    0 0 10px #0066ff,
-    0 0 20px #0066ff,
-    0 0 30px #0066ff;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: -0.025em;
 }
 
 .cyber-button {
-  background: linear-gradient(45deg, #0066ff, #0044cc);
-  border: 2px solid #0066ff;
+  background: #0066ff;
+  border: none;
   color: #ffffff;
-  font-family: 'Share Tech Mono', monospace;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  min-height: 44px; /* Touch-friendly minimum height */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cyber-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 0 20px #0066ff,
-    0 0 40px #0066ff;
+  background: #0052cc;
+  transform: translateY(-1px);
 }
 
-.cyber-button::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transition: left 0.5s;
-}
-
-.cyber-button:hover::before {
-  left: 100%;
+.cyber-button:active {
+  transform: translateY(0);
+  background: #004499;
 }
 
 .cyber-card {
-  background: rgba(26, 26, 26, 0.9);
-  border: 2px solid #0066ff;
-  box-shadow: 
-    0 0 10px rgba(0, 102, 255, 0.3),
-    inset 0 0 20px rgba(0, 102, 255, 0.1);
-  backdrop-filter: blur(10px);
+  background: #111111;
+  border: 1px solid #333333;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .cyber-input {
-  background: rgba(42, 42, 42, 0.8);
-  border: 2px solid #333333;
-  color: #0066ff;
-  font-family: 'Share Tech Mono', monospace;
-  transition: all 0.3s ease;
+  background: #1a1a1a;
+  border: 1px solid #333333;
+  color: #ffffff;
+  font-family: 'Inter', sans-serif;
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .cyber-input:focus {
   border-color: #0066ff;
-  box-shadow: 
-    0 0 10px rgba(0, 102, 255, 0.5),
-    inset 0 0 10px rgba(0, 102, 255, 0.1);
   outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
 }
 
 /* ASCII art styling */
@@ -137,5 +127,41 @@ body {
   
   .ascii-art {
     font-size: 0.8rem;
+  }
+  
+  /* Mobile-specific button adjustments */
+  .cyber-button {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 14px 20px;
+  }
+  
+  /* Mobile card adjustments */
+  .cyber-card {
+    border-radius: 8px;
+  }
+  
+  /* Mobile input adjustments */
+  .cyber-input {
+    font-size: 16px; /* Prevent zoom on iOS */
+    padding: 14px 16px;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .cyber-button {
+    padding: 12px 16px;
+    font-size: 14px;
+  }
+  
+  .cyber-card {
+    padding: 16px;
+  }
+}
+
+/* Ensure proper viewport handling */
+@media (max-width: 640px) {
+  body {
+    font-size: 14px;
   }
 } 

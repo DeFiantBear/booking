@@ -301,61 +301,61 @@ export default function BookingSystem() {
   // Main Selection Screen
   if (currentFlow === 'main') {
     return (
-      <div className="min-h-screen relative">
-        <div className="container mx-auto px-4 py-16">
-          <div className="text-center mb-16">
-            <h1 className="cyber-title text-6xl font-bold mb-6" data-text="VR ARCADE">
-              VR ARCADE
+      <div className="min-h-screen flex items-center justify-center px-4 py-8">
+        <div className="max-w-4xl w-full">
+          <div className="text-center mb-8 md:mb-16">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold text-white mb-4 md:mb-6">
+              VR Arcade
             </h1>
-            <p className="terminal-text text-xl max-w-2xl mx-auto">
-              Your Ultimate Virtual Reality Destination
+            <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto px-4">
+              Book your virtual reality experience
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-3xl mx-auto px-2">
             {/* VR Booking Option */}
-            <div className="cyber-card rounded-lg p-8 text-center hover:scale-105 transition-transform duration-300">
-              <div className="mb-6">
-                <Gamepad2 className="h-16 w-16 text-[#00ff41] mx-auto mb-4" />
-                <h2 className="cyber-title text-3xl font-bold mb-4" data-text="BOOK VR">BOOK VR</h2>
-                <p className="terminal-text text-lg">
+            <div className="cyber-card p-4 sm:p-6 md:p-8 text-center hover:scale-105 transition-transform duration-300">
+              <div className="mb-4 md:mb-6">
+                <Gamepad2 className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-blue-500 mx-auto mb-3 md:mb-4" />
+                <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4">VR Gaming</h2>
+                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
                   VR gaming for up to 5 people booked by the hour
                 </p>
               </div>
               <button 
                 onClick={startVRBooking}
-                className="cyber-button w-full py-4 text-lg font-semibold"
+                className="cyber-button w-full text-sm sm:text-base py-2 sm:py-3"
               >
-                START VR BOOKING
+                Book VR Session
               </button>
             </div>
 
             {/* Party Booking Option */}
-            <div className="cyber-card rounded-lg p-8 text-center hover:scale-105 transition-transform duration-300">
-              <div className="mb-6">
-                <PartyPopper className="h-16 w-16 text-[#00ff41] mx-auto mb-4" />
-                <h2 className="cyber-title text-3xl font-bold mb-4" data-text="BOOK GAMING PARTY">BOOK GAMING PARTY</h2>
-                <p className="terminal-text text-lg">
+            <div className="cyber-card p-4 sm:p-6 md:p-8 text-center hover:scale-105 transition-transform duration-300">
+              <div className="mb-4 md:mb-6">
+                <PartyPopper className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-blue-500 mx-auto mb-3 md:mb-4" />
+                <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4">Gaming Party</h2>
+                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
                   Console and VR gaming for up to 10 players, 2.5 hours, cakes, snacks and other options available
                 </p>
               </div>
               <button 
                 onClick={startPartyBooking}
-                className="cyber-button w-full py-4 text-lg font-semibold"
+                className="cyber-button w-full text-sm sm:text-base py-2 sm:py-3"
               >
-                START PARTY BOOKING
+                Book Party
               </button>
             </div>
           </div>
 
           {/* View Bookings Button */}
-          <div className="text-center mt-12">
+          <div className="text-center mt-8 md:mt-12">
             <button 
               onClick={() => setCurrentFlow('bookings')}
-              className="cyber-button px-8 py-3"
+              className="cyber-button text-sm sm:text-base px-4 sm:px-6 py-2 sm:py-3"
             >
-              <Calendar className="h-4 w-4 mr-2 inline" />
-              VIEW MY BOOKINGS ({lookupResults.length})
+              <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-2 inline" />
+              View My Bookings ({lookupResults.length})
             </button>
           </div>
         </div>
@@ -367,20 +367,20 @@ export default function BookingSystem() {
   if (currentFlow === 'vr-booking') {
     return (
       <div className="min-h-screen relative">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4 sm:py-8">
           <div className="max-w-4xl mx-auto">
-            <div className="text-center mb-8">
+            <div className="text-center mb-6 sm:mb-8">
               <button 
                 onClick={goBack}
-                className="cyber-button mb-4"
+                className="cyber-button mb-4 text-sm sm:text-base"
               >
                 ← BACK TO MAIN MENU
               </button>
-              <h1 className="cyber-title text-4xl font-bold mb-4" data-text="VR SESSION BOOKING">VR SESSION BOOKING</h1>
-              <p className="terminal-text text-lg">Book your VR gaming session</p>
+              <h1 className="cyber-title text-2xl sm:text-3xl md:text-4xl font-bold mb-3 sm:mb-4" data-text="VR SESSION BOOKING">VR SESSION BOOKING</h1>
+              <p className="terminal-text text-base sm:text-lg">Book your VR gaming session</p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
               {/* Date & Time Selection */}
               <Card className="bg-slate-800 border-slate-700">
                 <CardHeader>
@@ -398,7 +398,7 @@ export default function BookingSystem() {
                       max={getMaxDate()}
                       value={selectedDate}
                       onChange={(e) => handleDateChange(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                     />
                   </div>
 
@@ -407,7 +407,7 @@ export default function BookingSystem() {
                     <select
                       value={selectedTime}
                       onChange={(e) => handleTimeChange(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                       disabled={!selectedDate}
                     >
                       <option value="">Select time</option>
@@ -424,7 +424,7 @@ export default function BookingSystem() {
                     <select
                       value={duration}
                       onChange={(e) => handleDurationChange(Number(e.target.value))}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                     >
                       {AVAILABLE_DURATIONS.map((d) => (
                         <option key={d} value={d}>
@@ -445,7 +445,7 @@ export default function BookingSystem() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-sm font-medium mb-2 text-slate-300">Adults</label>
                       <input
@@ -454,7 +454,7 @@ export default function BookingSystem() {
                         max="5"
                         value={adults}
                         onChange={(e) => handleGuestChange('adults', Number(e.target.value))}
-                        className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                       />
                     </div>
                     <div>
@@ -465,7 +465,7 @@ export default function BookingSystem() {
                         max="5"
                         value={children}
                         onChange={(e) => handleGuestChange('children', Number(e.target.value))}
-                        className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                       />
                     </div>
                   </div>
@@ -496,9 +496,9 @@ export default function BookingSystem() {
             </div>
 
             {/* Contact Information */}
-            <Card className="mt-8 bg-slate-800 border-slate-700">
+            <Card className="mt-6 sm:mt-8 bg-slate-800 border-slate-700">
               <CardHeader>
-                <CardTitle className="text-white">Contact Information</CardTitle>
+                <CardTitle className="text-white text-lg sm:text-xl">Contact Information</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -508,7 +508,7 @@ export default function BookingSystem() {
                       type="text"
                       value={contactName}
                       onChange={(e) => setContactName(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                       placeholder="Your full name"
                     />
                   </div>
@@ -518,7 +518,7 @@ export default function BookingSystem() {
                       type="email"
                       value={contactEmail}
                       onChange={(e) => setContactEmail(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                       placeholder="your.email@example.com"
                     />
                   </div>
@@ -528,7 +528,7 @@ export default function BookingSystem() {
                       type="tel"
                       value={contactPhone}
                       onChange={(e) => setContactPhone(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                       placeholder="+44 20 1234 5678"
                     />
                   </div>
@@ -537,7 +537,7 @@ export default function BookingSystem() {
                     <textarea
                       value={specialRequests}
                       onChange={(e) => setSpecialRequests(e.target.value)}
-                      className="w-full p-3 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full p-3 sm:p-4 border border-slate-600 rounded-md bg-slate-700 text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base"
                       placeholder="Any special requests or accommodations..."
                       rows={3}
                     />
@@ -547,16 +547,16 @@ export default function BookingSystem() {
             </Card>
 
             {/* Payment Method */}
-            <Card className="mt-8 bg-slate-800 border-slate-700">
+            <Card className="mt-6 sm:mt-8 bg-slate-800 border-slate-700">
               <CardHeader>
-                <CardTitle className="text-white">Payment Method</CardTitle>
+                <CardTitle className="text-white text-lg sm:text-xl">Payment Method</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex space-x-4">
+                <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('stripe')}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
+                    className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
                       paymentMethod === 'stripe'
                         ? 'border-blue-500 bg-blue-600 text-white'
                         : 'border-slate-600 text-slate-300 hover:border-slate-500'
@@ -568,7 +568,7 @@ export default function BookingSystem() {
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('usdc')}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
+                    className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
                       paymentMethod === 'usdc'
                         ? 'border-blue-500 bg-blue-600 text-white'
                         : 'border-slate-600 text-slate-300 hover:border-slate-500'
@@ -580,7 +580,7 @@ export default function BookingSystem() {
                   <button
                     type="button"
                     onClick={() => setPaymentMethod('cash')}
-                    className={`flex items-center space-x-2 px-4 py-2 rounded-md border ${
+                    className={`flex items-center justify-center space-x-2 px-4 py-3 sm:py-2 rounded-md border text-sm sm:text-base ${
                       paymentMethod === 'cash'
                         ? 'border-blue-500 bg-blue-600 text-white'
                         : 'border-slate-600 text-slate-300 hover:border-slate-500'
@@ -594,11 +594,11 @@ export default function BookingSystem() {
             </Card>
 
             {/* Book Button */}
-            <div className="mt-8 text-center">
+            <div className="mt-6 sm:mt-8 text-center">
               <Button
                 onClick={handleBooking}
                 disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 text-lg font-semibold"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto"
               >
                 {isSubmitting ? 'Processing...' : `Book VR Session - ${formatPrice(totalPrice)}`}
               </Button>
@@ -613,30 +613,30 @@ export default function BookingSystem() {
   if (currentFlow === 'party-packages') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-4 sm:py-8">
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-8">
+            <div className="text-center mb-6 sm:mb-8">
               <Button 
                 onClick={goBack}
                 variant="outline"
-                className="mb-4 border-slate-600 text-slate-300 hover:bg-slate-700"
+                className="mb-4 border-slate-600 text-slate-300 hover:bg-slate-700 text-sm sm:text-base"
               >
                 ← Back to Main Menu
               </Button>
-              <h1 className="text-4xl font-bold text-white mb-4">Gaming Party Packages</h1>
-              <p className="text-slate-300">Choose your perfect party package</p>
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 sm:mb-4">Gaming Party Packages</h1>
+              <p className="text-slate-300 text-base sm:text-lg">Choose your perfect party package</p>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-6 sm:mb-8">
               {PARTY_PACKAGES.map((pkg) => (
                 <Card key={pkg.id} className="bg-slate-800 border-slate-700 hover:border-cyan-500 transition-all duration-300 hover:shadow-2xl hover:shadow-cyan-500/20">
-                  <CardHeader className="text-center">
-                    <CardTitle className="text-2xl capitalize text-white">{pkg.name} Package</CardTitle>
-                    <div className="text-3xl font-bold text-cyan-400">£{pkg.price}</div>
-                    <div className="text-sm text-slate-400">per person • {pkg.duration} hours</div>
+                  <CardHeader className="text-center p-4 sm:p-6">
+                    <CardTitle className="text-xl sm:text-2xl capitalize text-white">{pkg.name} Package</CardTitle>
+                    <div className="text-2xl sm:text-3xl font-bold text-cyan-400">£{pkg.price}</div>
+                    <div className="text-xs sm:text-sm text-slate-400">per person • {pkg.duration} hours</div>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-center mb-4 text-slate-300">{pkg.description}</p>
+                  <CardContent className="p-4 sm:p-6">
+                    <p className="text-center mb-4 text-slate-300 text-sm sm:text-base">{pkg.description}</p>
                     <ul className="space-y-2 mb-6">
                       {pkg.includes.map((item, index) => (
                         <li key={index} className="flex items-center text-sm text-slate-300">
