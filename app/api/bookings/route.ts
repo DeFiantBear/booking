@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { addBooking, getBookingsByContact, isTimeSlotAvailable, getAvailableTimeSlots } from '@/lib/database'
 import { generateBookingId, validateEmail, validatePhone } from '@/lib/utils'
 import { Booking } from '@/lib/types'
+import { testSupabaseConnection } from '@/lib/supabase'
 
 // POST /api/bookings - Create a new booking
 export async function POST(request: NextRequest) {
@@ -9,6 +10,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     console.log('=== BOOKING API DEBUG ===')
     console.log('Received booking data:', JSON.stringify(body, null, 2))
+    
+    // Test Supabase connection first
+    console.log('🔍 Testing Supabase connection...')
+    const supabaseTest = await testSupabaseConnection()
+    console.log('🔍 Supabase test result:', supabaseTest)
     
     const {
       date,

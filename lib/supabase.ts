@@ -9,6 +9,31 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 // Database table name
 export const BOOKINGS_TABLE = 'bookings'
 
+// Test function to check table structure
+export const testSupabaseConnection = async () => {
+  try {
+    console.log('🔍 Testing Supabase connection...')
+    
+    // Try to get table info
+    const { data, error } = await supabase
+      .from(BOOKINGS_TABLE)
+      .select('*')
+      .limit(1)
+    
+    if (error) {
+      console.error('❌ Supabase connection error:', error)
+      return false
+    }
+    
+    console.log('✅ Supabase connection successful')
+    console.log('✅ Table structure sample:', data)
+    return true
+  } catch (error) {
+    console.error('❌ Supabase test failed:', error)
+    return false
+  }
+}
+
 // Supabase database functions
 export const supabaseDb = {
   // Get all bookings
