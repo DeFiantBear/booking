@@ -163,7 +163,12 @@ export default function BookingSystem() {
         partyPackage: currentFlow === 'party-booking' ? selectedPartyPackage : undefined
       }
 
-      console.log('🎯 Submitting booking data:', bookingData)
+      // Remove any undefined or null values to prevent Supabase errors
+      const cleanBookingData = Object.fromEntries(
+        Object.entries(bookingData).filter(([_, value]) => value !== undefined && value !== null)
+      )
+
+      console.log('🎯 Submitting booking data:', cleanBookingData)
       console.log('🎯 Current flow:', currentFlow)
       console.log('🎯 Players count:', players)
       console.log('🎯 Selected party package:', selectedPartyPackage)
@@ -173,7 +178,7 @@ export default function BookingSystem() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(bookingData),
+        body: JSON.stringify(cleanBookingData),
       })
 
       const result = await response.json()

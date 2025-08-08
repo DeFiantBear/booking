@@ -86,27 +86,48 @@ export const supabaseDb = {
   async addBooking(booking: any) {
     console.log('🔍 Supabase addBooking called with:', JSON.stringify(booking, null, 2))
     
+    // Clean and validate the booking data
+    const cleanBooking = {
+      date: String(booking.date),
+      startTime: String(booking.startTime),
+      duration: Number(booking.duration),
+      adults: Number(booking.adults),
+      children: Number(booking.children),
+      totalPrice: Number(booking.totalPrice),
+      status: String(booking.status),
+      paymentMethod: String(booking.paymentMethod),
+      paymentStatus: String(booking.paymentStatus),
+      contactName: String(booking.contactName),
+      contactEmail: String(booking.contactEmail),
+      contactPhone: String(booking.contactPhone),
+      specialRequests: booking.specialRequests ? String(booking.specialRequests) : null,
+      createdAt: String(booking.createdAt),
+      updatedAt: String(booking.updatedAt),
+      bookingType: String(booking.bookingType),
+      partyPackage: booking.partyPackage ? String(booking.partyPackage) : null
+    }
+    
     // Map the booking data to match the actual column names
     // Use UUID for Supabase compatibility
     const mappedBooking = {
       id: generateUUID(), // Use UUID instead of custom ID
-      date: booking.date,
-      starttime: booking.startTime,
-      duration: booking.duration,
-      adults: booking.adults,
-      children: booking.children,
-      totalprice: booking.totalPrice,
-      status: booking.status,
-      paymentmethod: booking.paymentMethod,
-      paymentstatus: booking.paymentStatus,
-      contactname: booking.contactName,
-      contactemail: booking.contactEmail,
-      contactphone: booking.contactPhone,
-      specialrequests: booking.specialRequests,
-      createdat: booking.createdAt,
-      updatedat: booking.updatedAt,
-      bookingtype: booking.bookingType,
-      partypackage: booking.partyPackage
+      date: cleanBooking.date,
+      starttime: cleanBooking.startTime,
+      duration: cleanBooking.duration,
+      adults: cleanBooking.adults,
+      children: cleanBooking.children,
+      totalprice: cleanBooking.totalPrice,
+      status: cleanBooking.status,
+      paymentmethod: cleanBooking.paymentMethod,
+      paymentstatus: cleanBooking.paymentStatus,
+      contactname: cleanBooking.contactName,
+      contactemail: cleanBooking.contactEmail,
+      contactphone: cleanBooking.contactPhone,
+      specialrequests: cleanBooking.specialRequests,
+      createdat: cleanBooking.createdAt,
+      updatedat: cleanBooking.updatedAt,
+      bookingtype: cleanBooking.bookingType,
+      partypackage: cleanBooking.partyPackage
     }
 
     console.log('🔍 Mapped booking data for Supabase:', JSON.stringify(mappedBooking, null, 2))
