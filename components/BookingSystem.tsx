@@ -1,21 +1,18 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
-import { Calendar, Clock, Users, CheckCircle, XCircle, Gamepad2, PartyPopper } from 'lucide-react'
-import { format, addDays, isAfter, isBefore, parseISO, startOfDay } from 'date-fns'
-import { 
-  calculateSessionPrice, 
-  formatPrice, 
-  getAvailableTimeSlots,
-  generateBookingId,
-  validateEmail,
-  validatePhone
-} from '@/lib/utils'
-import { AVAILABLE_DURATIONS, BUSINESS_HOURS, PRICING, PARTY_PACKAGES } from '@/lib/constants'
-import { createPaymentIntent } from '@/lib/stripe'
-import { createCalendarEvent } from '@/lib/calendar'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Select } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
+import { format, addDays, parseISO } from 'date-fns'
+import { Calendar, Clock, Users, Package, CreditCard, DollarSign, Gamepad2, ArrowLeft, Search, CheckCircle } from 'lucide-react'
+import { calculateSessionPrice, formatPrice, getAvailableTimeSlots } from '@/lib/utils'
+import { PARTY_PACKAGES, AVAILABLE_DURATIONS, PRICING, PAYMENT_METHODS } from '@/lib/constants'
+import { createPaymentIntent, stripePromise, formatAmountForStripe } from '@/lib/stripe'
+import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
 
 interface Booking {
   id: string
@@ -39,6 +36,84 @@ interface Booking {
 
 type BookingFlow = 'main' | 'vr-booking' | 'party-packages' | 'party-booking' | 'bookings'
 
+// Stripe payment component
+function StripePaymentForm({ 
+  totalPrice, 
+  onPaymentSuccess, 
+  onPaymentError, 
+  isSubmitting,
+  bookingData
+}: { 
+  totalPrice: number
+  onPaymentSuccess: (paymentIntentId: string) => void
+  onPaymentError: (error: string) => void
+  isSubmitting: boolean
+  bookingData: any
+}) {
+  const stripe = useStripe()
+  const elements = useElements()
+
+  const handleStripePayment = async () => {
+    if (!stripe || !elements) {
+      onPaymentError('Stripe not loaded')
+      return
+    }
+
+    const cardElement = elements.getElement(CardElement)
+    if (!cardElement) {
+      onPaymentError('Card element not found')
+      return
+    }
+
+    try {
+      // First create the booking
+      const bookingResponse = await fetch('/api/bookings', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookingData),
+      })
+
+      const bookingResult = await bookingResponse.json()
+      
+      if (!bookingResponse.ok) {
+        onPaymentError(bookingResult.error || 'Failed to create booking')
+        return
+      }
+
+      // Create payment intent with the actual booking ID
+      const clientSecret = await createPaymentIntent(totalPrice, bookingResult.booking.id)
+      
+      // Confirm payment
+      const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card: cardElement,
+        },
+      })
+
+      if (error) {
+        onPaymentError(error.message || 'Payment failed')
+      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+        onPaymentSuccess(paymentIntent.id)
+      }
+    } catch (error) {
+      onPaymentError('Payment processing failed')
+    }
+  }
+
+  return (
+    <button
+      onClick={handleStripePayment}
+      disabled={isSubmitting || !stripe}
+      className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+    >
+      {isSubmitting ? 'Processing Payment...' : `Pay ${formatPrice(totalPrice)}`}
+    </button>
+  )
+}
+
+// Main booking system component
 export default function BookingSystem() {
   const [currentFlow, setCurrentFlow] = useState<BookingFlow>('main')
   const [selectedDate, setSelectedDate] = useState('')
@@ -65,6 +140,8 @@ export default function BookingSystem() {
   const [showConfirmation, setShowConfirmation] = useState(false)
   const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null)
   const [isLoadingTimes, setIsLoadingTimes] = useState(false)
+  const [paymentError, setPaymentError] = useState('')
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
 
   // Calculate total price based on current flow
   const totalPrice = currentFlow === 'vr-booking' 
@@ -160,6 +237,49 @@ export default function BookingSystem() {
     }
   }
 
+  const handlePaymentSuccess = async (paymentIntentId: string) => {
+    try {
+      // Confirm payment with our backend
+      const confirmResponse = await fetch('/api/confirm-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ paymentIntentId }),
+      })
+
+      const confirmResult = await confirmResponse.json()
+      
+      if (confirmResponse.ok) {
+        setPaymentSuccess(true)
+        // Update booking status to paid
+        const updateResponse = await fetch(`/api/bookings/${confirmedBooking?.id}`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 
+            paymentStatus: 'paid',
+            status: 'confirmed'
+          }),
+        })
+
+        if (updateResponse.ok) {
+          setConfirmedBooking(prev => prev ? { ...prev, paymentStatus: 'paid', status: 'confirmed' } : null)
+        }
+      } else {
+        setPaymentError('Payment confirmation failed')
+      }
+    } catch (error) {
+      setPaymentError('Payment confirmation failed')
+    }
+  }
+
+  const handlePaymentError = (error: string) => {
+    setPaymentError(error)
+    setIsSubmitting(false)
+  }
+
   const handleBooking = async () => {
     setIsSubmitting(true)
     setSubmitError('')
@@ -250,6 +370,12 @@ export default function BookingSystem() {
         }
 
         // Show detailed confirmation instead of alert
+        setConfirmedBooking(result.booking)
+        setShowConfirmation(true)
+      } else if (paymentMethod === 'stripe') {
+        // For Stripe payments, we'll handle the payment first, then create the booking
+        console.log('Stripe payment - will be handled by payment form')
+        // Store booking data temporarily and show payment form
         setConfirmedBooking(result.booking)
         setShowConfirmation(true)
       }
@@ -462,7 +588,7 @@ export default function BookingSystem() {
             {/* Party Booking Option */}
             <div className="cyber-card p-4 sm:p-6 md:p-8 text-center hover:scale-105 transition-transform duration-300 flex flex-col h-full">
               <div className="flex-1 mb-4 md:mb-6">
-                <PartyPopper className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-blue-500 mx-auto mb-3 md:mb-4" />
+                <Package className="h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 text-blue-500 mx-auto mb-3 md:mb-4" />
                 <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-white mb-3 md:mb-4">Gaming Party</h2>
                 <p className="text-xs sm:text-sm text-gray-300 leading-relaxed">
                   Console and VR gaming for up to 10 players, 2.5 hours, cakes, snacks and other options available
@@ -675,17 +801,116 @@ export default function BookingSystem() {
               </CardContent>
             </Card>
 
+            {/* Payment Method Selection */}
+            <Card className="mt-6 sm:mt-8 cyber-card">
+              <CardHeader>
+                <CardTitle className="text-white text-lg sm:text-xl">Payment Method</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {PAYMENT_METHODS.map((method) => (
+                    <div
+                      key={method.id}
+                      className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                        paymentMethod === method.id
+                          ? 'border-blue-500 bg-blue-500/10'
+                          : 'border-gray-600 bg-gray-800 hover:border-gray-500'
+                      }`}
+                      onClick={() => setPaymentMethod(method.id as 'stripe' | 'usdc' | 'cash')}
+                    >
+                      <div className="text-2xl mr-3">{method.icon}</div>
+                      <div className="flex-1">
+                        <div className="font-semibold text-white">{method.name}</div>
+                        {method.id === 'cash' && (
+                          <div className="text-sm text-gray-400">Pay when you arrive at the venue</div>
+                        )}
+                        {method.id === 'stripe' && (
+                          <div className="text-sm text-gray-400">Secure card payment</div>
+                        )}
+                        {method.id === 'usdc' && (
+                          <div className="text-sm text-gray-400">Cryptocurrency payment</div>
+                        )}
+                      </div>
+                      <div className={`w-4 h-4 rounded-full border-2 ${
+                        paymentMethod === method.id
+                          ? 'border-blue-500 bg-blue-500'
+                          : 'border-gray-500'
+                      }`}>
+                        {paymentMethod === method.id && (
+                          <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Stripe Card Element */}
+                {paymentMethod === 'stripe' && (
+                  <div className="mt-4 p-4 bg-gray-800 rounded-lg border border-gray-600">
+                    <label className="block text-sm font-medium mb-2 text-gray-300">Card Details</label>
+                    <div className="cyber-input p-3">
+                      <CardElement
+                        options={{
+                          style: {
+                            base: {
+                              fontSize: '16px',
+                              color: '#ffffff',
+                              '::placeholder': {
+                                color: '#9ca3af',
+                              },
+                            },
+                          },
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
 
 
             {/* Book Button */}
             <div className="mt-6 sm:mt-8 text-center">
-              <button
-                onClick={handleBooking}
-                disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
-                className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? 'Processing...' : `Book VR Session - ${formatPrice(totalPrice)}`}
-              </button>
+                              {paymentMethod === 'stripe' ? (
+                  <Elements stripe={stripePromise}>
+                    <StripePaymentForm
+                      totalPrice={totalPrice}
+                      onPaymentSuccess={handlePaymentSuccess}
+                      onPaymentError={handlePaymentError}
+                      isSubmitting={isSubmitting}
+                      bookingData={{
+                        date: selectedDate,
+                        startTime: selectedTime,
+                        duration: currentFlow === 'vr-booking' ? duration : 2.5,
+                        adults: currentFlow === 'vr-booking' ? adults : players,
+                        children: currentFlow === 'vr-booking' ? children : 0,
+                        totalPrice,
+                        contactName,
+                        contactEmail,
+                        contactPhone,
+                        specialRequests,
+                        paymentMethod,
+                        bookingType: 'vr',
+                        partyPackage: undefined
+                      }}
+                    />
+                  </Elements>
+              ) : (
+                <button
+                  onClick={handleBooking}
+                  disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
+                  className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? 'Processing...' : `Book VR Session - ${formatPrice(totalPrice)}`}
+                </button>
+              )}
+              
+              {paymentError && (
+                <div className="mt-4 p-3 bg-red-900/20 border border-red-500 rounded-lg">
+                  <p className="text-red-400 text-sm">{paymentError}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -969,17 +1194,116 @@ export default function BookingSystem() {
                </CardContent>
              </Card>
 
+             {/* Payment Method Selection */}
+             <Card className="mt-6 sm:mt-8 cyber-card">
+               <CardHeader>
+                 <CardTitle className="text-white text-lg sm:text-xl">Payment Method</CardTitle>
+               </CardHeader>
+               <CardContent>
+                 <div className="space-y-4">
+                   {PAYMENT_METHODS.map((method) => (
+                     <div
+                       key={method.id}
+                       className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
+                         paymentMethod === method.id
+                           ? 'border-blue-500 bg-blue-500/10'
+                           : 'border-gray-600 bg-gray-800 hover:border-gray-500'
+                       }`}
+                       onClick={() => setPaymentMethod(method.id as 'stripe' | 'usdc' | 'cash')}
+                     >
+                       <div className="text-2xl mr-3">{method.icon}</div>
+                       <div className="flex-1">
+                         <div className="font-semibold text-white">{method.name}</div>
+                         {method.id === 'cash' && (
+                           <div className="text-sm text-gray-400">Pay when you arrive at the venue</div>
+                         )}
+                         {method.id === 'stripe' && (
+                           <div className="text-sm text-gray-400">Secure card payment</div>
+                         )}
+                         {method.id === 'usdc' && (
+                           <div className="text-sm text-gray-400">Cryptocurrency payment</div>
+                         )}
+                       </div>
+                       <div className={`w-4 h-4 rounded-full border-2 ${
+                         paymentMethod === method.id
+                           ? 'border-blue-500 bg-blue-500'
+                           : 'border-gray-500'
+                       }`}>
+                         {paymentMethod === method.id && (
+                           <div className="w-2 h-2 bg-white rounded-full m-0.5"></div>
+                         )}
+                       </div>
+                     </div>
+                   ))}
+                 </div>
+
+                 {/* Stripe Card Element */}
+                 {paymentMethod === 'stripe' && (
+                   <div className="mt-4 p-4 bg-gray-800 rounded-lg border border-gray-600">
+                     <label className="block text-sm font-medium mb-2 text-gray-300">Card Details</label>
+                     <div className="cyber-input p-3">
+                       <CardElement
+                         options={{
+                           style: {
+                             base: {
+                               fontSize: '16px',
+                               color: '#ffffff',
+                               '::placeholder': {
+                                 color: '#9ca3af',
+                               },
+                             },
+                           },
+                         }}
+                       />
+                     </div>
+                   </div>
+                 )}
+               </CardContent>
+             </Card>
+
 
 
                                                    {/* Book Button */}
               <div className="mt-6 sm:mt-8 text-center">
-                <button
-                  onClick={handleBooking}
-                  disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
-                  className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isSubmitting ? 'Processing...' : `Book Party - ${formatPrice(totalPrice)}`}
-                </button>
+                {paymentMethod === 'stripe' ? (
+                  <Elements stripe={stripePromise}>
+                    <StripePaymentForm
+                      totalPrice={totalPrice}
+                      onPaymentSuccess={handlePaymentSuccess}
+                      onPaymentError={handlePaymentError}
+                      isSubmitting={isSubmitting}
+                      bookingData={{
+                        date: selectedDate,
+                        startTime: selectedTime,
+                        duration: 2.5,
+                        adults: players,
+                        children: 0,
+                        totalPrice,
+                        contactName,
+                        contactEmail,
+                        contactPhone,
+                        specialRequests,
+                        paymentMethod,
+                        bookingType: 'party',
+                        partyPackage: selectedPartyPackage
+                      }}
+                    />
+                  </Elements>
+                ) : (
+                  <button
+                    onClick={handleBooking}
+                    disabled={isSubmitting || !selectedDate || !selectedTime || totalPrice === 0}
+                    className="cyber-button px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? 'Processing...' : `Book Party - ${formatPrice(totalPrice)}`}
+                  </button>
+                )}
+                
+                {paymentError && (
+                  <div className="mt-4 p-3 bg-red-900/20 border border-red-500 rounded-lg">
+                    <p className="text-red-400 text-sm">{paymentError}</p>
+                  </div>
+                )}
               </div>
           </div>
         </div>
