@@ -25,61 +25,64 @@ export interface EmailData {
   specialRequests?: string;
 }
 
-export async function sendBookingConfirmation(data: EmailData) {
-  if (!process.env.RESEND_API_KEY || !resend) {
-    console.warn('📧 Email sending skipped - RESEND_API_KEY not configured');
-    return false;
+export async function sendCustomerConfirmation(data: EmailData) {
+  if (!process.env.RESEND_API_KEY) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📧 Email sending skipped - RESEND_API_KEY not configured')
+    }
+    return false
   }
 
   try {
-    console.log('📧 Sending customer confirmation email to:', data.customerEmail);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📧 Sending customer confirmation email to:', data.customerEmail);
+    }
     
-    const { data: result, error } = await resend.emails.send({
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const result = await resend.emails.send({
       from: 'VR Arcade <contact@secondcitystudio.xyz>',
       to: [data.customerEmail],
-      subject: `Booking Confirmation - ${data.bookingType} Session`,
-      html: generateCustomerEmailHTML(data),
+      subject: 'Booking Confirmation - VR Arcade',
+      html: generateCustomerEmailHTML(data)
     });
 
-    if (error) {
-      console.error('❌ Error sending customer confirmation:', error);
-      return false;
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Customer confirmation email sent successfully:', result?.id);
     }
-
-    console.log('✅ Customer confirmation email sent successfully:', result?.id);
     return true;
   } catch (error) {
-    console.error('❌ Failed to send customer confirmation:', error);
+    console.error('❌ Failed to send customer confirmation email:', error);
     return false;
   }
 }
 
 export async function sendAdminNotification(data: EmailData) {
-  if (!process.env.RESEND_API_KEY || !resend) {
-    console.warn('📧 Email sending skipped - RESEND_API_KEY not configured');
-    return false;
+  if (!process.env.RESEND_API_KEY || !process.env.ADMIN_EMAIL) {
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📧 Admin email sending skipped - RESEND_API_KEY or ADMIN_EMAIL not configured')
+    }
+    return false
   }
 
   try {
-    const adminEmail = process.env.ADMIN_EMAIL || 'contact@secondcitystudio.xyz';
-    console.log('📧 Sending admin notification email to:', adminEmail);
+    if (process.env.NODE_ENV === 'development') {
+      console.log('📧 Sending admin notification email to:', process.env.ADMIN_EMAIL);
+    }
     
-    const { data: result, error } = await resend.emails.send({
+    const resend = new Resend(process.env.RESEND_API_KEY);
+    const result = await resend.emails.send({
       from: 'VR Arcade <contact@secondcitystudio.xyz>',
-      to: [adminEmail],
-      subject: `New Booking - ${data.bookingType} Session`,
-      html: generateAdminEmailHTML(data),
+      to: [process.env.ADMIN_EMAIL],
+      subject: 'New Booking - VR Arcade',
+      html: generateAdminEmailHTML(data)
     });
 
-    if (error) {
-      console.error('❌ Error sending admin notification:', error);
-      return false;
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Admin notification email sent successfully:', result?.id);
     }
-
-    console.log('✅ Admin notification email sent successfully:', result?.id);
     return true;
   } catch (error) {
-    console.error('❌ Failed to send admin notification:', error);
+    console.error('❌ Failed to send admin notification email:', error);
     return false;
   }
 }

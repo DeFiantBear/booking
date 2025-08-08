@@ -62,7 +62,9 @@ export async function POST(request: NextRequest) {
       status: 'confirmed'
     }
 
-    console.log('Calendar event created:', newEvent)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Calendar event created:', newEvent)
+    }
 
     return NextResponse.json({
       event: newEvent,

@@ -170,10 +170,12 @@ export default function BookingSystem() {
         Object.entries(bookingData).filter(([_, value]) => value !== undefined && value !== null)
       )
 
-      console.log('🎯 Submitting booking data:', cleanBookingData)
-      console.log('🎯 Current flow:', currentFlow)
-      console.log('🎯 Guest count:', currentFlow === 'vr-booking' ? `${adults} adults, ${children} children` : `${players} players`)
-      console.log('🎯 Selected party package:', selectedPartyPackage)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🎯 Submitting booking data:', cleanBookingData)
+        console.log('🎯 Current flow:', currentFlow)
+        console.log('🎯 Guest count:', currentFlow === 'vr-booking' ? `${adults} adults, ${children} children` : `${players} players`)
+        console.log('🎯 Selected party package:', selectedPartyPackage)
+      }
 
       const response = await fetch('/api/bookings', {
         method: 'POST',
@@ -184,11 +186,15 @@ export default function BookingSystem() {
       })
 
       const result = await response.json()
-      console.log('🎯 API Response status:', response.status)
-      console.log('🎯 API Response result:', result)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🎯 API Response status:', response.status)
+        console.log('🎯 API Response result:', result)
+      }
 
       if (!response.ok) {
-        console.log('❌ API Error:', result)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('❌ API Error:', result)
+        }
         if (response.status === 409) {
           setSubmitError('This time slot is no longer available. Please select a different time.')
         } else {
@@ -197,7 +203,9 @@ export default function BookingSystem() {
         return
       }
 
-      console.log('✅ Booking created successfully:', result.booking)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ Booking created successfully:', result.booking)
+      }
 
       // Handle payment based on method
       if (paymentMethod === 'cash') {
@@ -220,7 +228,9 @@ export default function BookingSystem() {
 
         if (calendarResponse.ok) {
           const calendarResult = await calendarResponse.json()
-          console.log('Calendar event created:', calendarResult)
+          if (process.env.NODE_ENV === 'development') {
+            console.log('Calendar event created:', calendarResult)
+          }
         }
 
         // Show detailed confirmation instead of alert
@@ -975,7 +985,9 @@ export default function BookingSystem() {
                 onLookup={async (email, phone, date) => {
                   setIsSearching(true)
                   setSearchError('')
-                  console.log('Searching for bookings with:', { email, phone, date })
+                  if (process.env.NODE_ENV === 'development') {
+                    console.log('Searching for bookings with:', { email, phone, date })
+                  }
                   
                   try {
                     const params = new URLSearchParams({
@@ -987,20 +999,28 @@ export default function BookingSystem() {
                       params.append('date', date)
                     }
 
-                    console.log('Making API request to:', `/api/bookings?${params}`)
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('Making API request to:', `/api/bookings?${params}`)
+                    }
                     const response = await fetch(`/api/bookings?${params}`)
-                    console.log('Search API response status:', response.status)
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('Search API response status:', response.status)
+                    }
                      
                     const result = await response.json()
-                    console.log('Search API result:', result)
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('Search API result:', result)
+                    }
 
                     if (!response.ok) {
                       throw new Error(result.error || 'Failed to find bookings')
                     }
 
                     setLookupResults(result.bookings || [])
-                    console.log('Found bookings:', result.bookings)
-                    console.log('Set lookup results:', result.bookings?.length || 0)
+                    if (process.env.NODE_ENV === 'development') {
+                      console.log('Found bookings:', result.bookings)
+                      console.log('Set lookup results:', result.bookings?.length || 0)
+                    }
                      
                   } catch (error) {
                     console.error('Error looking up bookings:', error)
@@ -1104,6 +1124,14 @@ export default function BookingSystem() {
                             </p>
                           </div>
                         </div>
+
+                        {booking.specialRequests && (
+                          <div className="mb-4 p-3 bg-slate-800 rounded-lg">
+                            <p className="text-sm text-slate-300">
+                              <strong>Special Requests:</strong> {booking.specialRequests}
+                            </p>
+                          </div>
+                        )}
                       </CardContent>
                     </Card>
                   ))}

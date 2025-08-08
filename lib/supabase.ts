@@ -12,25 +12,29 @@ export const BOOKINGS_TABLE = 'bookings'
 // Test function to check table structure
 export const testSupabaseConnection = async () => {
   try {
-    console.log('🔍 Testing Supabase connection...')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 Testing Supabase connection...')
+    }
     
-    // Try to get table info
     const { data, error } = await supabase
       .from(BOOKINGS_TABLE)
       .select('*')
       .limit(1)
     
     if (error) {
-      console.error('❌ Supabase connection error:', error)
-      return false
+      console.error('❌ Supabase connection failed:', error)
+      return { success: false, error: error.message }
     }
     
-    console.log('✅ Supabase connection successful')
-    console.log('✅ Table structure sample:', data)
-    return true
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Supabase connection successful')
+      console.log('✅ Table structure sample:', data)
+    }
+    
+    return { success: true, data }
   } catch (error) {
-    console.error('❌ Supabase test failed:', error)
-    return false
+    console.error('❌ Supabase connection error:', error)
+    return { success: false, error: error instanceof Error ? error.message : 'Unknown error' }
   }
 }
 
@@ -109,55 +113,37 @@ export const supabaseDb = {
 
   // Add a new booking
   async addBooking(booking: any) {
-    console.log('🔍 Supabase addBooking called with:', JSON.stringify(booking, null, 2))
-    
-    // Clean and validate the booking data
-    const cleanBooking = {
-      date: String(booking.date),
-      startTime: String(booking.startTime),
-      duration: Number(booking.duration), // Keep as number, let Supabase handle conversion
-      adults: Number(booking.adults),
-      children: Number(booking.children),
-      totalPrice: Number(booking.totalPrice),
-      status: String(booking.status),
-      paymentMethod: String(booking.paymentMethod),
-      paymentStatus: String(booking.paymentStatus),
-      contactName: String(booking.contactName),
-      contactEmail: String(booking.contactEmail),
-      contactPhone: String(booking.contactPhone),
-      specialRequests: booking.specialRequests ? String(booking.specialRequests) : null,
-      createdAt: String(booking.createdAt),
-      updatedAt: String(booking.updatedAt),
-      bookingType: String(booking.bookingType),
-      partyPackage: booking.partyPackage ? String(booking.partyPackage) : null
-    }
-    
-    // Map the booking data to match the actual column names
-    // Use proper UUID for Supabase compatibility
-    const mappedBooking = {
-      id: generateUUID(), // Use proper UUID format
-      date: cleanBooking.date,
-      starttime: cleanBooking.startTime,
-      duration: Math.round(cleanBooking.duration * 60), // Convert hours to minutes for integer storage
-      adults: cleanBooking.adults,
-      children: cleanBooking.children,
-      totalprice: cleanBooking.totalPrice,
-      status: cleanBooking.status,
-      paymentmethod: cleanBooking.paymentMethod,
-      paymentstatus: cleanBooking.paymentStatus,
-      contactname: cleanBooking.contactName,
-      contactemail: cleanBooking.contactEmail,
-      contactphone: cleanBooking.contactPhone,
-      specialrequests: cleanBooking.specialRequests,
-      createdat: cleanBooking.createdAt,
-      updatedat: cleanBooking.updatedAt,
-      bookingtype: cleanBooking.bookingType,
-      partypackage: cleanBooking.partyPackage
-    }
-
-    console.log('🔍 Mapped booking data for Supabase:', JSON.stringify(mappedBooking, null, 2))
-
     try {
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 Supabase addBooking called with:', JSON.stringify(booking, null, 2))
+      }
+      
+      // Map the booking data to match Supabase column names
+      const mappedBooking = {
+        id: booking.id,
+        date: booking.date,
+        starttime: booking.startTime,
+        duration: Math.round(booking.duration * 60), // Convert hours to minutes
+        adults: booking.adults,
+        children: booking.children,
+        totalprice: booking.totalPrice,
+        status: booking.status || 'pending',
+        paymentmethod: booking.paymentMethod,
+        paymentstatus: booking.paymentStatus || 'pending',
+        contactname: booking.contactName,
+        contactemail: booking.contactEmail,
+        contactphone: booking.contactPhone,
+        specialrequests: booking.specialRequests ? String(booking.specialRequests) : null,
+        createdat: booking.createdAt || new Date().toISOString(),
+        updatedat: booking.updatedAt || new Date().toISOString(),
+        bookingtype: booking.bookingType,
+        partypackage: booking.partyPackage || null
+      }
+
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 Mapped booking data for Supabase:', JSON.stringify(mappedBooking, null, 2))
+      }
+
       const { data, error } = await supabase
         .from(BOOKINGS_TABLE)
         .insert([mappedBooking])
@@ -169,7 +155,9 @@ export const supabaseDb = {
         throw error
       }
       
-      console.log('✅ Supabase insert successful, returned data:', JSON.stringify(data, null, 2))
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ Supabase insert successful, returned data:', JSON.stringify(data, null, 2))
+      }
       
       // Map the returned data back to camelCase for frontend compatibility
       const result = {
@@ -193,7 +181,9 @@ export const supabaseDb = {
         partyPackage: data.partypackage
       }
       
-      console.log('✅ Final result object:', JSON.stringify(result, null, 2))
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ Final result object:', JSON.stringify(result, null, 2))
+      }
       return result
     } catch (error) {
       console.error('❌ Error in addBooking:', error)

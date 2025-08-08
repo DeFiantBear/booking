@@ -13,7 +13,9 @@ export async function POST(request: NextRequest) {
     const rateLimit = checkRateLimit(clientIP)
     
     if (!rateLimit.allowed) {
-      console.log(`🚫 Rate limit exceeded for IP: ${clientIP}`)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`🚫 Rate limit exceeded for IP: ${clientIP}`)
+      }
       return NextResponse.json(
         { 
           error: 'Too many requests. Please wait a moment before trying again.',
@@ -29,16 +31,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    console.log(`✅ Rate limit check passed for IP: ${clientIP} (${rateLimit.remaining} requests remaining)`)
+    if (process.env.NODE_ENV === 'development') {
+      console.log(`✅ Rate limit check passed for IP: ${clientIP} (${rateLimit.remaining} requests remaining)`)
+    }
 
     const body = await request.json()
-    console.log('=== BOOKING API DEBUG ===')
-    console.log('Received booking data:', JSON.stringify(body, null, 2))
+    if (process.env.NODE_ENV === 'development') {
+      console.log('=== BOOKING API DEBUG ===')
+      console.log('Received booking data:', JSON.stringify(body, null, 2))
+    }
     
     // Test Supabase connection first
-    console.log('🔍 Testing Supabase connection...')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 Testing Supabase connection...')
+    }
     const supabaseTest = await testSupabaseConnection()
-    console.log('🔍 Supabase test result:', supabaseTest)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 Supabase test result:', supabaseTest)
+    }
     
     const {
       date,
@@ -56,71 +66,91 @@ export async function POST(request: NextRequest) {
       partyPackage
     } = body
 
-    console.log('Extracted fields:', {
-      date,
-      startTime,
-      duration,
-      adults,
-      children,
-      totalPrice,
-      contactName,
-      contactEmail,
-      contactPhone,
-      paymentMethod,
-      bookingType,
-      partyPackage
-    })
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Extracted fields:', {
+        date,
+        startTime,
+        duration,
+        adults,
+        children,
+        totalPrice,
+        contactName,
+        contactEmail,
+        contactPhone,
+        paymentMethod,
+        bookingType,
+        partyPackage
+      })
+    }
 
     // Validate required fields
     if (!date || !startTime || !duration || !contactName || !contactEmail || !contactPhone) {
-      console.log('❌ Missing required fields:', { 
-        date: !!date, 
-        startTime: !!startTime, 
-        duration: !!duration, 
-        contactName: !!contactName, 
-        contactEmail: !!contactEmail, 
-        contactPhone: !!contactPhone 
-      })
+      if (process.env.NODE_ENV === 'development') {
+        console.log('❌ Missing required fields:', { 
+          date: !!date, 
+          startTime: !!startTime, 
+          duration: !!duration, 
+          contactName: !!contactName, 
+          contactEmail: !!contactEmail, 
+          contactPhone: !!contactPhone 
+        })
+      }
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       )
     }
 
-    console.log('✅ All required fields present')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ All required fields present')
+    }
 
     // Validate email and phone
     if (!validateEmail(contactEmail)) {
-      console.log('❌ Invalid email:', contactEmail)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('❌ Invalid email:', contactEmail)
+      }
       return NextResponse.json(
         { error: 'Invalid email address' },
         { status: 400 }
       )
     }
 
-    console.log('✅ Email validation passed')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Email validation passed')
+    }
 
     if (!validatePhone(contactPhone)) {
-      console.log('❌ Invalid phone:', contactPhone)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('❌ Invalid phone:', contactPhone)
+      }
       return NextResponse.json(
         { error: 'Invalid phone number' },
         { status: 400 }
       )
     }
 
-    console.log('✅ Phone validation passed')
-    console.log('Validation passed, checking time slot availability...')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Phone validation passed')
+    }
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Validation passed, checking time slot availability...')
+    }
 
     // Check if time slot is available
     if (!(await isTimeSlotAvailable(date, startTime, duration))) {
-      console.log('❌ Time slot not available:', { date, startTime, duration })
+      if (process.env.NODE_ENV === 'development') {
+        console.log('❌ Time slot not available:', { date, startTime, duration })
+      }
       return NextResponse.json(
         { error: 'This time slot is no longer available. Please select a different time.' },
         { status: 409 }
       )
     }
 
-    console.log('✅ Time slot available, creating booking...')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Time slot available, creating booking...')
+    }
 
     // Create booking with UUID format
     const booking: Booking = {
@@ -144,26 +174,40 @@ export async function POST(request: NextRequest) {
       partyPackage
     }
 
-    console.log('✅ Booking object created:', booking)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Booking object created:', booking)
+    }
 
     // Save booking
     const savedBooking = await addBooking(booking)
-    console.log('✅ Booking saved successfully:', savedBooking)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('✅ Booking saved successfully:', savedBooking)
+    }
 
     // Test: Verify the booking was actually saved to Supabase
-    console.log('🔍 Verifying booking was saved to database...')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔍 Verifying booking was saved to database...')
+    }
     try {
       const { supabaseDb } = await import('@/lib/supabase')
       const verificationResult = await supabaseDb.getBookingsByContact(contactEmail, contactPhone, date)
-      console.log('🔍 Verification result:', verificationResult)
-      console.log('🔍 Found bookings with same contact info:', verificationResult.length)
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 Verification result:', verificationResult)
+        console.log('🔍 Found bookings with same contact info:', verificationResult.length)
+      }
       if (verificationResult.length > 0) {
-        console.log('✅ Booking verified in database:', verificationResult[0])
+        if (process.env.NODE_ENV === 'development') {
+          console.log('✅ Booking verified in database:', verificationResult[0])
+        }
       } else {
-        console.log('❌ Booking NOT found in database after save!')
+        if (process.env.NODE_ENV === 'development') {
+          console.log('❌ Booking NOT found in database after save!')
+        }
       }
     } catch (verificationError) {
-      console.error('❌ Verification failed:', verificationError)
+      if (process.env.NODE_ENV === 'development') {
+        console.error('❌ Verification failed:', verificationError)
+      }
     }
 
     // Send confirmation emails (only if Resend is configured)
@@ -171,7 +215,9 @@ export async function POST(request: NextRequest) {
     
     if (process.env.RESEND_API_KEY) {
       try {
-        console.log('📧 Sending confirmation emails...')
+        if (process.env.NODE_ENV === 'development') {
+          console.log('📧 Sending confirmation emails...')
+        }
         
         // Dynamically import email functions
         const { sendBookingConfirmation, sendAdminNotification } = await import('@/lib/email')
@@ -213,13 +259,19 @@ export async function POST(request: NextRequest) {
         })
 
         emailStatus = { customerEmailSent, adminEmailSent };
-        console.log('📧 Email results:', emailStatus)
+        if (process.env.NODE_ENV === 'development') {
+          console.log('📧 Email results:', emailStatus)
+        }
       } catch (emailError) {
-        console.error('❌ Email sending failed:', emailError)
+        if (process.env.NODE_ENV === 'development') {
+          console.error('❌ Email sending failed:', emailError)
+        }
         // Don't fail the booking if emails fail
       }
     } else {
-      console.log('📧 Email sending skipped - RESEND_API_KEY not configured')
+      if (process.env.NODE_ENV === 'development') {
+        console.log('📧 Email sending skipped - RESEND_API_KEY not configured')
+      }
     }
 
     return NextResponse.json({
@@ -229,7 +281,9 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('❌ Error creating booking:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('❌ Error creating booking:', error)
+    }
     return NextResponse.json(
       { error: 'Failed to create booking' },
       { status: 500 }
@@ -260,7 +314,9 @@ export async function GET(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error retrieving bookings:', error)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error retrieving bookings:', error)
+    }
     return NextResponse.json(
       { error: 'Failed to retrieve bookings' },
       { status: 500 }

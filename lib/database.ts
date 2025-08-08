@@ -35,14 +35,16 @@ const checkHasSupabase = () => {
   return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
 }
 
-// Debug logging
-console.log('Database configuration:')
-console.log('- Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set')
-console.log('- Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
-console.log('- Has Supabase:', checkHasSupabase())
-console.log('- Is Serverless:', isServerless)
-console.log('- NODE_ENV:', process.env.NODE_ENV)
-console.log('- VERCEL:', process.env.VERCEL)
+// Debug logging - only in development
+if (process.env.NODE_ENV === 'development') {
+  console.log('Database configuration:')
+  console.log('- Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set')
+  console.log('- Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
+  console.log('- Has Supabase:', checkHasSupabase())
+  console.log('- Is Serverless:', isServerless)
+  console.log('- NODE_ENV:', process.env.NODE_ENV)
+  console.log('- VERCEL:', process.env.VERCEL)
+}
 
 // Ensure data directory exists
 const ensureDataDir = () => {
@@ -58,7 +60,9 @@ const ensureDataDir = () => {
 export const loadBookings = async (): Promise<Booking[]> => {
   if (checkHasSupabase()) {
     try {
-      console.log('Using Supabase for loadBookings')
+      if (process.env.NODE_ENV === 'development') {
+        console.log('Using Supabase for loadBookings')
+      }
       const { supabaseDb } = await import('./supabase')
       return await supabaseDb.getAllBookings()
     } catch (error) {
@@ -67,11 +71,15 @@ export const loadBookings = async (): Promise<Booking[]> => {
   }
   
   if (isServerless) {
-    console.log('Using in-memory storage (serverless)')
+    if (process.env.NODE_ENV === 'development') {
+      console.log('Using in-memory storage (serverless)')
+    }
     return inMemoryBookings
   }
   
-  console.log('Using file storage')
+  if (process.env.NODE_ENV === 'development') {
+    console.log('Using file storage')
+  }
   try {
     ensureDataDir()
     if (!fs.existsSync(BOOKINGS_FILE)) {
@@ -104,28 +112,38 @@ export const saveBookings = async (bookings: Booking[]): Promise<void> => {
 
 // Add a new booking
 export const addBooking = async (booking: Booking): Promise<Booking> => {
-  console.log('🔍 Database addBooking called with:', JSON.stringify(booking, null, 2))
-  console.log('🔍 Has Supabase config:', checkHasSupabase())
-  console.log('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set')
-  console.log('🔍 Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
-  
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 Database addBooking called with:', JSON.stringify(booking, null, 2))
+    console.log('🔍 Has Supabase config:', checkHasSupabase())
+    console.log('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set')
+    console.log('🔍 Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
+  }
+
   if (checkHasSupabase()) {
     try {
-      console.log('🔍 Attempting to use Supabase for addBooking')
+      if (process.env.NODE_ENV === 'development') {
+        console.log('🔍 Attempting to use Supabase for addBooking')
+      }
       const { supabaseDb } = await import('./supabase')
       const result = await supabaseDb.addBooking(booking)
-      console.log('✅ Supabase addBooking successful:', JSON.stringify(result, null, 2))
+      if (process.env.NODE_ENV === 'development') {
+        console.log('✅ Supabase addBooking successful:', JSON.stringify(result, null, 2))
+      }
       return result
     } catch (error) {
-      console.error('❌ Supabase error, falling back to local storage:', error)
+      console.error('Supabase error, falling back to local storage:', error)
     }
   }
   
-  console.log('🔍 Using local storage for addBooking')
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔍 Using local storage for addBooking')
+  }
   const bookings = await loadBookings()
   bookings.push(booking)
   await saveBookings(bookings)
-  console.log('✅ Local storage addBooking successful')
+  if (process.env.NODE_ENV === 'development') {
+    console.log('✅ Local storage addBooking successful')
+  }
   return booking
 }
 

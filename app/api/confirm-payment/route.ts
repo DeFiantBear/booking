@@ -25,7 +25,9 @@ export async function POST(request: NextRequest) {
       const bookingId = paymentIntent.metadata.bookingId
 
       // TODO: Update booking status to 'confirmed' and payment status to 'paid'
-      console.log(`Payment confirmed for booking: ${bookingId}`)
+      if (process.env.NODE_ENV === 'development') {
+        console.log(`Payment confirmed for booking: ${bookingId}`)
+      }
 
       return NextResponse.json({
         success: true,
