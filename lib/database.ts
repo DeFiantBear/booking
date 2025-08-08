@@ -30,14 +30,16 @@ let inMemoryBookings: Booking[] = [
 // Check if we're in a serverless environment (Vercel)
 const isServerless = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production'
 
-// Check if Supabase is configured
-const hasSupabase = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+// Check if Supabase is configured (make this dynamic)
+const checkHasSupabase = () => {
+  return !!(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)
+}
 
 // Debug logging
 console.log('Database configuration:')
 console.log('- Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set')
 console.log('- Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
-console.log('- Has Supabase:', hasSupabase)
+console.log('- Has Supabase:', checkHasSupabase())
 console.log('- Is Serverless:', isServerless)
 console.log('- NODE_ENV:', process.env.NODE_ENV)
 console.log('- VERCEL:', process.env.VERCEL)
@@ -54,7 +56,7 @@ const ensureDataDir = () => {
 
 // Load all bookings from file, memory, or Supabase
 export const loadBookings = async (): Promise<Booking[]> => {
-  if (hasSupabase) {
+  if (checkHasSupabase()) {
     try {
       console.log('Using Supabase for loadBookings')
       const { supabaseDb } = await import('./supabase')
@@ -103,11 +105,11 @@ export const saveBookings = async (bookings: Booking[]): Promise<void> => {
 // Add a new booking
 export const addBooking = async (booking: Booking): Promise<Booking> => {
   console.log('🔍 Database addBooking called with:', JSON.stringify(booking, null, 2))
-  console.log('🔍 Has Supabase config:', hasSupabase)
+  console.log('🔍 Has Supabase config:', checkHasSupabase())
   console.log('🔍 Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL ? 'Set' : 'Not set')
   console.log('🔍 Supabase Key:', process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'Set' : 'Not set')
   
-  if (hasSupabase) {
+  if (checkHasSupabase()) {
     try {
       console.log('🔍 Attempting to use Supabase for addBooking')
       const { supabaseDb } = await import('./supabase')
@@ -129,7 +131,7 @@ export const addBooking = async (booking: Booking): Promise<Booking> => {
 
 // Get bookings by email and phone
 export const getBookingsByContact = async (email: string, phone: string, date?: string): Promise<Booking[]> => {
-  if (hasSupabase) {
+  if (checkHasSupabase()) {
     try {
       const { supabaseDb } = await import('./supabase')
       return await supabaseDb.getBookingsByContact(email, phone, date)
@@ -149,7 +151,7 @@ export const getBookingsByContact = async (email: string, phone: string, date?: 
 
 // Check for double booking
 export const isTimeSlotAvailable = async (date: string, startTime: string, duration: number, excludeBookingId?: string): Promise<boolean> => {
-  if (hasSupabase) {
+  if (checkHasSupabase()) {
     try {
       const { supabaseDb } = await import('./supabase')
       return await supabaseDb.isTimeSlotAvailable(date, startTime, duration, excludeBookingId)
@@ -231,7 +233,7 @@ export const getBookingsByDateRange = async (startDate: string, endDate: string)
 
 // Update booking status
 export const updateBookingStatus = async (bookingId: string, status: Booking['status']): Promise<Booking | null> => {
-  if (hasSupabase) {
+  if (checkHasSupabase()) {
     try {
       const { supabaseDb } = await import('./supabase')
       return await supabaseDb.updateBookingStatus(bookingId, status)
@@ -254,7 +256,7 @@ export const updateBookingStatus = async (bookingId: string, status: Booking['st
 
 // Delete booking (for admin purposes)
 export const deleteBooking = async (bookingId: string): Promise<boolean> => {
-  if (hasSupabase) {
+  if (checkHasSupabase()) {
     try {
       const { supabaseDb } = await import('./supabase')
       return await supabaseDb.deleteBooking(bookingId)
