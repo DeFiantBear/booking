@@ -224,6 +224,7 @@ export default function BookingSystem() {
         alert('Booking confirmed! Please pay at the venue.')
         resetForm()
         setCurrentFlow('main')
+      }
 
     } catch (error) {
       console.error('Error creating booking:', error)
