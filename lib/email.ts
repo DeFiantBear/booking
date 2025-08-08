@@ -100,8 +100,8 @@ function generateCustomerEmailHTML(data: EmailData): string {
     minute: '2-digit'
   });
 
-  const endTime = new Date(`2000-01-01T${data.startTime}`);
-  endTime.setHours(endTime.getHours() + data.duration);
+  const startDateTime = new Date(`2000-01-01T${data.startTime}`);
+  const endTime = new Date(startDateTime.getTime() + (data.duration * 60 * 60 * 1000));
   const formattedEndTime = endTime.toLocaleTimeString('en-GB', {
     hour: '2-digit',
     minute: '2-digit'
