@@ -3,10 +3,34 @@ import { addBooking, getBookingsByContact, isTimeSlotAvailable, getAvailableTime
 import { generateUUID, validateEmail, validatePhone } from '@/lib/utils'
 import { Booking } from '@/lib/types'
 import { testSupabaseConnection } from '@/lib/supabase'
+import { checkRateLimit, getClientIP } from '@/lib/rateLimit'
 
 // POST /api/bookings - Create a new booking
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting check
+    const clientIP = getClientIP(request)
+    const rateLimit = checkRateLimit(clientIP)
+    
+    if (!rateLimit.allowed) {
+      console.log(`🚫 Rate limit exceeded for IP: ${clientIP}`)
+      return NextResponse.json(
+        { 
+          error: 'Too many requests. Please wait a moment before trying again.',
+          retryAfter: 60
+        },
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Remaining': rateLimit.remaining.toString(),
+            'Retry-After': '60'
+          }
+        }
+      )
+    }
+
+    console.log(`✅ Rate limit check passed for IP: ${clientIP} (${rateLimit.remaining} requests remaining)`)
+
     const body = await request.json()
     console.log('=== BOOKING API DEBUG ===')
     console.log('Received booking data:', JSON.stringify(body, null, 2))
