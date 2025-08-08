@@ -830,7 +830,7 @@ export default function BookingSystem() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {PAYMENT_METHODS.map((method) => (
+                  {PAYMENT_METHODS.filter(method => method.id !== 'usdc').map((method) => (
                     <div
                       key={method.id}
                       className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
@@ -1225,7 +1225,7 @@ export default function BookingSystem() {
                </CardHeader>
                <CardContent>
                  <div className="space-y-4">
-                   {PAYMENT_METHODS.map((method) => (
+                   {PAYMENT_METHODS.filter(method => method.id !== 'usdc').map((method) => (
                      <div
                        key={method.id}
                        className={`flex items-center p-4 rounded-lg border-2 cursor-pointer transition-all ${
