@@ -62,6 +62,8 @@ export default function BookingSystem() {
   const [lookupEmail, setLookupEmail] = useState('')
   const [lookupPhone, setLookupPhone] = useState('')
   const [lookupDate, setLookupDate] = useState('')
+  const [showConfirmation, setShowConfirmation] = useState(false)
+  const [confirmedBooking, setConfirmedBooking] = useState<Booking | null>(null)
 
   // Calculate total price based on current flow
   const totalPrice = currentFlow === 'vr-booking' 
@@ -221,9 +223,9 @@ export default function BookingSystem() {
           console.log('Calendar event created:', calendarResult)
         }
 
-        alert('Booking confirmed! Please pay at the venue.')
-        resetForm()
-        setCurrentFlow('main')
+        // Show detailed confirmation instead of alert
+        setConfirmedBooking(result.booking)
+        setShowConfirmation(true)
       }
 
     } catch (error) {
@@ -232,6 +234,13 @@ export default function BookingSystem() {
     } finally {
       setIsSubmitting(false)
     }
+  }
+
+  const closeConfirmation = () => {
+    setShowConfirmation(false)
+    setConfirmedBooking(null)
+    resetForm()
+    setCurrentFlow('main')
   }
 
   const resetForm = () => {
@@ -287,6 +296,110 @@ export default function BookingSystem() {
       setCurrentFlow('main')
       resetForm()
     }
+  }
+
+  // Confirmation Modal
+  if (showConfirmation && confirmedBooking) {
+    return (
+      <div className="min-h-screen bg-black flex items-center justify-center px-4 py-8">
+        <div className="max-w-2xl w-full">
+          <Card className="cyber-card">
+            <CardContent className="p-6">
+              <div className="text-center mb-6">
+                <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                <h2 className="text-2xl font-bold text-white mb-2">Booking Confirmed!</h2>
+                <p className="text-gray-300">Please screenshot this confirmation for your records</p>
+              </div>
+
+              <div className="space-y-4 mb-6">
+                <div className="bg-slate-800 p-4 rounded-lg">
+                  <h3 className="text-lg font-semibold text-white mb-3">Booking Details</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <p className="text-sm text-gray-400">Booking ID</p>
+                      <p className="text-white font-mono">{confirmedBooking.id}</p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm text-gray-400">Type</p>
+                      <p className="text-white capitalize">
+                        {confirmedBooking.bookingType === 'vr' ? 'VR Session' : 
+                         confirmedBooking.partyPackage ? `${confirmedBooking.partyPackage} Party` : 'Gaming Party'}
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm text-gray-400">Date</p>
+                      <p className="text-white">
+                        {format(parseISO(confirmedBooking.date), 'EEEE, MMMM do, yyyy')}
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm text-gray-400">Time</p>
+                      <p className="text-white">
+                        {confirmedBooking.startTime} - {confirmedBooking.duration} hours
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm text-gray-400">Guests</p>
+                      <p className="text-white">
+                        {confirmedBooking.bookingType === 'vr' 
+                          ? `${confirmedBooking.adults} adults, ${confirmedBooking.children} children`
+                          : `${confirmedBooking.adults} players`
+                        }
+                      </p>
+                    </div>
+                    
+                    <div>
+                      <p className="text-sm text-gray-400">Total Price</p>
+                      <p className="text-white font-bold text-lg">{formatPrice(confirmedBooking.totalPrice)}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="bg-slate-800 p-4 rounded-lg">
+                  <h3 className="text-lg font-semibold text-white mb-3">Contact Information</h3>
+                  <div className="space-y-2">
+                    <p className="text-white"><strong>Name:</strong> {confirmedBooking.contactName}</p>
+                    <p className="text-white"><strong>Email:</strong> {confirmedBooking.contactEmail}</p>
+                    <p className="text-white"><strong>Phone:</strong> {confirmedBooking.contactPhone}</p>
+                  </div>
+                </div>
+
+                {confirmedBooking.specialRequests && (
+                  <div className="bg-slate-800 p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold text-white mb-3">Special Requests</h3>
+                    <p className="text-white">{confirmedBooking.specialRequests}</p>
+                  </div>
+                )}
+
+                <div className="bg-yellow-900/20 border border-yellow-500 p-4 rounded-lg">
+                  <h3 className="text-lg font-semibold text-yellow-400 mb-2">Payment Instructions</h3>
+                  <p className="text-yellow-300">
+                    Please pay <strong>{formatPrice(confirmedBooking.totalPrice)}</strong> in cash when you arrive at the venue.
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-center space-y-3">
+                <Button 
+                  onClick={closeConfirmation}
+                  className="cyber-button w-full"
+                >
+                  Done
+                </Button>
+                <p className="text-xs text-gray-400">
+                  A confirmation email has been sent to {confirmedBooking.contactEmail}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    )
   }
 
   // Main Selection Screen
