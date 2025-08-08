@@ -170,7 +170,7 @@ export default function BookingSystem() {
 
       console.log('🎯 Submitting booking data:', cleanBookingData)
       console.log('🎯 Current flow:', currentFlow)
-      console.log('🎯 Players count:', players)
+      console.log('🎯 Guest count:', currentFlow === 'vr-booking' ? `${adults} adults, ${children} children` : `${players} players`)
       console.log('🎯 Selected party package:', selectedPartyPackage)
 
       const response = await fetch('/api/bookings', {

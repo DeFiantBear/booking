@@ -126,6 +126,22 @@ export async function POST(request: NextRequest) {
     const savedBooking = await addBooking(booking)
     console.log('✅ Booking saved successfully:', savedBooking)
 
+    // Test: Verify the booking was actually saved to Supabase
+    console.log('🔍 Verifying booking was saved to database...')
+    try {
+      const { supabaseDb } = await import('@/lib/supabase')
+      const verificationResult = await supabaseDb.getBookingsByContact(contactEmail, contactPhone, date)
+      console.log('🔍 Verification result:', verificationResult)
+      console.log('🔍 Found bookings with same contact info:', verificationResult.length)
+      if (verificationResult.length > 0) {
+        console.log('✅ Booking verified in database:', verificationResult[0])
+      } else {
+        console.log('❌ Booking NOT found in database after save!')
+      }
+    } catch (verificationError) {
+      console.error('❌ Verification failed:', verificationError)
+    }
+
     // Send confirmation emails (only if Resend is configured)
     let emailStatus = { customerEmailSent: false, adminEmailSent: false };
     
