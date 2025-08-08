@@ -13,8 +13,8 @@ export default function Header() {
           <div className="flex items-center space-x-3">
             <Gamepad2 className="h-8 w-8 text-vr-200" />
             <div>
-              <h1 className="text-2xl font-bold">VR Arcade</h1>
-              <p className="text-vr-200 text-sm">Book Your Virtual Reality Adventure</p>
+              <h1 className="text-2xl font-bold">SECOND CITY STUDIO</h1>
+              <p className="text-vr-200 text-sm">VR Arcade & Gaming</p>
             </div>
           </div>
           

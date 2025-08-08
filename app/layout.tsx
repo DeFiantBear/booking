@@ -5,9 +5,12 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'VR Arcade Booking System',
-  description: 'Book your VR gaming sessions and party packages at our state-of-the-art VR arcade',
-  keywords: 'VR, arcade, booking, gaming, virtual reality, party packages',
+  title: 'SECOND CITY STUDIO - VR Arcade Booking',
+  description: 'Book your VR gaming sessions and party packages at SECOND CITY STUDIO',
+  keywords: 'VR, arcade, booking, gaming, virtual reality, party packages, SECOND CITY STUDIO',
+  icons: {
+    icon: '/favicon.svg',
+  },
 }
 
 export default function RootLayout({

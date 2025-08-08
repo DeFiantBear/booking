@@ -332,7 +332,9 @@ export default function BookingSystem() {
           <Card className="cyber-card">
             <CardContent className="p-6">
               <div className="text-center mb-6">
-                <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+                <div className="mb-4">
+                  <img src="/logo.svg" alt="SECOND CITY STUDIO" className="h-20 mx-auto" />
+                </div>
                 <h2 className="text-2xl font-bold text-white mb-2">Booking Confirmed!</h2>
                 <p className="text-gray-300">Please screenshot this confirmation for your records</p>
               </div>
