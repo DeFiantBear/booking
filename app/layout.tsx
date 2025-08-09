@@ -27,8 +27,20 @@ export const metadata: Metadata = {
     url: 'https://booking.secondcitystudio.xyz',
   },
   other: {
+    // Farcaster Mini App meta tags
     'fc:miniapp': '{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}',
+    
+    // Farcaster Frame meta tags - CRITICAL for embed previews
     'fc:frame': '{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}',
+    'fc:frame:image': 'https://booking.secondcitystudio.xyz/miniapp-embed.png',
+    'fc:frame:image:width': '1200',
+    'fc:frame:image:height': '800',
+    'fc:frame:button:1': 'Book VR Session',
+    'fc:frame:button:1:action': 'post_redirect',
+    'fc:frame:button:1:target': 'https://booking.secondcitystudio.xyz',
+    
+    // Additional Farcaster properties
+    'fc:frame:state': '{"version":"1"}',
   },
 }
 
