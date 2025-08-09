@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG to PNG Converter for Farcaster</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .converter {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .image-preview {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .image-container {
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 4px;
+            background: white;
+        }
+        .image-container img {
+            max-width: 200px;
+            height: auto;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .instructions {
+            background: #e7f3ff;
+            padding: 15px;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>SVG to PNG Converter for Farcaster Mini App</h1>
+    
+    <div class="converter">
+        <h2>Convert Your SVG Images to PNG</h2>
+        <p>Farcaster requires PNG images for proper Mini App embedding. Use this tool to convert your SVG files.</p>
+        
+        <div class="image-preview">
+            <div class="image-container">
+                <h3>Icon (1024x1024)</h3>
+                <img src="/icon.svg" alt="Icon" id="iconPreview">
+                <br>
+                <button onclick="convertToPNG('iconPreview', 'icon', 1024, 1024)">Convert to PNG</button>
+            </div>
+            
+            <div class="image-container">
+                <h3>Splash (200x200)</h3>
+                <img src="/splash.svg" alt="Splash" id="splashPreview">
+                <br>
+                <button onclick="convertToPNG('splashPreview', 'splash', 200, 200)">Convert to PNG</button>
+            </div>
+            
+            <div class="image-container">
+                <h3>Hero (1200x630)</h3>
+                <img src="/hero.svg" alt="Hero" id="heroPreview">
+                <br>
+                <button onclick="convertToPNG('heroPreview', 'hero', 1200, 630)">Convert to PNG</button>
+            </div>
+            
+            <div class="image-container">
+                <h3>Embed (3:2 ratio)</h3>
+                <img src="/miniapp-embed.svg" alt="Embed" id="embedPreview">
+                <br>
+                <button onclick="convertToPNG('embedPreview', 'miniapp-embed', 1200, 800)">Convert to PNG</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h3>Manual Conversion Instructions:</h3>
+        <ol>
+            <li><strong>Use the buttons above</strong> to convert each SVG to PNG</li>
+            <li><strong>Right-click</strong> on each converted image and "Save image as..."</li>
+            <li><strong>Save the PNG files</strong> in your <code>public/</code> folder with these names:
+                <ul>
+                    <li><code>icon.png</code> (1024x1024)</li>
+                    <li><code>splash.png</code> (200x200)</li>
+                    <li><code>hero.png</code> (1200x630)</li>
+                    <li><code>miniapp-embed.png</code> (1200x800)</li>
+                </ul>
+            </li>
+            <li><strong>Replace the SVG files</strong> with the PNG versions</li>
+            <li><strong>Deploy your app</strong> to make the changes live</li>
+        </ol>
+        
+        <p><strong>Alternative:</strong> Use online tools like:
+            <a href="https://convertio.co/svg-png/" target="_blank">Convertio</a> or
+            <a href="https://cloudconvert.com/svg-to-png" target="_blank">CloudConvert</a>
+        </p>
+    </div>
+
+    <script>
+        function convertToPNG(imageId, filename, width, height) {
+            const img = document.getElementById(imageId);
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Set background color (black for your theme)
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Wait for image to load
+            img.onload = function() {
+                // Calculate scaling to fit the image properly
+                const scale = Math.min(width / img.naturalWidth, height / img.naturalHeight);
+                const scaledWidth = img.naturalWidth * scale;
+                const scaledHeight = img.naturalHeight * scale;
+                
+                // Center the image
+                const x = (width - scaledWidth) / 2;
+                const y = (height - scaledHeight) / 2;
+                
+                ctx.drawImage(img, x, y, scaledWidth, scaledHeight);
+                
+                // Convert to PNG and download
+                const link = document.createElement('a');
+                link.download = filename + '.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+            };
+            
+            // Trigger load if already loaded
+            if (img.complete) {
+                img.onload();
+            }
+        }
+    </script>
+</body>
+</html>

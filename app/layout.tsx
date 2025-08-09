@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'] })
@@ -14,7 +15,7 @@ export const metadata: Metadata = {
   other: {
     'fc:miniapp': JSON.stringify({
       version: "1",
-      imageUrl: "https://booking.secondcitystudio.xyz/miniapp-embed.svg",
+      imageUrl: "https://booking.secondcitystudio.xyz/miniapp-embed.png",
       button: {
         title: "Book VR Session",
         action: {
@@ -25,7 +26,7 @@ export const metadata: Metadata = {
     }),
     'fc:frame': JSON.stringify({
       version: "1",
-      imageUrl: "https://booking.secondcitystudio.xyz/miniapp-embed.svg",
+      imageUrl: "https://booking.secondcitystudio.xyz/miniapp-embed.png",
       button: {
         title: "Book VR Session",
         action: {
@@ -49,6 +50,7 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         {children}
+        <Analytics />
       </body>
     </html>
   )
