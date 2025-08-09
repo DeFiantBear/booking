@@ -1,4 +1,9 @@
 {
+  "accountAssociation": {
+    "header": "eyJmaWQiOjEwNzcyMzQsInR5cGUiOiJhdXRoIiwia2V5IjoiMHgzOTdmQjY1YkE5NEJkMkI3NjUwMjg2MDE3MWQyMWQxNzRFMjc2OGEzIn0",
+    "payload": "eyJkb21haW4iOiJib29raW5nLnNlY29uZGNpdHlzdHVkaW8ueHl6In0",
+    "signature": "EiWDn6b4a/wF1qj6yww/eOr5cIoXbKwh77SkzskMHf0Ne+23HdgwlSy5vbjJ73T0enJoAeQSxQ+dMA99cVOawhw="
+  },
   "miniapp": {
     "version": "1",
     "name": "SECOND CITY STUDIO",
