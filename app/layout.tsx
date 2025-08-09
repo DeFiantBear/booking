@@ -12,30 +12,6 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.svg',
   },
-  other: {
-    'fc:miniapp': JSON.stringify({
-      version: "1",
-      imageUrl: "https://booking.secondcitystudio.xyz/miniapp-embed.png",
-      button: {
-        title: "Book VR Session",
-        action: {
-          url: "https://booking.secondcitystudio.xyz",
-          method: "GET"
-        }
-      }
-    }),
-    'fc:frame': JSON.stringify({
-      version: "1",
-      imageUrl: "https://booking.secondcitystudio.xyz/miniapp-embed.png",
-      button: {
-        title: "Book VR Session",
-        action: {
-          url: "https://booking.secondcitystudio.xyz",
-          method: "GET"
-        }
-      }
-    })
-  }
 }
 
 export default function RootLayout({
@@ -47,6 +23,9 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://auth.farcaster.xyz" />
+        {/* Farcaster Mini App Embed Meta Tags */}
+        <meta property="fc:miniapp" content='{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}' />
+        <meta property="fc:frame" content='{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}' />
       </head>
       <body className={inter.className}>
         {children}
