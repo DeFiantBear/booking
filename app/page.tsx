@@ -1,9 +1,12 @@
 import BookingSystem from '@/components/BookingSystem'
+import { MiniAppWrapper } from '../components/MiniAppWrapper'
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-black">
-      <BookingSystem />
-    </div>
+    <MiniAppWrapper>
+      <div className="min-h-screen bg-black">
+        <BookingSystem />
+      </div>
+    </MiniAppWrapper>
   )
 } 

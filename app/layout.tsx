@@ -11,6 +11,30 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.svg',
   },
+  other: {
+    'fc:miniapp': JSON.stringify({
+      version: "1",
+      imageUrl: "https://booking.secondcitystudio.xyz/miniapp-embed.svg",
+      button: {
+        title: "Book VR Session",
+        action: {
+          url: "https://booking.secondcitystudio.xyz",
+          method: "GET"
+        }
+      }
+    }),
+    'fc:frame': JSON.stringify({
+      version: "1",
+      imageUrl: "https://booking.secondcitystudio.xyz/miniapp-embed.svg",
+      button: {
+        title: "Book VR Session",
+        action: {
+          url: "https://booking.secondcitystudio.xyz",
+          method: "GET"
+        }
+      }
+    })
+  }
 }
 
 export default function RootLayout({
@@ -20,6 +44,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://auth.farcaster.xyz" />
+      </head>
       <body className={inter.className}>
         {children}
       </body>

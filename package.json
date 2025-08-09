@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@farcaster/miniapp-sdk": "^0.1.8",
     "@hookform/resolvers": "^3.3.2",
     "@radix-ui/react-slot": "^1.0.2",
     "@stripe/react-stripe-js": "^3.9.0",
