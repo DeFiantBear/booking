@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fix PNG Images for Farcaster</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { border: 1px solid #ccc; padding: 20px; margin: 20px 0; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Fix PNG Images for Farcaster Embed</h1>
+    <p>This tool creates proper PNG files with correct headers that Farcaster can read.</p>
+    
+    <div class="container">
+        <h3>Generate Proper PNG Files:</h3>
+        <button onclick="generatePNG('miniapp-embed', 1200, 800)">Generate miniapp-embed.png (1200x800)</button>
+        <button onclick="generatePNG('icon', 1024, 1024)">Generate icon.png (1024x1024)</button>
+        <button onclick="generatePNG('splash', 200, 200)">Generate splash.png (200x200)</button>
+        <button onclick="generatePNG('hero', 1200, 630)">Generate hero.png (1200x630)</button>
+    </div>
+
+    <script>
+        function generatePNG(name, width, height) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Black background
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, width, height);
+            
+            // White text
+            ctx.fillStyle = '#FFFFFF';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Main text
+            ctx.fillText('SECOND CITY STUDIO', width/2, height/2);
+            
+            // Subtitle for larger images
+            if (width >= 800) {
+                ctx.font = 'bold 24px Arial';
+                ctx.fillText('VR Arcade Booking', width/2, height/2 + 40);
+            }
+            
+            // Download with proper PNG headers
+            const link = document.createElement('a');
+            link.download = name + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            
+            alert(`✅ Generated ${name}.png (${width}x${height})`);
+        }
+    </script>
+</body>
+</html>
