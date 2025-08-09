@@ -1,0 +1,39 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="#000000"/>
+  
+  <!-- 3D Cube - centered and scaled for icon -->
+  <g transform="translate(512, 400)">
+    <!-- Back face (outline with gradient) -->
+    <path d="M-120,-120 L120,-120 L120,120 L-120,120 Z" fill="none" stroke="url(#gradient)" stroke-width="8"/>
+    
+    <!-- Left face (white) -->
+    <path d="M-120,-120 L-120,120 L-120,120 L-120,-120 Z" fill="white"/>
+    
+    <!-- Top face (white) -->
+    <path d="M-120,-120 L120,-120 L120,-120 L-120,-120 Z" fill="white"/>
+    
+    <!-- Gradient definition -->
+    <defs>
+      <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#8B5CF6"/>
+        <stop offset="100%" style="stop-color:#EC4899"/>
+      </linearGradient>
+    </defs>
+  </g>
+  
+  <!-- Text: SECOND CITY -->
+  <text x="512" y="600" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="48">
+    <tspan x="512" dy="0">SECOND CITY</tspan>
+  </text>
+  
+  <!-- Text: STUDIO -->
+  <text x="512" y="680" text-anchor="middle" fill="white" font-family="Arial, sans-serif" font-weight="bold" font-size="48">
+    <tspan x="512" dy="0">STUDIO</tspan>
+  </text>
+  
+  <!-- VR Arcade subtitle -->
+  <text x="512" y="750" text-anchor="middle" fill="#8B5CF6" font-family="Arial, sans-serif" font-size="32">
+    <tspan x="512" dy="0">VR Arcade</tspan>
+  </text>
+</svg>

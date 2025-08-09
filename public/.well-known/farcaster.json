@@ -1,0 +1,27 @@
+{
+  "miniapp": {
+    "version": "1",
+    "name": "SECOND CITY STUDIO",
+    "iconUrl": "https://booking.secondcitystudio.xyz/icon.svg",
+    "homeUrl": "https://booking.secondcitystudio.xyz",
+    "splashImageUrl": "https://booking.secondcitystudio.xyz/splash.svg",
+    "splashBackgroundColor": "#000000",
+    "subtitle": "VR Arcade Booking",
+    "description": "Book your virtual reality gaming sessions and party packages at SECOND CITY STUDIO. VR gaming for up to 5 people, console gaming for up to 10 players.",
+    "primaryCategory": "entertainment",
+    "tags": [
+      "vr",
+      "gaming",
+      "arcade",
+      "booking",
+      "entertainment"
+    ],
+    "heroImageUrl": "https://booking.secondcitystudio.xyz/hero.svg",
+    "tagline": "VR Arcade Booking",
+    "ogTitle": "SECOND CITY STUDIO",
+    "ogDescription": "Book your VR gaming sessions and party packages",
+    "ogImageUrl": "https://booking.secondcitystudio.xyz/hero.svg",
+    "imageUrl": "https://booking.secondcitystudio.xyz/miniapp-embed.svg",
+    "buttonTitle": "Book VR Session"
+  }
+}
