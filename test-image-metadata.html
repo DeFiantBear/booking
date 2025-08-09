@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Image Metadata</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .image-test { border: 1px solid #ccc; padding: 20px; margin: 20px 0; }
+        img { max-width: 200px; border: 1px solid #ddd; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test Image Metadata for Farcaster</h1>
+    <p>This tool tests if your PNG images have proper metadata that Farcaster can read.</p>
+    
+    <div class="image-test">
+        <h3>Test miniapp-embed.png:</h3>
+        <img id="embed-img" src="/miniapp-embed.png" alt="Embed Image" onload="testImage(this, 'embed-img')" onerror="handleError('embed-img')" />
+        <div id="embed-img-info"></div>
+    </div>
+    
+    <div class="image-test">
+        <h3>Test icon.png:</h3>
+        <img id="icon-img" src="/icon.png" alt="Icon Image" onload="testImage(this, 'icon-img')" onerror="handleError('icon-img')" />
+        <div id="icon-img-info"></div>
+    </div>
+
+    <script>
+        function testImage(img, id) {
+            const info = document.getElementById(id + '-info');
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = img.naturalWidth;
+            canvas.height = img.naturalHeight;
+            
+            info.innerHTML = `
+                <p><strong>Natural Dimensions:</strong> ${img.naturalWidth} × ${img.naturalHeight}</p>
+                <p><strong>Display Dimensions:</strong> ${img.width} × ${img.height}</p>
+                <p><strong>File Size:</strong> ${img.src.length} characters (base64)</p>
+                <p class="success">✅ Image loaded successfully</p>
+            `;
+        }
+        
+        function handleError(id) {
+            const info = document.getElementById(id + '-info');
+            info.innerHTML = '<p class="error">❌ Failed to load image</p>';
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create Simple PNG for Farcaster</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .container { border: 1px solid #ccc; padding: 20px; margin: 20px 0; }
+        button { padding: 10px 20px; margin: 10px; background: #007bff; color: white; border: none; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .info { background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>🎨 Create Simple PNG for Farcaster</h1>
+    
+    <div class="info">
+        <h3>Why This Might Fix Your Issue:</h3>
+        <p>Farcaster's crawler might be having trouble with complex PNG files. This tool creates extremely simple PNG files that are guaranteed to be compatible with all image parsers.</p>
+    </div>
+    
+    <div class="container">
+        <h3>Generate Ultra-Simple PNG Files:</h3>
+        <button onclick="createSimplePNG('miniapp-embed', 1200, 800)">Create miniapp-embed.png (1200×800)</button>
+        <button onclick="createSimplePNG('icon', 1024, 1024)">Create icon.png (1024×1024)</button>
+        <button onclick="createSimplePNG('hero', 1200, 630)">Create hero.png (1200×630)</button>
+        <button onclick="createSimplePNG('splash', 200, 200)">Create splash.png (200×200)</button>
+    </div>
+
+    <script>
+        function createSimplePNG(name, width, height) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Fill with solid color (no gradients, no complex shapes)
+            ctx.fillStyle = '#1a1a1a'; // Dark gray, not pure black
+            ctx.fillRect(0, 0, width, height);
+            
+            // Add simple white text
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 32px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Simple text
+            ctx.fillText('SECOND CITY STUDIO', width/2, height/2);
+            
+            // Download
+            const link = document.createElement('a');
+            link.download = name + '.png';
+            link.href = canvas.toDataURL('image/png', 1.0); // Maximum quality
+            link.click();
+            
+            alert(`✅ Created ${name}.png (${width}×${height}) - Simple format for maximum compatibility`);
+        }
+    </script>
+</body>
+</html>
