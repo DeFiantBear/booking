@@ -23,6 +23,12 @@ export const metadata: Metadata = {
         alt: 'SECOND CITY STUDIO VR Arcade Booking',
       },
     ],
+    type: 'website',
+    url: 'https://booking.secondcitystudio.xyz',
+  },
+  other: {
+    'fc:miniapp': '{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}',
+    'fc:frame': '{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}',
   },
 }
 
@@ -35,17 +41,6 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://auth.farcaster.xyz" />
-        {/* Farcaster Mini App Embed Meta Tags */}
-        <meta property="fc:miniapp" content='{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}' />
-        <meta property="fc:frame" content='{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}' />
-        {/* Additional Open Graph tags for better embed support */}
-        <meta property="og:title" content="SECOND CITY STUDIO" />
-        <meta property="og:description" content="Book your VR gaming sessions and party packages" />
-        <meta property="og:image" content="https://booking.secondcitystudio.xyz/miniapp-embed.png" />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="800" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://booking.secondcitystudio.xyz" />
       </head>
       <body className={inter.className}>
         {children}
