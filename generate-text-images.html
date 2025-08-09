@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate SECOND CITY STUDIO Text Images</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #000;
+            color: white;
+        }
+        .generator {
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #333;
+            margin-bottom: 20px;
+        }
+        .image-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .image-container {
+            text-align: center;
+            border: 1px solid #333;
+            padding: 15px;
+            border-radius: 8px;
+            background: #0a0a0a;
+        }
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+            border: 1px solid #444;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 8px;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .instructions {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎮 Generate SECOND CITY STUDIO Text Images</h1>
+    <p>Create simple PNG images with your studio name for immediate use</p>
+    
+    <div class="generator">
+        <h2>Generate Images</h2>
+        <p>Click the buttons below to generate and download PNG images for each required size:</p>
+        
+        <div class="image-preview">
+            <div class="image-container">
+                <h3>🎯 Icon (1024x1024)</h3>
+                <img id="iconPreview" alt="Icon Preview">
+                <br>
+                <button onclick="generateAndDownload('icon', 1024, 1024)">Generate Icon.png</button>
+            </div>
+            
+            <div class="image-container">
+                <h3>📱 Splash (200x200)</h3>
+                <img id="splashPreview" alt="Splash Preview">
+                <br>
+                <button onclick="generateAndDownload('splash', 200, 200)">Generate Splash.png</button>
+            </div>
+            
+            <div class="image-container">
+                <h3>🖼️ Hero (1200x630)</h3>
+                <img id="heroPreview" alt="Hero Preview">
+                <br>
+                <button onclick="generateAndDownload('hero', 1200, 630)">Generate Hero.png</button>
+            </div>
+            
+            <div class="image-container">
+                <h3>🔗 Embed (1200x800)</h3>
+                <img id="embedPreview" alt="Embed Preview">
+                <br>
+                <button onclick="generateAndDownload('embed', 1200, 800)">Generate Embed.png</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="instructions">
+        <h3>📋 Instructions:</h3>
+        <ol>
+            <li><strong>Click each button</strong> to generate the PNG images</li>
+            <li><strong>Download each PNG</strong> file automatically</li>
+            <li><strong>Replace the placeholder files</strong> in your <code>public/</code> folder:
+                <ul>
+                    <li><code>icon.png</code> (1024x1024)</li>
+                    <li><code>splash.png</code> (200x200)</li>
+                    <li><code>hero.png</code> (1200x630)</li>
+                    <li><code>miniapp-embed.png</code> (1200x800)</li>
+                </ul>
+            </li>
+            <li><strong>Deploy your app</strong> to make the changes live</li>
+        </ol>
+        
+        <p><strong>💡 Tip:</strong> These are simple text-based images that will work immediately. You can replace them later with your actual logo design.</p>
+    </div>
+
+    <script>
+        function generateAndDownload(type, width, height) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = width;
+            canvas.height = height;
+            
+            // Black background
+            ctx.fillStyle = '#000000';
+            ctx.fillRect(0, 0, width, height);
+            
+            // Calculate font size based on canvas dimensions
+            const fontSize = Math.min(width, height) * 0.15;
+            ctx.font = `bold ${fontSize}px Arial, sans-serif`;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            
+            // Add some styling
+            ctx.shadowColor = '#007bff';
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 2;
+            ctx.shadowOffsetY = 2;
+            
+            // Draw the text
+            const text = "SECOND CITY STUDIO";
+            const x = width / 2;
+            const y = height / 2;
+            
+            ctx.fillText(text, x, y);
+            
+            // Add subtitle for larger images
+            if (width >= 800) {
+                ctx.font = `bold ${fontSize * 0.4}px Arial, sans-serif`;
+                ctx.shadowBlur = 5;
+                ctx.fillText("VR Arcade Booking", x, y + fontSize * 0.8);
+            }
+            
+            // Update preview
+            const previewId = type + 'Preview';
+            document.getElementById(previewId).src = canvas.toDataURL('image/png');
+            
+            // Download the image
+            const link = document.createElement('a');
+            link.download = type + '.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+        
+        // Generate previews on page load
+        window.onload = function() {
+            generateAndDownload('icon', 1024, 1024);
+            generateAndDownload('splash', 200, 200);
+            generateAndDownload('hero', 1200, 630);
+            generateAndDownload('embed', 1200, 800);
+        };
+    </script>
+</body>
+</html>
