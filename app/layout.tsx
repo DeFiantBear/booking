@@ -26,22 +26,6 @@ export const metadata: Metadata = {
     type: 'website',
     url: 'https://booking.secondcitystudio.xyz',
   },
-  other: {
-    // Farcaster Mini App meta tags
-    'fc:miniapp': '{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}',
-    
-    // Farcaster Frame meta tags - CRITICAL for embed previews
-    'fc:frame': '{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}',
-    'fc:frame:image': 'https://booking.secondcitystudio.xyz/miniapp-embed.png',
-    'fc:frame:image:width': '1200',
-    'fc:frame:image:height': '800',
-    'fc:frame:button:1': 'Book VR Session',
-    'fc:frame:button:1:action': 'post_redirect',
-    'fc:frame:button:1:target': 'https://booking.secondcitystudio.xyz',
-    
-    // Additional Farcaster properties
-    'fc:frame:state': '{"version":"1"}',
-  },
 }
 
 export default function RootLayout({
@@ -53,6 +37,28 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://auth.farcaster.xyz" />
+        
+        {/* Farcaster Mini App Meta Tags */}
+        <meta property="fc:miniapp" content='{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}' />
+        
+        {/* Farcaster Frame Meta Tags - CRITICAL for Embed Previews */}
+        <meta property="fc:frame" content='{"version":"1","imageUrl":"https://booking.secondcitystudio.xyz/miniapp-embed.png","button":{"title":"Book VR Session","action":{"url":"https://booking.secondcitystudio.xyz","method":"GET"}}}' />
+        <meta property="fc:frame:image" content="https://booking.secondcitystudio.xyz/miniapp-embed.png" />
+        <meta property="fc:frame:image:width" content="1200" />
+        <meta property="fc:frame:image:height" content="800" />
+        <meta property="fc:frame:button:1" content="Book VR Session" />
+        <meta property="fc:frame:button:1:action" content="post_redirect" />
+        <meta property="fc:frame:button:1:target" content="https://booking.secondcitystudio.xyz" />
+        <meta property="fc:frame:state" content='{"version":"1"}' />
+        
+        {/* Additional Open Graph tags for maximum compatibility */}
+        <meta property="og:title" content="SECOND CITY STUDIO" />
+        <meta property="og:description" content="Book your VR gaming sessions and party packages" />
+        <meta property="og:image" content="https://booking.secondcitystudio.xyz/miniapp-embed.png" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="800" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://booking.secondcitystudio.xyz" />
       </head>
       <body className={inter.className}>
         {children}

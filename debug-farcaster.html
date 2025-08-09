@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Farcaster Meta Tags</title>
+    <style>
+        body { font-family: Arial; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .debug-section { border: 1px solid #ccc; padding: 20px; margin: 20px 0; }
+        .meta-tag { background: #f8f9fa; padding: 10px; margin: 5px 0; border-radius: 3px; }
+        .error { color: red; }
+        .success { color: green; }
+        .warning { color: orange; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Debug Farcaster Meta Tags</h1>
+    <p>This tool helps debug why Farcaster embed previews aren't working.</p>
+    
+    <div class="debug-section">
+        <h3>1. Check Current Page Meta Tags:</h3>
+        <button onclick="checkMetaTags()">Check Meta Tags</button>
+        <div id="meta-tags-result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>2. Test Image Accessibility:</h3>
+        <button onclick="testImages()">Test Images</button>
+        <div id="images-result"></div>
+    </div>
+    
+    <div class="debug-section">
+        <h3>3. Farcaster Manifest Check:</h3>
+        <button onclick="checkManifest()">Check Manifest</button>
+        <div id="manifest-result"></div>
+    </div>
+
+    <script>
+        function checkMetaTags() {
+            const result = document.getElementById('meta-tags-result');
+            const metaTags = document.querySelectorAll('meta');
+            let html = '<h4>Found Meta Tags:</h4>';
+            
+            metaTags.forEach(tag => {
+                const property = tag.getAttribute('property') || tag.getAttribute('name') || 'unknown';
+                const content = tag.getAttribute('content') || 'no content';
+                html += `<div class="meta-tag"><strong>${property}:</strong> ${content}</div>`;
+            });
+            
+            if (metaTags.length === 0) {
+                html += '<div class="error">❌ No meta tags found!</div>';
+            } else {
+                html += `<div class="success">✅ Found ${metaTags.length} meta tags</div>`;
+            }
+            
+            result.innerHTML = html;
+        }
+        
+        async function testImages() {
+            const result = document.getElementById('images-result');
+            const images = [
+                '/miniapp-embed.png',
+                '/icon.png',
+                '/hero.png',
+                '/splash.png'
+            ];
+            
+            let html = '<h4>Image Tests:</h4>';
+            
+            for (const img of images) {
+                try {
+                    const response = await fetch(img);
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        html += `<div class="success">✅ ${img}: ${blob.size} bytes, ${response.status}</div>`;
+                    } else {
+                        html += `<div class="error">❌ ${img}: HTTP ${response.status}</div>`;
+                    }
+                } catch (error) {
+                    html += `<div class="error">❌ ${img}: ${error.message}</div>`;
+                }
+            }
+            
+            result.innerHTML = html;
+        }
+        
+        async function checkManifest() {
+            const result = document.getElementById('manifest-result');
+            
+            try {
+                const response = await fetch('/.well-known/farcaster.json');
+                if (response.ok) {
+                    const manifest = await response.json();
+                    html = '<h4>Manifest Status:</h4>';
+                    html += `<div class="success">✅ Manifest accessible (HTTP ${response.status})</div>`;
+                    html += `<div class="meta-tag"><strong>Version:</strong> ${manifest.miniapp?.version || 'missing'}</div>`;
+                    html += `<div class="meta-tag"><strong>Name:</strong> ${manifest.miniapp?.name || 'missing'}</div>`;
+                    html += `<div class="meta-tag"><strong>Image URL:</strong> ${manifest.miniapp?.imageUrl || 'missing'}</div>`;
+                } else {
+                    html = `<div class="error">❌ Manifest not accessible (HTTP ${response.status})</div>`;
+                }
+            } catch (error) {
+                html = `<div class="error">❌ Manifest error: ${error.message}</div>`;
+            }
+            
+            result.innerHTML = html;
+        }
+    </script>
+</body>
+</html>
